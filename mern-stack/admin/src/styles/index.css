@@ -1,0 +1,41 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:where(.css-dev-only-do-not-override-504aoa).ant-form-item
+  .ant-form-item-label
+  > label.ant-form-item-required:not(.ant-form-item-required-mark-optional)::before {
+  display: none !important;
+}
+
+:where(.css-dev-only-do-not-override-504aoa).ant-form-item
+  .ant-form-item-label
+  > label.ant-form-item-required:not(.ant-form-item-required-mark-optional)::after {
+  display: none !important;
+}
+
+:where(.css-dev-only-do-not-override-1irk8c7).ant-pagination .ant-pagination-total-text {
+  @apply mr-auto;
+}
+
+.ant-form-item-required {
+  width: 100%;
+}
+
+base {
+  @apply font-nunito-sans;
+}
+
+* {
+  @apply font-nunito-sans;
+}
+
+.ql-toolbar.ql-snow {
+  @apply rounded-t-[4px];
+}
+
+.ql-container.ql-snow {
+  @apply rounded-b-[4px] min-h-[100px];
+}

@@ -1,0 +1,32 @@
+{
+  "title": "Chào mừng đến với bảng điều khiển quản trị",
+  "languages": {
+    "en": "Tiếng Anh",
+    "vi": "Tiếng Việt"
+  },
+  "userMenu": {
+    "profile": "Thông tin cá nhân",
+    "logout": "Đăng xuất"
+  },
+  "form": {
+    "email": "Email",
+    "password": "Mật khẩu",
+    "login": "Đăng nhập",
+    "forgotPassword": "Quên mật khẩu?",
+    "resetPassword": "Đặt lại mật khẩu",
+    "sendPasswordResetEmail": "Gửi email đặt lại mật khẩu",
+    "newPassword": "Mật khẩu mới",
+    "confirmPassword": "Xác nhận mật khẩu",
+    "changePassword": "Thay đổi mật khẩu",
+    "currentPassword": "Mật khẩu hiện tại",
+    "save": "Lưu",
+    "cancel": "Hủy"
+  },
+  "validate": {
+    "required": "Trường này là bắt buộc",
+    "email": "Địa chỉ email không hợp lệ",
+    "min": "Phải có ít nhất {min} ký tự",
+    "max": "Phải có nhiều nhất {max} ký tự",
+    "confirmPassword": "Mật khẩu không khớp"
+  }
+}
