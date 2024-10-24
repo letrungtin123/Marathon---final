@@ -18,6 +18,7 @@ import {
   ArcElement,
   BarElement
 } from 'chart.js'
+import { cn } from '@/utils/cn'
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, ArcElement, BarElement)
 const HomePage = () => {
@@ -61,7 +62,7 @@ const HomePage = () => {
     labels: ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6'],
     datasets: [
       {
-        label: 'Doanh thu Sản phẩm A',
+        label: 'Doanh thu',
         data: [1200000, 1500000, 1700000, 1400000, 1900000, 2200000],
         borderColor: '#663366',
         backgroundColor: 'rgba(102, 51, 102, 0.2)',
@@ -70,7 +71,7 @@ const HomePage = () => {
         tension: 0.4
       },
       {
-        label: 'Doanh thu Sản phẩm B',
+        label: 'Lợi nhuận',
         data: [1000000, 1300000, 1600000, 1100000, 1800000, 2100000],
         borderColor: '#ff5733',
         backgroundColor: 'rgba(255, 87, 51, 0.2)',
@@ -79,7 +80,7 @@ const HomePage = () => {
         tension: 0.4
       },
       {
-        label: 'Doanh thu Sản phẩm C',
+        label: 'Chi tiêu',
         data: [800000, 900000, 1200000, 1500000, 1400000, 1800000],
         borderColor: '#33cc33',
         backgroundColor: 'rgba(51, 204, 51, 0.2)',
@@ -95,17 +96,17 @@ const HomePage = () => {
     labels: ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6'],
     datasets: [
       {
-        label: 'Sản phẩm A',
+        label: 'Doanh thu',
         data: [1200000, 1500000, 1700000, 1400000, 1900000, 2200000],
         backgroundColor: '#663366'
       },
       {
-        label: 'Sản phẩm B',
+        label: 'Lợi nhuận',
         data: [1000000, 1300000, 1600000, 1100000, 1800000, 2100000],
         backgroundColor: '#ff5733'
       },
       {
-        label: 'Sản phẩm C',
+        label: 'Chi tiêu',
         data: [800000, 900000, 1200000, 1500000, 1400000, 1800000],
         backgroundColor: '#33cc33'
       }
@@ -120,7 +121,7 @@ const HomePage = () => {
       },
       title: {
         display: true,
-        text: 'Thống kê doanh thu (Sản phẩm A, B, C)',
+        text: 'Thống kê tài chính',
         font: {
           size: 20
         }
@@ -162,29 +163,17 @@ const HomePage = () => {
     textAlign: 'center'
   }
 
-  const buttonStyle = {
-    backgroundColor: '#663366',
-    color: '#fff',
-    border: 'none',
-    marginTop: '20px',
-    padding: '12px 28px',
-    fontSize: '16px',
-    borderRadius: '8px',
-    transition: 'background-color 0.3s, transform 0.3s',
-    cursor: 'pointer'
-  }
-
   return (
     <div style={{ padding: '60px 20px', backgroundColor: '#e6e6e6', minHeight: '100vh' }}>
       <Card style={cardStyle}>
-        <h2>Biểu đồ Doanh thu</h2>
         <Line data={data} options={options} />
-        <h2>Biểu đồ Cột (Doanh thu hàng tháng)</h2>
+        <h2>Biểu đồ Cột</h2>
         <Bar data={barData} />
         <Button
-          style={buttonStyle}
-          onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#4e1a57')}
-          onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#663366')}
+          className={cn(
+            ' px-4 rounded-md text-black flex items-center !gap-3 fill-black ml-auto mr-auto mt-5',
+            'text-white bg-primary fill-white '
+          )}
         >
           Tải thêm dữ liệu
         </Button>

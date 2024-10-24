@@ -19,7 +19,7 @@ import { Link } from "react-router-dom";
 const HeaderLayout = () => {
   const { isAuthenticated, setIsAuthenticated } = useAuth();
 
-  const { data, isLoading, isError, error } = useQuery({
+  const { data } = useQuery({
     queryKey: ["me"],
     queryFn: () => userApi.getProfile(),
     retry: false,
@@ -51,6 +51,68 @@ const HeaderLayout = () => {
             />
             <Search className="absolute text-gray-400 transform -translate-y-1/2 left-3 top-1/2" />
           </div>
+          <section className="flex items-center justify-center w-full h-header">
+            <Link to={`/`} className="text-xl font-extrabold font-nunito-sans">
+              <Button variant="ghost">Trang chủ</Button>
+            </Link>
+          </section>
+
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost">Hoa lễ</Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-56 bg-white border shadow-md">
+              <DropdownMenuSeparator />
+              <DropdownMenuItem>
+                <Link to="/category-1">Hoa lễ 20/10</Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <Link to="/category-2">Hoa tết</Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <Link to="/category-3">Hoa khai trương</Link>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost">Hoa sự kiện</Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-56 bg-white border shadow-md">
+              <DropdownMenuSeparator />
+              <DropdownMenuItem>
+                <Link to="/category-1">Cổng hoa</Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <Link to="/category-2">Xe hoa</Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <Link to="/category-3">Hoa đặt bàn</Link>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost">Hoa theo chủ đề</Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-56 bg-white border shadow-md">
+              <DropdownMenuSeparator />
+              <DropdownMenuItem>
+                <Link to="/category-1">Hoa tình yêu</Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <Link to="/category-2">Hoa chia buồn</Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <Link to="/category-3">Hoa chúc mừng</Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <Link to="/category-3">Hoa cảm ơn</Link>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
         <div className="flex items-center space-x-4">
           <Button variant="ghost" size="icon">
