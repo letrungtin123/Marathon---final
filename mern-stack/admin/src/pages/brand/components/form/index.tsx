@@ -11,14 +11,14 @@ import { useForm } from 'antd/es/form/Form'
 import { TBrand, TFormBrand } from '@/types/brand.type'
 import { createBrand, updateBrand } from '@/apis/brand.api'
 
-interface IFormCategory {
+interface IFormBrand {
   currentData: TModal<TBrand>
   onClose: () => void
 }
 
 const { Dragger } = Upload
 
-const FormBrand = ({ currentData, onClose }: IFormCategory) => {
+const FormBrand = ({ currentData, onClose }: IFormBrand) => {
   const { accessToken } = useAuth()
   const [value, setValue] = useState<string>('')
   const [image, setImage] = useState<ImageType>({ url: '', public_id: '', visiable: false })
@@ -117,16 +117,17 @@ const FormBrand = ({ currentData, onClose }: IFormCategory) => {
 
   useEffect(() => {
     if (currentData.type === 'edit') {
-      const { currentData: category } = currentData
-      // const category2 = currentData.currentData
+      const { currentData: brand } = currentData
+      // const brand2 = currentData.currentData
       form.setFieldsValue({
-        nameBrand: category?.nameBrand ?? '',
-        desc: category?.desc ?? ''
+        nameBrand: brand?.nameBrand ?? '',
+        desc: brand?.desc ?? '',
+        country: brand?.country ?? ''
       })
       setImage({
-        public_id: category?.image ?? '',
+        public_id: brand?.image ?? '',
         visiable: true,
-        url: category?.image ?? ''
+        url: brand?.image ?? ''
       })
     }
   }, [currentData, form])
@@ -160,10 +161,18 @@ const FormBrand = ({ currentData, onClose }: IFormCategory) => {
       <Form layout='vertical' form={form} onFinish={handleSubmit}>
         <Form.Item
           name='nameBrand'
-          label='Thương hiệu thương hiệu'
+          label='Tên thương hiệu'
           rules={[{ required: true, message: 'Tên thương hiệu là bắt buộc' }]}
         >
           <Input placeholder='Tên thương hiệu' size='large' />
+        </Form.Item>
+
+        <Form.Item
+          name='country'
+          label='Xuất xứ thương hiệu'
+          rules={[{ required: true, message: 'Xuất xứ thương hiệu là bắt buộc' }]}
+        >
+          <Input placeholder='Xuất xứ thương hiệu' size='large' />
         </Form.Item>
 
         <Form.Item name={'desc'} label='Mô tả thương hiệu' rules={[{ required: true, message: 'Mô tả là bắt buộc' }]}>

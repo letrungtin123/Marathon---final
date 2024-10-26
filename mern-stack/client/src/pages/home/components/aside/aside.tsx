@@ -82,9 +82,16 @@ const Aside = () => {
                           brand: brand._id,
                         }).toString(),
                       }}
-                      className="text-blue-600 hover:underline"
+                      className="text-blue-600 hover:underline flex w-full font-semibold "
                     >
                       {brand.nameBrand}
+                      {brand.image && (
+                        <img
+                          src={brand.image}
+                          alt={brand.nameBrand}
+                          className="w-8 h-8 ml-2 flex-col justify-center items-center"
+                        />
+                      )}
                     </Link>
                   </li>
                 );

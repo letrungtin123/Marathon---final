@@ -5,13 +5,17 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { cn } from "@/lib/utils";
 import { TSize } from "@/types/product.type";
 import { Minus, Plus } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 interface ProductControllerProps {
 	variants: TSize[];
+	onVariantSelect: (variant: TSize | null, quantity: number) => void;
 }
 
-const ProductController = ({ variants }: ProductControllerProps) => {
+const ProductController = ({
+	variants,
+	onVariantSelect,
+}: ProductControllerProps) => {
 	const [selectedSize, setSelectedSize] = useState<string | null>(null);
 	const [selectedColor, setSelectedColor] = useState<string | null>(null);
 	const [quantity, setQuantity] = useState<number>(1);
@@ -75,6 +79,12 @@ const ProductController = ({ variants }: ProductControllerProps) => {
 			setQuantity(Math.max(1, Math.min(value, selectedVariant.quantity)));
 		}
 	};
+
+	useEffect(() => {
+		if (selectedVariant !== undefined) {
+			onVariantSelect(selectedVariant, quantity);
+		}
+	}, [selectedVariant, onVariantSelect, quantity]);
 
 	return (
 		<div className="space-y-4">
@@ -148,6 +158,7 @@ const ProductController = ({ variants }: ProductControllerProps) => {
 						<h4 className="mb-2 text-sm font-medium">Quantity</h4>
 
 						<div className="flex items-center space-x-2">
+							{/* handle click decrease quantity */}
 							<Button
 								variant={"outline"}
 								size={"icon"}
@@ -156,6 +167,7 @@ const ProductController = ({ variants }: ProductControllerProps) => {
 							>
 								<Minus className="size-4" />
 							</Button>
+							{/* handle input change quantity */}
 							<Input
 								type="number"
 								value={quantity}
@@ -166,6 +178,7 @@ const ProductController = ({ variants }: ProductControllerProps) => {
 								}
 								max={selectedVariant.quantity}
 							/>
+							{/* handle click increase quantity */}
 							<Button
 								variant={"outline"}
 								size={"icon"}

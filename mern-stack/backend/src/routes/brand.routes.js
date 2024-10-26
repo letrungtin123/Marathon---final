@@ -25,7 +25,7 @@ router.patch(
   '/brand/:brandId',
   wrapRequestHandler(verifyToken),
   wrapRequestHandler(checkPermission),
-  wrapRequestHandler(brandMiddleware),
+  // wrapRequestHandler(brandMiddleware),
   wrapRequestHandler(updateBrand),
 );
 

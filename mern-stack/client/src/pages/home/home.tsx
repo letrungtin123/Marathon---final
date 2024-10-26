@@ -34,7 +34,7 @@ const HomePage = () => {
 
   return (
     <main className="container flex flex-col flex-grow px-4 py-8 mx-auto mt-0 space-y-6">
-      {/* Phần Carousel ở trên cùng */}
+      {/* Phần Carousel */}
       {isParamsEmpty && (
         <Carousel
           effect="fade"

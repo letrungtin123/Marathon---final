@@ -34,6 +34,20 @@ export const ColumnBrand = ({ onDeleteBrand, onToggleStatusBrand, onOpenModal }:
       }
     },
     {
+      title: 'Xuất xứ thương hiệu',
+      dataIndex: 'country',
+      key: 'country',
+      render: (country: string) => {
+        return (
+          <div className='flex gap-3 items-center'>
+            <div className='flex items-center gap-2'>
+              <p className='!text-lg font-medium text-black-second'>{country}</p>
+            </div>
+          </div>
+        )
+      }
+    },
+    {
       title: 'Trạng thái',
       dataIndex: 'status',
       key: 'status',

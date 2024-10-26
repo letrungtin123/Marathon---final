@@ -1,4 +1,5 @@
-import BgRightImage from '@/assets/images/right.svg'
+import login from '@/assets/images/login.png.png'
+// import NewBackgroundImage from '@/assets/images/newImage.jpg'
 import { Outlet } from 'react-router-dom'
 
 const AuthLayout = () => {
@@ -8,15 +9,14 @@ const AuthLayout = () => {
         <Outlet />
       </div>
       <div
-        className='flex-col items-center justify-center hidden w-full h-full lg:flex'
+        className='flex-col items-center justify-center w-full h-full lg:flex'
         style={{
-          background: 'linear-gradient(180deg, #4F46E5 0%, #8C48E3 100%)'
+          backgroundImage: `url(${login})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center'
         }}
-      >
-        <img src={BgRightImage} alt='bg-right' className='object-cover w-full h-screen' />
-      </div>
+      />
     </div>
   )
 }
-
 export default AuthLayout

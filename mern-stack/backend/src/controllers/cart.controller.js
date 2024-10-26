@@ -145,6 +145,7 @@ export const cartController = {
     }
 
     query = { ...query, userId: _id };
+    console.log('🚀 ~ getCartByUserId: ~ query:', query);
 
     // lấy giỏ hàng của user
     const result = await cartService.getCartsByUserId(query, params);

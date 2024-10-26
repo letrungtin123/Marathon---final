@@ -9,6 +9,7 @@ import Profile from '@/pages/profile';
 import RootLayout from '@/layouts/root-layout';
 import { createBrowserRouter } from 'react-router-dom';
 import path from '@/configs/path.config';
+import AboutUs from '@/pages/aboutus';
 
 export const routes = createBrowserRouter([
 	{
@@ -45,6 +46,14 @@ export const routes = createBrowserRouter([
 		element: (
 			<RootLayout>
 				<HomePage />
+			</RootLayout>
+		),
+	},
+	{
+		path: path.aboutus,
+		element: (
+			<RootLayout>
+				<AboutUs />
 			</RootLayout>
 		),
 	},

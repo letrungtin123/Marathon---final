@@ -29,12 +29,6 @@ const HomePage = () => {
     setSocketClient(newSocket)
   }, [])
 
-  // emit
-  // useEffect(() => {
-  //   if (!socketClient) return
-  //   socketClient.emit('messengers')
-  // }, [socketClient])
-
   useEffect(() => {
     if (!socketClient) return
     socketClient.on('send-data', (data: string) => {
@@ -47,15 +41,6 @@ const HomePage = () => {
       console.log('🚀 ~ socketClient.on ~ data:', data)
     })
   }, [socketClient])
-
-  // const handleAddProduct = () => {
-  //   const data = {
-  //     id: 1,
-  //     name: 'product ' + Math.round(Math.random() + 1000)
-  //   }
-
-  //   socketClient.emit('add-product', data)
-  // }
 
   // Dữ liệu giả doanh thu
   const data = {

@@ -52,15 +52,16 @@ const LoginPage = () => {
 
   return (
     <div className='flex flex-col justify-center w-full h-full gap-2.5 md:w-2/3 lg:w-full'>
-      <div className='h-[60px] w-[60px] bg-[#EEF2FF] text-[#4F46E5] font-semibold rounded-xl flex items-center justify-center text-[28px]'>
-        G
+      <div className='h-[60px] w-[120px] bg-[#EEF2FF]  font-semibold rounded-xl flex items-center justify-center text-[35px]'>
+        <div className='text-xl font-extrabold font-nunito-sans'>
+          <span className='text-primary'>Dash</span>
+          <span className=''>Stack</span>
+        </div>
       </div>
 
       <div className='mt-[45px]'>
-        <h1 className='font-semibold text-[32px] text-black'>Masuk ke akun kamu</h1>
-        <p className='text-base font-normal text-[#4B5563]'>
-          Belajar gratis di Namanyajugabelajar.io, dan memulai karir yang kamu cita-citata sejak dalam embrio!
-        </p>
+        <h1 className='font-semibold text-[32px] text-black'>Cửa hàng kinh doanh hoa tươi</h1>
+        <p className='text-base font-normal text-[#4B5563]'>Quản lí tối ưu và hiệu quả</p>
       </div>
 
       <Form layout='vertical' className='mt-[35px]' onFinish={onSubmit} form={form}>

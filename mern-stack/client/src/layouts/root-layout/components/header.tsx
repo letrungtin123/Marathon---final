@@ -7,7 +7,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Search, ShoppingCart } from "lucide-react";
-
+import { cartApi } from "@/api/cart.api";
 import { userApi } from "@/api/user.api";
 import { Button } from "@/components/ui/button";
 import path from "@/configs/path.config";
@@ -15,6 +15,7 @@ import { useAuth } from "@/contexts/auth.context";
 import { removeAccessTokenFromLS } from "@/utils/auth.util";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
+import coupon from "@/assets/coupon.png"
 
 const HeaderLayout = () => {
   const { isAuthenticated, setIsAuthenticated } = useAuth();
@@ -26,6 +27,14 @@ const HeaderLayout = () => {
     enabled: isAuthenticated,
   });
   const myInfo = data?.data;
+
+  //get all carts
+  const { data: responseCarts } = useQuery({
+    queryKey: ["carts"],
+    queryFn: () => cartApi.getAllCarts(),
+  });
+
+  const carts = responseCarts?.data;
 
   // logout
   const handleLogout = () => {
@@ -113,12 +122,22 @@ const HeaderLayout = () => {
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
+          <section className="flex items-center justify-center w-full h-header">
+            <Link to={path.aboutus} className="text-xl font-extrabold font-nunito-sans">
+              <Button variant="ghost">Về chúng tôi</Button>
+            </Link>
+          </section>
         </div>
+        <div className=" justify-center items-center"> <img src={coupon} className="h-12 w-59"/></div>
         <div className="flex items-center space-x-4">
-          <Button variant="ghost" size="icon">
-            <ShoppingCart className="w-6 h-6" />
-          </Button>
-
+          <Link to={path.cart}>
+            <Button variant="ghost" size="icon" className="relative">
+              <ShoppingCart className="w-6 h-6" />
+              <div className="absolute size-5 rounded-full top-0 right-0 bg-blue-500 text-white flex items-center justify-center text-xs">
+                {carts?.carts?.length ?? 0}
+              </div>
+            </Button>
+          </Link>
           {isAuthenticated ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
