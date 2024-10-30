@@ -11,6 +11,7 @@ export const orderController = {
     let populateDefault = [
       { path: 'products.productId', select: '_id nameProduct desc images' },
       { path: 'userId', select: '_id email' },
+      { path: 'assignee', select: '_id fullname role' },
     ];
     if (populate) {
       if (Array.isArray(populate)) {

@@ -1,25 +1,40 @@
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { voucherApi } from "@/api/voucher.api";
+import { Button } from "@/components/ui/button";
+import {
+	Card,
+	CardContent,
+	CardDescription,
+	CardHeader,
+	CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import {
 	Select,
 	SelectContent,
 	SelectItem,
 	SelectTrigger,
 	SelectValue,
-} from '@/components/ui/select';
-import { ChevronLeft, CreditCard } from 'lucide-react';
-
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Separator } from '@/components/ui/separator';
-import { useState } from 'react';
+} from "@/components/ui/select";
+import { Separator } from "@/components/ui/separator";
+import { formatCurrency } from "@/utils/format-currency.util";
+import { useQuery } from "@tanstack/react-query";
+import dayjs from "dayjs";
+import {
+	CalendarCheck2,
+	ChevronLeft,
+	CreditCard,
+	TicketCheck,
+} from "lucide-react";
+import { useState } from "react";
 
 const Checkout = () => {
-	const [paymentMethod, setPaymentMethod] = useState('credit-card');
+	const [paymentMethod, setPaymentMethod] = useState("credit-card");
 
 	const cartItems = [
-		{ id: 1, name: 'Smartphone XYZ', price: 599.99, quantity: 1 },
-		{ id: 2, name: 'Wireless Earbuds', price: 129.99, quantity: 2 },
+		{ id: 1, name: "Smartphone XYZ", price: 599.99, quantity: 1 },
+		{ id: 2, name: "Wireless Earbuds", price: 129.99, quantity: 2 },
 	];
 
 	const subtotal = cartItems.reduce(
@@ -29,6 +44,15 @@ const Checkout = () => {
 	const shipping = 10;
 	const tax = subtotal * 0.1;
 	const total = subtotal + shipping + tax;
+
+	// call api voucher
+	const { data: responseVouchers } = useQuery({
+		queryKey: ["voucher"],
+		queryFn: () =>
+			voucherApi.getVouchers({ status: "active", is_deleted: false }),
+	});
+	const vouchers = responseVouchers?.data;
+
 	return (
 		<div className="w-full min-h-screen bg-gray-100">
 			<div className="container px-4 py-8 mx-auto">
@@ -116,7 +140,7 @@ const Checkout = () => {
 									<Label htmlFor="bank-transfer">Chuyển khoản ngân hàng</Label>
 								</div>
 							</RadioGroup>
-							{paymentMethod === 'credit-card' && (
+							{paymentMethod === "credit-card" && (
 								<div className="mt-4 space-y-4">
 									<div>
 										<Label htmlFor="cardNumber">Số thẻ</Label>
@@ -136,7 +160,7 @@ const Checkout = () => {
 							)}
 						</div>
 					</div>
-					<div>
+					<div className="space-y-6 h-full">
 						<div className="p-6 bg-white rounded-lg shadow">
 							<h2 className="mb-4 text-xl font-semibold">Tóm tắt đơn hàng</h2>
 							<div className="space-y-4">
@@ -171,6 +195,87 @@ const Checkout = () => {
 								<CreditCard className="w-4 h-4 mr-2" />
 								Thanh toán ${total.toFixed(2)}
 							</Button>
+						</div>
+
+						<div className="p-6 bg-white rounded-lg shadow">
+							<h2 className="mb-4 text-xl font-semibold">Mã giảm giá</h2>
+
+							<div className="space-y-4 h-[380px] overflow-y-scroll">
+								{/* {vouchers &&
+									vouchers.length > 0 &&
+									vouchers.map((voucher) => {
+										return (
+											<Card className="cursor-pointer" key={voucher._id}>
+												<CardHeader className="pb-0 flex-row justify-between">
+													<CardTitle className="font-medium text-base">
+														{voucher.code}
+													</CardTitle>
+													<p className="flex items-center gap-2">
+														<TicketCheck />{" "}
+														{formatCurrency(voucher.voucherPrice)}đ
+													</p>
+												</CardHeader>
+												<CardContent className="pb-0 flex justify-between items-center">
+													<Button
+														variant={"transparent"}
+														className="px-0 gap-3"
+													>
+														<CalendarCheck2 />
+														{dayjs(voucher.startDate).format(
+															"DD/MM/YYYY"
+														)} - {dayjs(voucher.endDate).format("DD/MM/YYYY")}
+													</Button>
+													<CardDescription>
+														<p>Quantity: {voucher.discount}</p>
+													</CardDescription>
+												</CardContent>
+												<CardContent>
+													<CardDescription>
+														<p className="text-xs line-clamp-2">
+															{voucher.desc} Lorem ipsum dolor sit amet,
+															consectetur adipisicing elit. Ipsam, libero!
+														</p>
+													</CardDescription>
+												</CardContent>
+											</Card>
+										);
+									})} */}
+								{Array.from({ length: 10 }).map((_, index) => {
+									return (
+										<Card
+											className="cursor-pointer hover:shadow-md hover:bg-gray-100"
+											key={index}
+										>
+											<CardHeader className="pb-0 flex-row justify-between">
+												<CardTitle className="font-medium text-base">
+													Code {index}
+												</CardTitle>
+												<p className="flex items-center gap-2">
+													<TicketCheck /> {formatCurrency(100000)}đ
+												</p>
+											</CardHeader>
+											<CardContent className="pb-0 flex justify-between items-center">
+												<Button variant={"transparent"} className="px-0 gap-3">
+													<CalendarCheck2 />
+													{dayjs().format("DD/MM/YYYY")} -{" "}
+													{dayjs().add(1, "day").format("DD/MM/YYYY")}
+												</Button>
+												<CardDescription>
+													<p>Quantity: 1</p>
+												</CardDescription>
+											</CardContent>
+											<CardContent>
+												<CardDescription>
+													<p className="text-xs line-clamp-2">
+														Lorem ipsum dolor sit amet, consectetur adipisicing
+														elit. Ipsam, libero!
+													</p>
+												</CardDescription>
+											</CardContent>
+										</Card>
+									);
+								})}
+							</div>
 						</div>
 					</div>
 				</div>

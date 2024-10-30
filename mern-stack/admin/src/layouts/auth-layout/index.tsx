@@ -1,4 +1,4 @@
-import login from '@/assets/images/login.png.png'
+import flowerlogoBG from '@/assets/images/flowerlogoBG.png.png'
 // import NewBackgroundImage from '@/assets/images/newImage.jpg'
 import { Outlet } from 'react-router-dom'
 
@@ -11,7 +11,7 @@ const AuthLayout = () => {
       <div
         className='flex-col items-center justify-center w-full h-full lg:flex'
         style={{
-          backgroundImage: `url(${login})`,
+          backgroundImage: `url(${flowerlogoBG})`,
           backgroundSize: 'cover',
           backgroundPosition: 'center'
         }}

@@ -1,3 +1,4 @@
+
 import Order from '../models/order.model.js';
 
 export const orderService = {
@@ -9,7 +10,7 @@ export const orderService = {
   // getOrdersByUserId
   getOrdersByUserId: async (userId) => {
     return await Order.find({ userId }).populate([
-      { path: 'products.productId', select: '_id nameProduct desc images' },
+      { path: 'products.productId', select: '_id nameProduct desc images category brand' },
       { path: 'userId', select: '_id email' },
       { path: 'assignee' },
     ]);
