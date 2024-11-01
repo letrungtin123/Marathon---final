@@ -10,6 +10,7 @@ import RootLayout from '@/layouts/root-layout';
 import { createBrowserRouter } from 'react-router-dom';
 import path from '@/configs/path.config';
 import AboutUs from '@/pages/aboutus';
+import RegisterPage from '@/pages/register';
 
 export const routes = createBrowserRouter([
 	{
@@ -17,7 +18,11 @@ export const routes = createBrowserRouter([
 		element: <RejectedRoute />,
 		children: [{ index: true, element: <LoginPage /> }],
 	},
-
+	{
+		path: path.register,
+		element: <RejectedRoute />,
+		children: [{ index: true, element: <RegisterPage /> }],
+	},
 	{
 		path: path.home,
 		element: <ProtectedRoute />,

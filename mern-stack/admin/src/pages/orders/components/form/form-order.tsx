@@ -1,4 +1,4 @@
-import { Button, Col, Drawer, Form, Input, InputNumber, Row, Select, Space, Switch, message } from 'antd'
+import { Button, Col, Drawer, Form, Input, InputNumber, Row, Space, Switch, message } from 'antd'
 // import { CloseOutlined, InboxOutlined, PlusOutlined } from '@ant-design/icons'
 import {
   QueryClient,
@@ -6,12 +6,11 @@ import {
   RefetchOptions,
   RefetchQueryFilters,
   useMutation
-  // useQuery
 } from '@tanstack/react-query'
 import { useEffect, useState } from 'react'
 import QuillEditor from '@/components/qill-editor'
 import { useAuth } from '@/contexts/auth-context'
-import { TOrder, TOrderForm, TOrderFormEdit } from '@/types/order.type'
+import { TOrder, TOrderForm } from '@/types/order.type'
 import { addOrder, editOrder } from '@/apis/order.api'
 import { TModal, TResponse } from '@/types/common.type'
 
@@ -29,12 +28,12 @@ const FormOrder = ({ currentData, onClose, refetch }: IFormOrderProps) => {
   const queryClient = new QueryClient()
   const [value, setValue] = useState<string>('')
 
-  // Create Order Mutation
+  // Define mutation to create order
   const createOrderMutation = useMutation({
     mutationKey: ['createOrder'],
     mutationFn: (order: TOrderForm) => addOrder(order, accessToken),
     onSuccess: () => {
-      message.success('Thêm đơn hàng thành công')
+      message.success('Order created successfully')
       onClose()
       form.resetFields()
       setValue('')
@@ -42,16 +41,17 @@ const FormOrder = ({ currentData, onClose, refetch }: IFormOrderProps) => {
       queryClient.invalidateQueries({ queryKey: ['orders'] })
     },
     onError: () => {
-      message.error('Thêm đơn hàng thất bại')
+      message.error('Failed to create order')
     }
   })
 
-  // Edit Order Mutation
+  // Define mutation to edit order
   const editOrderMutation = useMutation({
     mutationKey: ['editOrder'],
-    mutationFn: (data: TOrderFormEdit) => editOrder(data, accessToken),
+    mutationFn: (data: { _id: string; status: 'pending' | 'confirmed' | 'delivery' | 'completed' | 'cancelled' }) =>
+      editOrder(data, accessToken),
     onSuccess: () => {
-      message.success('Cập nhật đơn hàng thành công')
+      message.success('Order updated successfully')
       onClose()
       form.resetFields()
       setValue('')
@@ -59,27 +59,26 @@ const FormOrder = ({ currentData, onClose, refetch }: IFormOrderProps) => {
       queryClient.invalidateQueries({ queryKey: ['orders'] })
     },
     onError: () => {
-      message.error('Cập nhật đơn hàng thất bại')
+      message.error('Failed to update order')
     }
   })
 
   // Handle form submission
   const onSubmit = (data: TOrderForm) => {
-    const dataOrder: TOrderForm = {
-      ...data,
-      status: data.status || 'pending'
-    }
-
-    if (currentData.type === 'add') {
-      createOrderMutation.mutate(dataOrder)
-    } else if (currentData.type === 'edit') {
-      editOrderMutation.mutate({ ...dataOrder, _id: currentData.currentData!._id })
+    if (currentData.type === 'edit') {
+      editOrderMutation.mutate({ _id: currentData.currentData!._id, status: data.status || 'pending' })
+    } else {
+      createOrderMutation.mutate(data)
     }
   }
 
   useEffect(() => {
+    // Populate form data when editing an order
     if (currentData.type === 'edit' && currentData.currentData) {
       const dataOrder = currentData.currentData
+      console.log('Setting form values:', dataOrder?.infoOrderShipping)
+      console.log('🚀 ~ useEffect ~ dataOrder:', dataOrder)
+      form.resetFields()
       form.setFieldsValue({
         userId: dataOrder?.userId,
         status: dataOrder?.status,
@@ -87,24 +86,28 @@ const FormOrder = ({ currentData, onClose, refetch }: IFormOrderProps) => {
         paymentMethod: dataOrder?.paymentMethod,
         total: dataOrder?.total,
         products: dataOrder?.products,
-        inforOrderShipping: dataOrder?.inforOrderShipping,
-        assignee: dataOrder?.assignee,
+        infoOrderShipping: {
+          name: dataOrder?.infoOrderShipping?.name,
+          email: dataOrder?.infoOrderShipping?.email,
+          phone: dataOrder?.infoOrderShipping?.phone,
+          address: dataOrder?.infoOrderShipping?.address
+        },
         reasonCancel: dataOrder?.reasonCancel
       })
-      setValue(dataOrder.note)
+      setValue(dataOrder.note || '')
     }
   }, [currentData, form])
-
+  console.log('🚀 ~ useEffect ~ currentData.currentData:', currentData.currentData)
   return (
     <Drawer
-      title={currentData.type === 'add' ? 'Thêm đơn hàng' : 'Cập nhật đơn hàng'}
+      title={currentData.type === 'add' ? 'Add Order' : 'Update Order'}
       onClose={onClose}
       open={currentData.visiable}
       width={800}
       extra={
         <Space>
           <Button size='large' onClick={onClose}>
-            Đóng đơn hàng
+            Close
           </Button>
           <Button
             size='large'
@@ -112,7 +115,7 @@ const FormOrder = ({ currentData, onClose, refetch }: IFormOrderProps) => {
             onClick={() => form.submit()}
             loading={createOrderMutation.isLoading || editOrderMutation.isLoading}
           >
-            {currentData.type === 'add' ? 'Thêm đơn hàng' : 'Cập nhật đơn hàng'}
+            {currentData.type === 'add' ? 'Add Order' : 'Update Order'}
           </Button>
         </Space>
       }
@@ -121,42 +124,40 @@ const FormOrder = ({ currentData, onClose, refetch }: IFormOrderProps) => {
         <Form layout='vertical' form={form} onFinish={onSubmit}>
           <Row gutter={40}>
             <Col span={12}>
-              <Form.Item
-                name={'nameProduct'}
-                label='Tên đơn hàng'
-                rules={[{ required: true, message: 'Tên đơn hàng là bắt buộc' }]}
-              >
-                <Input size='large' placeholder='Tên đơn hàng' />
+              <Form.Item label='Customer Name' name={['infoOrderShipping', 'name']}>
+                <Input value={currentData.currentData?.infoOrderShipping?.name} disabled />
               </Form.Item>
             </Col>
             <Col span={12}>
               <Form.Item
                 name={'total'}
-                label='Tổng giá trị đơn hàng'
-                rules={[{ required: true, message: 'Tổng giá trị đơn hàng là bắt buộc' }]}
+                label='Order Total'
+                rules={[{ required: true, message: 'Order total is required' }]}
               >
-                <InputNumber className='w-full' size='large' placeholder='Tổng giá trị' />
+                <InputNumber
+                  className='w-full'
+                  size='large'
+                  placeholder='Total amount'
+                  disabled={currentData.type === 'edit'}
+                />
               </Form.Item>
             </Col>
             <Col span={12}>
               <Form.Item
                 name={'paymentMethod'}
-                label='Phương thức thanh toán'
-                rules={[{ required: true, message: 'Phương thức thanh toán là bắt buộc' }]}
+                label='Payment Method'
+                rules={[{ required: true, message: 'Payment method is required' }]}
               >
-                <Select size='large' placeholder='Phương thức thanh toán'>
-                  <Select.Option value='cod'>COD</Select.Option>
-                  <Select.Option value='payment'>Thanh toán online</Select.Option>
-                </Select>
+                <Input size='large' placeholder='Payment method' disabled />
               </Form.Item>
             </Col>
             <Col span={12}>
-              <Form.Item name={'status'} label='Trạng thái đơn hàng'>
+              <Form.Item name={'status'} label='Order Status'>
                 <Switch />
               </Form.Item>
             </Col>
             <Col span={24}>
-              <Form.Item name={'note'} label='Ghi chú đơn hàng'>
+              <Form.Item name={'note'} label='Order Note'>
                 <QuillEditor value={value} onChange={setValue} />
               </Form.Item>
             </Col>

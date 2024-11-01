@@ -13,7 +13,8 @@ export type TOrder = {
   paymentMethod: 'cod' | 'payment'
   total: number
   products: string[]
-  inforOrderShipping: TInforOrderShipping
+  priceShipping: number
+  infoOrderShipping: TInforOrderShipping
   assignee: TAssignee
   reasonCancel: string
   createdAt: string

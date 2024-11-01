@@ -15,8 +15,13 @@ import { useAuth } from "@/contexts/auth.context";
 import { removeAccessTokenFromLS } from "@/utils/auth.util";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
-import coupon from "@/assets/coupon.png"
-
+import coupon from "@/assets/coupon.png";
+import home from "@/assets/home.gif";
+import aboutus from "@/assets/documents.gif";
+import flower from "@/assets/flower.gif";
+import holicolor from "@/assets/holi-colors.gif";
+import event from "@/assets/event.gif";
+import love from '@/assets/kpop.gif'
 const HeaderLayout = () => {
   const { isAuthenticated, setIsAuthenticated } = useAuth();
 
@@ -47,12 +52,16 @@ const HeaderLayout = () => {
       <div className="container flex items-center justify-between px-4 py-4 mx-auto">
         <div className="flex items-center space-x-4">
           <section className="flex items-center justify-center w-full h-header">
-            <Link to={`/`} className="text-xl font-extrabold font-nunito-sans">
+            <Link
+              to={`/`}
+              className="text-xl font-extrabold font-nunito-sans flex items-center p-0 m-0"
+            >
               <span className="text-primary">Dash</span>
               <span className="">Stack</span>
+              <img src={flower} alt="flower" className="w-8 h-8 p-0 m-0" />
             </Link>
           </section>
-          <div className="relative">
+          <div className="relative p-1">
             <input
               type="text"
               placeholder="Tìm kiếm sản phẩm..."
@@ -61,15 +70,31 @@ const HeaderLayout = () => {
             <Search className="absolute text-gray-400 transform -translate-y-1/2 left-3 top-1/2" />
           </div>
           <section className="flex items-center justify-center w-full h-header">
-            <Link to={`/`} className="text-xl font-extrabold font-nunito-sans">
-              <Button variant="ghost">Trang chủ</Button>
+            <Link
+              to={`/`}
+              className="text-xl font-extrabold font-nunito-sans flex px-3 justify-center items-center"
+            >
+              <Button variant="ghost" className="p-0 m-0">
+                Trang chủ
+              </Button>
+              <img src={home} alt="Home" className="w-8 h-8 p-0 m-0" />
             </Link>
           </section>
 
           <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost">Hoa lễ</Button>
-            </DropdownMenuTrigger>
+            <div className="flex items-center px-5">
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="p-0 m-0">
+                  Hoa lễ
+                </Button>
+              </DropdownMenuTrigger>
+              <img
+                src={holicolor}
+                alt="Holi Color"
+                className="p-0 m-0 w-8 h-8"
+              />
+            </div>
+
             <DropdownMenuContent className="w-56 bg-white border shadow-md">
               <DropdownMenuSeparator />
               <DropdownMenuItem>
@@ -85,9 +110,14 @@ const HeaderLayout = () => {
           </DropdownMenu>
 
           <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost">Hoa sự kiện</Button>
-            </DropdownMenuTrigger>
+            <div className="flex items-center px-5">
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="p-0 m-0">
+                  Hoa sự kiện
+                </Button>
+              </DropdownMenuTrigger>
+              <img src={event} alt="Holi Color" className="p-0 m-0 w-8 h-8" />
+            </div>
             <DropdownMenuContent className="w-56 bg-white border shadow-md">
               <DropdownMenuSeparator />
               <DropdownMenuItem>
@@ -103,9 +133,14 @@ const HeaderLayout = () => {
           </DropdownMenu>
 
           <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost">Hoa theo chủ đề</Button>
-            </DropdownMenuTrigger>
+          <div className="flex items-center px-5">
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="p-0 m-0">
+                  Hoa theo chủ đề
+                </Button>
+              </DropdownMenuTrigger>
+              <img src={love} alt="Holi Color" className="p-0 m-0 w-8 h-8" />
+            </div>
             <DropdownMenuContent className="w-56 bg-white border shadow-md">
               <DropdownMenuSeparator />
               <DropdownMenuItem>
@@ -123,16 +158,26 @@ const HeaderLayout = () => {
             </DropdownMenuContent>
           </DropdownMenu>
           <section className="flex items-center justify-center w-full h-header">
-            <Link to={path.aboutus} className="text-xl font-extrabold font-nunito-sans">
-              <Button variant="ghost">Về chúng tôi</Button>
+            <Link
+              to={path.aboutus}
+              className="text-xl font-extrabold font-nunito-sans flex items-center px-0 gap-0"
+            >
+              <Button variant="ghost" className="p-0 m-0">
+                Về chúng tôi{" "}
+              </Button>
+              <img src={aboutus} alt="Home" className="w-8 h-8 p-0 m-0" />
             </Link>
           </section>
         </div>
-        <div className=" justify-center items-center"> <img src={coupon} className="h-12 w-59"/></div>
+        <div className=" justify-center items-center">
+          {" "}
+          <img src={coupon} className="h-12 w-59" />
+        </div>
         <div className="flex items-center space-x-4">
           <Link to={path.cart}>
             <Button variant="ghost" size="icon" className="relative">
               <ShoppingCart className="w-6 h-6" />
+
               <div className="absolute size-5 rounded-full top-0 right-0 bg-blue-500 text-white flex items-center justify-center text-xs">
                 {carts?.carts?.length ?? 0}
               </div>

@@ -6,7 +6,7 @@ import { createSearchParams, useNavigate } from 'react-router-dom'
 import { useQueryParams } from '@/hooks/useQueryParams'
 import { useToggleModal } from '@/hooks/useToggleModal'
 import { TOrder } from '@/types/order.type'
-import { useState } from 'react'
+// import { useState } from 'react'
 import FormOrder from './form/form-order'
 import ColumnsTable from './table/columns-table'
 
@@ -25,21 +25,13 @@ const MainOrder = ({ orders, isLoading, getData, totalDocs }: MainOrderProps) =>
 
   // const { accessToken } = useAuth()
 
-  const [rowSelections, setRowSelections] = useState<TOrder[]>([])
-  const [order, setOrder] = useState<TOrder>()
-  const { currentModal, onCloseModal, onOpenModal } = useToggleModal<TOrder>()
-
-  const rowSelection = {
-    onChange: (_: React.Key[], selectedRows: TOrder[]) => {
-      setRowSelections(selectedRows)
-    }
-  }
-
+  // const [order, setOrder] = useState<TOrder>()
+  const { currentModal, onCloseModal } = useToggleModal<TOrder>()
+  //onOpenModal
   const columns = ColumnsTable({
-    onDetail: setOrder,
-    rowSelections,
-    getData,
-    onOpenModal
+    // onDetail: setOrder,
+    getData
+    // onOpenModal
   })
 
   return (
@@ -48,10 +40,6 @@ const MainOrder = ({ orders, isLoading, getData, totalDocs }: MainOrderProps) =>
         loading={isLoading}
         rowKey={(record) => record._id}
         dataSource={orders}
-        rowSelection={{
-          type: 'checkbox',
-          ...rowSelection
-        }}
         columns={columns}
         pagination={{
           current: Number(_page) || 1,

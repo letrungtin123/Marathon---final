@@ -14,10 +14,13 @@ import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
 
-type LoginFormType = Pick<SchemaType, "email" | "password">;
-const loginSchema = schema.pick(["email", "password"]);
+type RegisterFormType = Pick<
+  SchemaType,
+  "email" | "password" | "confirmPassword"
+>;
+const registerSchema = schema.pick(["email", "password", "confirmPassword"]);
 
-export default function LoginPage() {
+export default function RegisterPage() {
   const navigate = useNavigate();
   const { setIsAuthenticated } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
@@ -26,26 +29,26 @@ export default function LoginPage() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<LoginFormType>({
-    resolver: yupResolver(loginSchema),
+  } = useForm<RegisterFormType>({
+    resolver: yupResolver(registerSchema),
   });
 
-  // đăng nhập
-  const loginMutation = useMutation({
-    mutationKey: ["login"],
-    mutationFn: (body: LoginFormType) => authApi.login(body),
+  // đăng kí
+  const registerMutation = useMutation({
+    mutationKey: ["register"],
+    mutationFn: (body: RegisterFormType) => authApi.register(body),
     onSuccess: () => {
-      setIsAuthenticated(true);
-      navigate(path.home);
-    },
-    onError: () => {
       setIsAuthenticated(false);
       navigate(path.login);
     },
+    onError: () => {
+      setIsAuthenticated(false);
+      navigate(path.register);
+    },
   });
 
-  const onSubmit = (values: LoginFormType) => {
-    loginMutation.mutate(values);
+  const onSubmit = (values: RegisterFormType) => {
+    registerMutation.mutate(values);
   };
   return (
     <div
@@ -57,7 +60,7 @@ export default function LoginPage() {
     >
       <div className="sm:mx-auto sm:w-full sm:max-w-md bg-white bg-opacity-80 rounded-lg shadow-lg">
         <h2 className="mt-6 text-3xl font-extrabold text-center text-gray-900">
-          Đăng nhập
+          Đăng Ký
         </h2>
         <section className="flex items-center justify-center w-full h-header mt-3">
           <p className="text-xl font-extrabold font-nunito-sans">
@@ -77,7 +80,7 @@ export default function LoginPage() {
                   type="text"
                   autoComplete="email"
                   className="mt-1"
-				  placeholder="Vui lòng nhập email"
+                  placeholder="Vui lòng nhập email"
                 />
                 {errors.email && (
                   <p className="text-sm text-red-500">{errors.email.message}</p>
@@ -93,7 +96,7 @@ export default function LoginPage() {
                     type={showPassword ? "text" : "password"}
                     autoComplete="current-password"
                     className="pr-10"
-					placeholder="Vui lòng nhập mật khẩu"
+                    placeholder="Vui lòng nhập mật khẩu"
                   />
                   <button
                     type="button"
@@ -114,6 +117,40 @@ export default function LoginPage() {
                 )}
               </div>
 
+              <div>
+                <Label htmlFor="confirmPassword">Xác nhận mật khẩu</Label>
+                <div className="relative mt-1">
+                  <Input
+                    id="confirmPassword"
+                    {...register("confirmPassword", {
+                      required: "Please confirm your password",
+                      validate: (value) =>
+                        value === ("password") || "Mật khẩu không khớp",
+                    })}
+                    type={showPassword ? "text" : "password"}
+                    autoComplete="current-password"
+                    className="pr-10"
+                    placeholder="Vui lòng xác nhận mật khẩu"
+                  />
+                  <button
+                    type="button"
+                    className="absolute inset-y-0 right-0 flex items-center pr-3"
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    {showPassword ? (
+                      <EyeOff className="w-5 h-5 text-gray-400" />
+                    ) : (
+                      <Eye className="w-5 h-5 text-gray-400" />
+                    )}
+                  </button>
+                </div>
+                {errors.confirmPassword && (
+                  <p className="text-sm text-red-500">
+                    {errors.confirmPassword.message}
+                  </p>
+                )}
+              </div>
+
               <div className="flex items-center justify-between">
                 <div></div>
                 <div className="text-sm">
@@ -128,7 +165,7 @@ export default function LoginPage() {
 
               <div>
                 <Button type="submit" className="w-full bg-primary">
-                  Đăng nhập
+                  Đăng ký
                 </Button>
               </div>
             </form>
@@ -162,8 +199,8 @@ export default function LoginPage() {
             <div className="mt-6 text-center">
               <p className="text-sm text-gray-600">
                 Bạn chưa có tài khoản?{" "}
-                <Link to={path.register} className="font-medium text-primary">
-                  Đăng ký ngay
+                <Link to={path.login} className="font-medium text-primary">
+                  Đăng nhập
                 </Link>
               </p>
             </div>
