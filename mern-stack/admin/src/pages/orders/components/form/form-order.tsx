@@ -1,4 +1,4 @@
-import { Button, Col, Drawer, Form, Input, InputNumber, Row, Space, Switch, message } from 'antd'
+import { Button, Col, Drawer, Form, Row, Select, Space, message } from 'antd'
 // import { CloseOutlined, InboxOutlined, PlusOutlined } from '@ant-design/icons'
 import {
   QueryClient,
@@ -76,7 +76,7 @@ const FormOrder = ({ currentData, onClose, refetch }: IFormOrderProps) => {
     // Populate form data when editing an order
     if (currentData.type === 'edit' && currentData.currentData) {
       const dataOrder = currentData.currentData
-      console.log('Setting form values:', dataOrder?.infoOrderShipping)
+      console.log('Setting form values:', dataOrder?.products)
       console.log('🚀 ~ useEffect ~ dataOrder:', dataOrder)
       form.resetFields()
       form.setFieldsValue({
@@ -85,7 +85,14 @@ const FormOrder = ({ currentData, onClose, refetch }: IFormOrderProps) => {
         note: dataOrder?.note,
         paymentMethod: dataOrder?.paymentMethod,
         total: dataOrder?.total,
-        products: dataOrder?.products,
+        products: [
+          {
+            color: dataOrder?.products,
+            size: dataOrder?.products,
+            quantity: dataOrder?.products,
+            nameProduct: dataOrder?.products
+          }
+        ],
         infoOrderShipping: {
           name: dataOrder?.infoOrderShipping?.name,
           email: dataOrder?.infoOrderShipping?.email,
@@ -100,14 +107,14 @@ const FormOrder = ({ currentData, onClose, refetch }: IFormOrderProps) => {
   console.log('🚀 ~ useEffect ~ currentData.currentData:', currentData.currentData)
   return (
     <Drawer
-      title={currentData.type === 'add' ? 'Add Order' : 'Update Order'}
+      title={currentData.type === 'add' ? 'Thêm đơn hàng' : 'Cập nhật đơn hàng'}
       onClose={onClose}
       open={currentData.visiable}
       width={800}
       extra={
         <Space>
           <Button size='large' onClick={onClose}>
-            Close
+            Đóng
           </Button>
           <Button
             size='large'
@@ -115,7 +122,7 @@ const FormOrder = ({ currentData, onClose, refetch }: IFormOrderProps) => {
             onClick={() => form.submit()}
             loading={createOrderMutation.isLoading || editOrderMutation.isLoading}
           >
-            {currentData.type === 'add' ? 'Add Order' : 'Update Order'}
+            {currentData.type === 'add' ? 'Add Order' : 'Cập nhật'}
           </Button>
         </Space>
       }
@@ -124,40 +131,71 @@ const FormOrder = ({ currentData, onClose, refetch }: IFormOrderProps) => {
         <Form layout='vertical' form={form} onFinish={onSubmit}>
           <Row gutter={40}>
             <Col span={12}>
-              <Form.Item label='Customer Name' name={['infoOrderShipping', 'name']}>
-                <Input value={currentData.currentData?.infoOrderShipping?.name} disabled />
+              <Form.Item label='Khách hàng'>
+                <div>{currentData.currentData?.infoOrderShipping?.name} </div>
               </Form.Item>
             </Col>
             <Col span={12}>
               <Form.Item
                 name={'total'}
-                label='Order Total'
+                label='Tổng giá trị đơn hàng'
                 rules={[{ required: true, message: 'Order total is required' }]}
               >
-                <InputNumber
-                  className='w-full'
-                  size='large'
-                  placeholder='Total amount'
-                  disabled={currentData.type === 'edit'}
-                />
+                <div>
+                  {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(
+                    currentData?.currentData?.total || 0
+                  )}
+                </div>
               </Form.Item>
             </Col>
             <Col span={12}>
               <Form.Item
                 name={'paymentMethod'}
-                label='Payment Method'
+                label='Phương thức thanh toán'
                 rules={[{ required: true, message: 'Payment method is required' }]}
               >
-                <Input size='large' placeholder='Payment method' disabled />
+                <div className='font-semibold flex ml-4'>{currentData.currentData?.paymentMethod}</div>
+              </Form.Item>
+            </Col>
+            <Col span={9}>
+              <Form.Item name={'status'} label='Trạng thái đơn hàng' className='w-25'>
+                <Select value={currentData.currentData?.status} className='w-20 h-full'>
+                  <Select.Option value='pending'>pending</Select.Option>
+                  <Select.Option value='confirmed'>confirmed</Select.Option>
+                  <Select.Option value='delivery'>delivery</Select.Option>
+                  <Select.Option value='completed'>completed</Select.Option>
+                  <Select.Option value='cancelled'> cancelled</Select.Option>
+                </Select>
               </Form.Item>
             </Col>
             <Col span={12}>
-              <Form.Item name={'status'} label='Order Status'>
-                <Switch />
+              <Form.Item name={'products'} label='Sản phẩm'>
+                {currentData.currentData?.products.map((product, index) => (
+                  <div key={index} className='ml-4 mb-2'>
+                    <div>
+                      <strong>Tên sản phẩm:</strong> {product.productId.nameProduct}
+                    </div>
+                    <div>
+                      <strong>Số lượng:</strong> {product.quantity}
+                    </div>
+                    <div>
+                      <strong>Màu:</strong> {product.color}
+                    </div>
+                    <div>
+                      <strong>Kích cỡ:</strong> {product.size}
+                    </div>
+                    <div>
+                      <strong>Giá:</strong>{' '}
+                      {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(product.price)}
+                    </div>
+                    <hr />
+                  </div>
+                ))}
               </Form.Item>
             </Col>
+
             <Col span={24}>
-              <Form.Item name={'note'} label='Order Note'>
+              <Form.Item name={'note'} label='Ghi chú'>
                 <QuillEditor value={value} onChange={setValue} />
               </Form.Item>
             </Col>

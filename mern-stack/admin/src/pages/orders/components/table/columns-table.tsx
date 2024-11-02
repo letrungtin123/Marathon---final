@@ -1,9 +1,7 @@
-import { EyeIcon } from '@/components/icons'
 import { EditOutlined } from '@ant-design/icons'
 import { TAssignee, TInforOrderShipping, TOrder } from '@/types/order.type'
 import { TModalType } from '@/types/common.type'
 import { TableColumnsType, Tag, Tooltip } from 'antd'
-import { useNavigate } from 'react-router-dom'
 import dayjs from 'dayjs'
 
 interface ColumnsTableProps {
@@ -15,7 +13,6 @@ interface ColumnsTableProps {
 }
 
 const ColumnsTable = ({ getData }: ColumnsTableProps) => {
-  const navigate = useNavigate()
   const columns: TableColumnsType<TOrder> = [
     {
       title: 'Khách hàng',
@@ -99,18 +96,10 @@ const ColumnsTable = ({ getData }: ColumnsTableProps) => {
             <>
               <Tooltip title={'Cập nhật đơn hàng'}>
                 <button
-                  className='h-8 px-4 border border-r-0 border-gray-400 rounded-r-none rounded-l-md'
+                  className='h-8 px-4 border  border-gray-400 rounded-l-md rounded-r-md'
                   onClick={() => getData && getData('edit', record)}
                 >
                   <EditOutlined height={20} width={20} />
-                </button>
-              </Tooltip>
-              <Tooltip title={'Xem chi tiết đơn hàng'}>
-                <button
-                  className='h-8 px-4 border  border-gray-400 rounded-none rounded-r-md'
-                  onClick={() => navigate(`/order/${record._id}`)}
-                >
-                  <EyeIcon height={20} width={20} />
                 </button>
               </Tooltip>
             </>

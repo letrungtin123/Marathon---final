@@ -5,6 +5,23 @@ export type TInforOrderShipping = {
   address: string
 }
 
+// export type TProductId = {
+//   _id: string
+//   nameProduct: string
+//   images: string
+// }
+export type TProductsInOrder = {
+  color: string
+  price: number
+  productId: {
+    _id: string
+    desc: string
+    nameProduct: string
+    images: string
+  }
+  quantity: number
+  size: string
+}
 export type TOrder = {
   _id: string
   userId: string
@@ -12,7 +29,7 @@ export type TOrder = {
   note: string
   paymentMethod: 'cod' | 'payment'
   total: number
-  products: string[]
+  products: TProductsInOrder[]
   priceShipping: number
   infoOrderShipping: TInforOrderShipping
   assignee: TAssignee
