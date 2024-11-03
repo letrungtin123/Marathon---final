@@ -3,7 +3,6 @@ export type TVoucher = {
   code: string
   discount: number
   status: 'active' | 'inactive'
-  is_deleted: boolean
   desc: string
   startDate: string
   endDate: string
@@ -12,3 +11,8 @@ export type TVoucher = {
   createdAt: string
   updatedAt: string
 }
+
+export type TFormVoucher = Pick<
+  TVoucher,
+  'code' | 'discount' | 'applicablePrice' | 'desc' | 'endDate' | 'startDate' | 'status' | 'voucherPrice'
+>

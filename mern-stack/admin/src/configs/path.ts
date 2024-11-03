@@ -8,7 +8,8 @@ const path = {
   messagers: '/messagers',
   auth: '/auth',
   login: '/auth/login',
-  brand: '/brand'
+  brand: '/brand',
+  voucher: '/vouchers'
 }
 
 export default path

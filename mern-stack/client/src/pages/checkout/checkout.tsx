@@ -1,12 +1,5 @@
-import { voucherApi } from "@/api/voucher.api";
 import { Button } from "@/components/ui/button";
-import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardHeader,
-	CardTitle,
-} from "@/components/ui/card";
+
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -18,48 +11,39 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
+import path from "@/configs/path.config";
+
 import { formatCurrency } from "@/utils/format-currency.util";
-import { useQuery } from "@tanstack/react-query";
-import dayjs from "dayjs";
-import {
-	CalendarCheck2,
-	ChevronLeft,
-	CreditCard,
-	TicketCheck,
-} from "lucide-react";
+import { ChevronLeft, CreditCard } from "lucide-react";
 import { useState } from "react";
+import { Link } from "react-router-dom";
+import ListVoucher from "./components/list-voucher";
+import { useAppSelector } from "@/stores/hook";
+import { RootState } from "@/stores/store";
 
 const Checkout = () => {
 	const [paymentMethod, setPaymentMethod] = useState("credit-card");
 
-	const cartItems = [
-		{ id: 1, name: "Smartphone XYZ", price: 599.99, quantity: 1 },
-		{ id: 2, name: "Wireless Earbuds", price: 129.99, quantity: 2 },
-	];
+	const { carts: cartItems } = useAppSelector((state: RootState) => state.cart);
 
-	const subtotal = cartItems.reduce(
-		(sum, item) => sum + item.price * item.quantity,
-		0
-	);
-	const shipping = 10;
-	const tax = subtotal * 0.1;
-	const total = subtotal + shipping + tax;
+	// const subtotal = cartItems.reduce(
+	// 	(sum, item) => sum + item.price * item.quantity,
+	// 	0
+	// );
+	// const shipping = 10;
+	// const tax = subtotal * 0.1;
+	// const total = subtotal + shipping + tax;
 
-	// call api voucher
-	const { data: responseVouchers } = useQuery({
-		queryKey: ["voucher"],
-		queryFn: () =>
-			voucherApi.getVouchers({ status: "active", is_deleted: false }),
-	});
-	const vouchers = responseVouchers?.data;
+	// const { geolocation, error } = useGetGeoLocation();
+	// console.log("🚀 ~ Checkout ~ error:", error);
 
 	return (
 		<div className="w-full min-h-screen bg-gray-100">
 			<div className="container px-4 py-8 mx-auto">
-				<Button variant="ghost" className="mb-6">
+				<Link to={path.cart} className="mb-6 flex items-center gap-1">
 					<ChevronLeft className="w-4 h-4 mr-2" />
 					Quay lại giỏ hàng
-				</Button>
+				</Link>
 				<h1 className="mb-8 text-3xl font-bold">Thanh toán</h1>
 				<div className="grid gap-8 md:grid-cols-3">
 					<div className="space-y-6 md:col-span-2">
@@ -164,119 +148,43 @@ const Checkout = () => {
 						<div className="p-6 bg-white rounded-lg shadow">
 							<h2 className="mb-4 text-xl font-semibold">Tóm tắt đơn hàng</h2>
 							<div className="space-y-4">
-								{cartItems.map((item) => (
-									<div key={item.id} className="flex justify-between">
-										<span>
-											{item.name} x {item.quantity}
-										</span>
-										<span>${(item.price * item.quantity).toFixed(2)}</span>
-									</div>
-								))}
+								{cartItems &&
+									cartItems.length > 0 &&
+									cartItems.map((item) => (
+										<div key={item._id} className="flex justify-between gap-6">
+											<span>
+												{item?.productId?.nameProduct} x {item.quantity}
+											</span>
+											<span>
+												{formatCurrency(item?.productId?.price * item.quantity)}
+												vnđ
+											</span>
+										</div>
+									))}
 								<Separator />
 								<div className="flex justify-between">
 									<span>Tạm tính</span>
-									<span>${subtotal.toFixed(2)}</span>
+									<span>{formatCurrency(10000)}</span>
 								</div>
 								<div className="flex justify-between">
 									<span>Phí vận chuyển</span>
-									<span>${shipping.toFixed(2)}</span>
+									<span>{formatCurrency(10000)}</span>
 								</div>
-								<div className="flex justify-between">
-									<span>Thuế</span>
-									<span>${tax.toFixed(2)}</span>
-								</div>
+
 								<Separator />
 								<div className="flex justify-between font-semibold">
 									<span>Tổng cộng</span>
-									<span>${total.toFixed(2)}</span>
+									<span>{formatCurrency(10000)}</span>
 								</div>
 							</div>
 							<Button className="w-full mt-6">
 								<CreditCard className="w-4 h-4 mr-2" />
-								Thanh toán ${total.toFixed(2)}
+								Thanh toán {formatCurrency(10000)}
 							</Button>
 						</div>
 
-						<div className="p-6 bg-white rounded-lg shadow">
-							<h2 className="mb-4 text-xl font-semibold">Mã giảm giá</h2>
-
-							<div className="space-y-4 h-[380px] overflow-y-scroll">
-								{/* {vouchers &&
-									vouchers.length > 0 &&
-									vouchers.map((voucher) => {
-										return (
-											<Card className="cursor-pointer" key={voucher._id}>
-												<CardHeader className="pb-0 flex-row justify-between">
-													<CardTitle className="font-medium text-base">
-														{voucher.code}
-													</CardTitle>
-													<p className="flex items-center gap-2">
-														<TicketCheck />{" "}
-														{formatCurrency(voucher.voucherPrice)}đ
-													</p>
-												</CardHeader>
-												<CardContent className="pb-0 flex justify-between items-center">
-													<Button
-														variant={"transparent"}
-														className="px-0 gap-3"
-													>
-														<CalendarCheck2 />
-														{dayjs(voucher.startDate).format(
-															"DD/MM/YYYY"
-														)} - {dayjs(voucher.endDate).format("DD/MM/YYYY")}
-													</Button>
-													<CardDescription>
-														<p>Quantity: {voucher.discount}</p>
-													</CardDescription>
-												</CardContent>
-												<CardContent>
-													<CardDescription>
-														<p className="text-xs line-clamp-2">
-															{voucher.desc} Lorem ipsum dolor sit amet,
-															consectetur adipisicing elit. Ipsam, libero!
-														</p>
-													</CardDescription>
-												</CardContent>
-											</Card>
-										);
-									})} */}
-								{Array.from({ length: 10 }).map((_, index) => {
-									return (
-										<Card
-											className="cursor-pointer hover:shadow-md hover:bg-gray-100"
-											key={index}
-										>
-											<CardHeader className="pb-0 flex-row justify-between">
-												<CardTitle className="font-medium text-base">
-													Code {index}
-												</CardTitle>
-												<p className="flex items-center gap-2">
-													<TicketCheck /> {formatCurrency(100000)}đ
-												</p>
-											</CardHeader>
-											<CardContent className="pb-0 flex justify-between items-center">
-												<Button variant={"transparent"} className="px-0 gap-3">
-													<CalendarCheck2 />
-													{dayjs().format("DD/MM/YYYY")} -{" "}
-													{dayjs().add(1, "day").format("DD/MM/YYYY")}
-												</Button>
-												<CardDescription>
-													<p>Quantity: 1</p>
-												</CardDescription>
-											</CardContent>
-											<CardContent>
-												<CardDescription>
-													<p className="text-xs line-clamp-2">
-														Lorem ipsum dolor sit amet, consectetur adipisicing
-														elit. Ipsam, libero!
-													</p>
-												</CardDescription>
-											</CardContent>
-										</Card>
-									);
-								})}
-							</div>
-						</div>
+						{/* voucher */}
+						<ListVoucher />
 					</div>
 				</div>
 			</div>

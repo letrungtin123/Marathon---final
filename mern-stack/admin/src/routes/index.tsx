@@ -11,6 +11,7 @@ import RootLayout from '@/layouts'
 import { createBrowserRouter } from 'react-router-dom'
 import path from '@/configs/path'
 import BrandPage from '@/pages/brand'
+import VoucherPage from '@/pages/voucher'
 
 const routes = createBrowserRouter([
   {
@@ -27,7 +28,8 @@ const routes = createBrowserRouter([
       { path: path.productDetail, element: <ProductDetail /> },
       { path: path.category, element: <CategoryPage /> },
       { path: path.brand, element: <BrandPage /> },
-      { path: path.messagers, element: <Messagers /> }
+      { path: path.messagers, element: <Messagers /> },
+      { path: path.voucher, element: <VoucherPage /> }
     ]
   },
   {

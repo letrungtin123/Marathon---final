@@ -160,7 +160,7 @@ const FormCategory = ({ currentData, onClose }: IFormCategory) => {
       <Form layout='vertical' form={form} onFinish={handleSubmit}>
         <Form.Item
           name='nameCategory'
-          label='Danh mục danh mục'
+          label='Tên danh mục'
           rules={[{ required: true, message: 'Tên danh mục là bắt buộc' }]}
         >
           <Input placeholder='Tên danh mục' size='large' />

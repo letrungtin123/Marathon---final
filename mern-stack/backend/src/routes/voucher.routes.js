@@ -19,11 +19,10 @@ router.post(
 router.get('/vouchers', wrapRequestHandler(voucherController.getVouchers));
 
 // update voucher
-router.put(
+router.patch(
   '/voucher/:id',
   wrapRequestHandler(verifyToken),
   wrapRequestHandler(checkPermission),
-  wrapRequestHandler(voucherMiddleware),
   wrapRequestHandler(voucherController.updateVoucher),
 );
 
@@ -31,11 +30,11 @@ router.put(
 router.get('/voucher/:id', wrapRequestHandler(voucherController.getVoucherById));
 
 // xóa voucher
-router.patch(
-  '/voucher/:id',
-  wrapRequestHandler(verifyToken),
-  wrapRequestHandler(checkPermission),
-  wrapRequestHandler(voucherController.deleteVoucher),
-);
+// router.patch(
+//   '/voucher/:id',
+//   wrapRequestHandler(verifyToken),
+//   wrapRequestHandler(checkPermission),
+//   wrapRequestHandler(voucherController.deleteVoucher),
+// );
 
 export default router;

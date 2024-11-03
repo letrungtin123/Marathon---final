@@ -24,10 +24,6 @@ const VoucherSchema = new mongoose.Schema(
       default: 'active',
       enum: ['active', 'inactive'],
     },
-    is_deleted: {
-      type: Boolean,
-      default: false,
-    },
     desc: {
       type: String,
     },

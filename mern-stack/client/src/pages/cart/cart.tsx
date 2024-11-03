@@ -5,6 +5,7 @@ import { userApi } from "@/api/user.api";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import path from "@/configs/path.config";
+
 import { Cart as CartType, TUpdateQuantityInCart } from "@/types/cart.type";
 import { formatCurrency } from "@/utils/format-currency.util";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -12,10 +13,19 @@ import { omit } from "lodash";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { useAppDispatch, useAppSelector } from "@/stores/hook";
+import { RootState } from "@/stores/store";
+import { addToListCheckout } from "@/stores/features/cart/cart-slice";
 
 const Cart = () => {
-  const queryClient = useQueryClient()
+	const queryClient = useQueryClient();
 	const navigate = useNavigate();
+	const dispatch = useAppDispatch();
+	const { carts: cartsListStore } = useAppSelector(
+		(state: RootState) => state.cart
+	);
+	console.log("🚀 ~ Cart ~ carts:", cartsListStore);
+
 	const { data } = useQuery({
 		queryKey: ["me"],
 		queryFn: () => userApi.getProfile(),
@@ -29,28 +39,8 @@ const Cart = () => {
 	});
 	const total = responseCarts?.data?.total;
 	const carts = responseCarts?.data?.carts;
-	console.log("🚀 ~ Cart ~ carts:", carts);
 
 	const [cartItems, setCartItems] = useState<CartType[] | undefined>(carts);
-
-	// const updateQuantity = (id: number, newQuantity: number) => {
-	// 	setCartItems((items) =>
-	// 		items.map((item) =>
-	// 			item.id === id ? { ...item, quantity: Math.max(1, newQuantity) } : item
-	// 		)
-	// 	);
-	// };
-
-	// const removeItem = (id: number) => {
-	// 	setCartItems((items) => items.filter((item) => item.id !== id));
-	// };
-
-	// const subtotal = cartItems.reduce(
-	// 	(sum, item) => sum + item.price * item.quantity,
-	// 	0
-	// );
-	// const tax = subtotal * 0.1; // Assuming 10% tax
-	// const total = subtotal + tax;
 
 	const updateQuatityMutation = useMutation({
 		mutationKey: ["update-quantity"],
@@ -74,10 +64,9 @@ const Cart = () => {
 			productIdInCart,
 			status: type,
 		};
-		console.log("🚀 ~ handleUpdateQuantity ~ body:", body);
 		updateQuatityMutation.mutate(body, {
 			onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ["carts"] });
+				queryClient.invalidateQueries({ queryKey: ["carts"] });
 				toast.success(body.status === "increase" ? "Increase" : "Decrease");
 			},
 		});
@@ -91,6 +80,11 @@ const Cart = () => {
 
 	if (!cartItems || cartItems.length === 0)
 		return <p>Giỏ hàng của bạn đang trống.</p>;
+
+	const handleCheckout = () => {
+		dispatch(addToListCheckout(cartItems));
+		navigate(path.checkout);
+	};
 
 	return (
 		<div className="container px-4 py-8 mx-auto">
@@ -207,10 +201,7 @@ const Cart = () => {
 									<span>{total ? formatCurrency(total + 10000) : 0}đ</span>
 								</div>
 							</div>
-							<Button
-								className="w-full mt-6"
-								onClick={() => navigate(path.checkout)}
-							>
+							<Button className="w-full mt-6" onClick={() => handleCheckout()}>
 								Tiến hành thanh toán
 							</Button>
 							<Button

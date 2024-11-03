@@ -26,6 +26,10 @@ const ColumnsTable = ({ getData }: ColumnsTableProps) => {
       title: 'Ngày tạo đơn',
       dataIndex: 'createdAt',
       key: 'createdAt',
+      sorter: (a: TOrder, b: TOrder) => {
+        return dayjs(b.createdAt).unix() - dayjs(a.createdAt).unix()
+      },
+      defaultSortOrder: 'descend',
       render: (_: string, record: TOrder) => {
         const createdAt = record
         return dayjs(createdAt?.createdAt).format('DD/MM/YYYY')

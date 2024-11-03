@@ -3,7 +3,6 @@ export type TVoucher = {
 	code: string;
 	discount: number;
 	status: "active" | "inactive";
-	is_deleted: boolean;
 	desc: string;
 	startDate: string;
 	endDate: string;

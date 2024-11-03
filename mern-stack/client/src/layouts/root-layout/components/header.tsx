@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button";
 import path from "@/configs/path.config";
 import { useAuth } from "@/contexts/auth.context";
 import { removeAccessTokenFromLS } from "@/utils/auth.util";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import coupon from "@/assets/coupon.png";
 import home from "@/assets/home.gif";
@@ -21,10 +21,10 @@ import aboutus from "@/assets/documents.gif";
 import flower from "@/assets/flower.gif";
 import holicolor from "@/assets/holi-colors.gif";
 import event from "@/assets/event.gif";
-import love from '@/assets/kpop.gif'
+import love from "@/assets/kpop.gif";
 const HeaderLayout = () => {
   const { isAuthenticated, setIsAuthenticated } = useAuth();
-
+  const queryClient = useQueryClient();
   const { data } = useQuery({
     queryKey: ["me"],
     queryFn: () => userApi.getProfile(),
@@ -33,19 +33,21 @@ const HeaderLayout = () => {
   });
   const myInfo = data?.data;
 
-  //get all carts
+  // get all cars
   const { data: responseCarts } = useQuery({
     queryKey: ["carts"],
     queryFn: () => cartApi.getAllCarts(),
+    enabled: isAuthenticated,
+    retry: 2,
   });
 
   const carts = responseCarts?.data;
 
-  // logout
   const handleLogout = () => {
-    removeAccessTokenFromLS();
-    setIsAuthenticated(false);
-  };
+		queryClient.removeQueries({ queryKey: ["carts"] });
+		removeAccessTokenFromLS();
+		setIsAuthenticated(false);
+	};
 
   return (
     <header className="bg-white shadow-md sticky top-0 right-0 left-0 z-50">
@@ -133,7 +135,7 @@ const HeaderLayout = () => {
           </DropdownMenu>
 
           <DropdownMenu>
-          <div className="flex items-center px-5">
+            <div className="flex items-center px-5">
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="p-0 m-0">
                   Hoa theo chủ đề

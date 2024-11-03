@@ -1,12 +1,12 @@
-import { AuthResponse } from '@/types/auth.type';
+import { AuthResponse } from "@/types/auth.type";
 import {
 	getAccessTokenFromLS,
 	removeAccessTokenFromLS,
 	setAccessTokenToLS,
-} from '@/utils/auth.util';
-import axios, { AxiosInstance } from 'axios';
-import { toast } from 'sonner';
-import path from './path.config';
+} from "@/utils/auth.util";
+import axios, { AxiosInstance } from "axios";
+import { toast } from "sonner";
+import path from "./path.config";
 
 class Http {
 	instance: AxiosInstance;
@@ -18,7 +18,7 @@ class Http {
 		this.instance = axios.create({
 			baseURL: import.meta.env.VITE_BASE_URL,
 			headers: {
-				'Content-Type': 'application/json',
+				"Content-Type": "application/json",
 			},
 		});
 
@@ -50,13 +50,26 @@ class Http {
 				return response;
 			},
 			(error) => {
-				// console.log(error);
-				if (!error.response.data.success) {
+				const url = error.response.config.url;
+				const message = error.response.data.message || error.message;
+				console.log("🚀 ~ Http ~ constructor ~ message:", message);
+
+				if (`/${url}` === path.cart && message === "Cart not found") {
+					console.log("1");
+					return Promise.reject(error);
+				} else {
+					console.log("2");
 					const message = error.response.data.message || error.message;
-					toast(message);
-					this.accessToken = '';
+					toast.error(message);
+					this.accessToken = "";
 					removeAccessTokenFromLS();
 				}
+				// if (!error.response.data.success) {
+				// 	const message = error.response.data.message || error.message;
+				// 	toast(message);
+				// 	this.accessToken = "";
+				// 	removeAccessTokenFromLS();
+				// }
 				return Promise.reject(error);
 			}
 		);

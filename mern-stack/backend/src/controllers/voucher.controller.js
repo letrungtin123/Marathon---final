@@ -59,7 +59,7 @@ export const voucherController = {
 
   // get all vouchers
   getVouchers: async (req, res) => {
-    const { status, is_deleted } = req.query;
+    const { status} = req.query;
 
     let query = {};
     if (status) {
@@ -68,13 +68,7 @@ export const voucherController = {
         status,
       };
     }
-    if (is_deleted) {
-      query = {
-        ...query,
-        is_deleted,
-      };
-    }
-
+    
     const vouchers = await voucherService.getVouchers(query);
 
     if (!vouchers) {
@@ -126,19 +120,19 @@ export const voucherController = {
     });
   },
 
-  // delete voucher
-  deleteVoucher: async (req, res) => {
-    const { id } = req.params;
-    const voucher = await voucherService.updateVoucher(id, { is_deleted: true });
+  // // delete voucher
+  // deleteVoucher: async (req, res) => {
+  //   const { id } = req.params;
+  //   const voucher = await voucherService.updateVoucher(id);
 
-    if (!voucher) {
-      return res.status(HTTP_STATUS.BAD_REQUEST).json({ message: 'Delete voucher faild!', status: false });
-    }
+  //   if (!voucher) {
+  //     return res.status(HTTP_STATUS.BAD_REQUEST).json({ message: 'Delete voucher faild!', status: false });
+  //   }
 
-    return res.status(HTTP_STATUS.OK).json({
-      message: 'Delete voucher successfully!',
-      status: true,
-      data: voucher,
-    });
-  },
+  //   return res.status(HTTP_STATUS.OK).json({
+  //     message: 'Delete voucher successfully!',
+  //     status: true,
+  //     data: voucher,
+  //   });
+  // },
 };
