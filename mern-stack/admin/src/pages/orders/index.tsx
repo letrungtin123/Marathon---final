@@ -187,7 +187,7 @@ const OrderPage = () => {
 
   return (
     <div className='bg-gray-third py-[30px] px-[30px]'>
-      <Navbar
+      {/* <Navbar
         button={{
           title: 'Thêm đơn hàng',
           size: 'large',
@@ -200,7 +200,7 @@ const OrderPage = () => {
           value: inputValue,
           onChange: (value) => setInputValue(value)
         }}
-      />
+      /> */}
 
       <div>
         <Tabs defaultActiveKey={queryParams.tab || '1'} items={items} onChange={(value) => handleChangeTab(value)} />

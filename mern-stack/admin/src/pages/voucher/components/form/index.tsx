@@ -1,12 +1,13 @@
 import { TModal } from '@/types/common.type'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { Button, Drawer, Form, Input, Space, message } from 'antd'
+import { Button, DatePicker, Drawer, Form, Input, Space, message } from 'antd'
 import { useEffect, useState } from 'react'
 import QuillEditor from '@/components/qill-editor'
 import { useAuth } from '@/contexts/auth-context'
 import { useForm } from 'antd/es/form/Form'
 import { TFormVoucher, TVoucher } from '@/types/voucher.type'
 import { createVoucher, updateVoucher } from '@/apis/voucher.api'
+import moment from 'moment'
 
 interface IFormVoucher {
   currentData: TModal<TVoucher>
@@ -82,8 +83,8 @@ const FormVoucher = ({ currentData, onClose }: IFormVoucher) => {
         desc: voucher?.desc ?? '',
         discount: voucher?.discount ?? '',
         status: voucher?.status ?? '',
-        startDate: voucher?.startDate ?? '',
-        endDate: voucher?.endDate ?? '',
+        startDate: voucher?.startDate ? moment(voucher.startDate) : null,
+        endDate: voucher?.endDate ? moment(voucher.endDate) : null,
         voucherPrice: voucher?.voucherPrice ?? '',
         applicablePrice: voucher?.applicablePrice ?? ''
       })
@@ -118,13 +119,57 @@ const FormVoucher = ({ currentData, onClose }: IFormVoucher) => {
     >
       <Form layout='vertical' form={form} onFinish={handleSubmit}>
         <Form.Item
-          name='Code'
-          label='khuyến mãi khuyến mãi'
-          rules={[{ required: true, message: 'Tên khuyến mãi là bắt buộc' }]}
+          name='code'
+          label='Mã khuyến mãi (COL + 10 số)'
+          rules={[{ required: true, message: 'Mã khuyến mãi là bắt buộc' }]}
         >
-          <Input placeholder='Tên khuyến mãi' size='large' />
+          <Input placeholder='Mã khuyến mãi' size='large' />
         </Form.Item>
-
+        <Form.Item
+          name='discount'
+          label='Số lượng khuyến mãi'
+          rules={[{ required: true, message: 'số lượng khuyến mãi là bắt buộc' }]}
+        >
+          <Input placeholder='số lượng khuyến mãi' size='large' />
+        </Form.Item>
+        <Form.Item
+          name='voucherPrice'
+          label='Giá trị khuyến mãi'
+          rules={[{ required: true, message: 'Giá trị khuyến mãi là bắt buộc' }]}
+        >
+          <Input placeholder='Giá trị khuyến mãi' size='large' />
+        </Form.Item>
+        <Form.Item
+          name='applicablePrice'
+          label='Áp dụng cho đơn hàng'
+          rules={[{ required: true, message: 'Áp dụng cho đơn hàng là bắt buộc' }]}
+        >
+          <Input placeholder='Áp dụng cho đơn hàng' size='large' />
+        </Form.Item>
+        <Form.Item
+          name='startDate'
+          label='Ngày hiệu lực'
+          rules={[{ type: 'object', required: true, message: 'Ngày hiệu lực là bắt buộc' }]}
+        >
+          <DatePicker
+            placeholder='Ngày hiệu lực'
+            size='large'
+            format='DD/MM/YYYY'
+            value={currentData.currentData?.startDate ? moment(currentData.currentData.startDate, 'DD/MM/YYYY') : null}
+          />
+        </Form.Item>
+        <Form.Item
+          name='endDate'
+          label='Ngày hết hạn'
+          rules={[{ type: 'object', required: true, message: 'Ngày hết hạn là bắt buộc' }]}
+        >
+          <DatePicker
+            placeholder='Ngày hết hạn'
+            size='large'
+            format='DD/MM/YYYY'
+            value={currentData.currentData?.endDate ? moment(currentData.currentData.endDate, 'DD/MM/YYYY') : null}
+          />
+        </Form.Item>
         <Form.Item name={'desc'} label='Mô tả khuyến mãi' rules={[{ required: true, message: 'Mô tả là bắt buộc' }]}>
           <QuillEditor value={value} onChange={(value) => setValue(value)} />
         </Form.Item>

@@ -11,7 +11,7 @@ router.post(
   '/voucher',
   wrapRequestHandler(verifyToken),
   wrapRequestHandler(checkPermission),
-  wrapRequestHandler(voucherMiddleware),
+  // wrapRequestHandler(voucherMiddleware),
   wrapRequestHandler(voucherController.createVoucher),
 );
 
