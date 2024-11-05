@@ -15,6 +15,7 @@ import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import ProductController from "./components/product-controller";
+import { Avatar, Rate } from "antd";
 
 const ProductDetail = () => {
   const queryClient = useQueryClient();
@@ -22,7 +23,29 @@ const ProductDetail = () => {
   const productIdFromQueryString = getProductIdFromQueryString(
     productId as string
   );
-
+  const fakeReviews = [
+    {
+      id: 1,
+      name: "Lê Thị Bảo Trân",
+      avatar: "https://picsum.photos/200/300",
+      comment: "Sản phẩm tuyệt vời! Rất hài lòng với chất lượng.",
+      rating: 5,
+    },
+    {
+      id: 2,
+      name: "Trần Thị B",
+      avatar: "https://picsum.photos/200/300",
+      comment: "Giao hàng nhanh chóng, sản phẩm đúng như mô tả.",
+      rating: 4,
+    },
+    {
+      id: 3,
+      name: "Lê Văn C",
+      avatar: "https://picsum.photos/200/300",
+      comment: "Chất lượng tốt nhưng giá hơi cao.",
+      rating: 4,
+    },
+  ];
   // get product detail
   const { data } = useQuery({
     queryKey: ["product-detail"],
@@ -53,32 +76,32 @@ const ProductDetail = () => {
   const [selectedVariant, setSelectedVariant] = useState<TSize | null>(null);
   const [selectedQuantity, setSelectedQuantity] = useState(1);
 
-  const relatedProducts = [
-    {
-      id: 1,
-      name: "Related Product 1",
-      price: 89.99,
-      image: "/placeholder.svg?height=200&width=200",
-    },
-    {
-      id: 2,
-      name: "Related Product 2",
-      price: 79.99,
-      image: "/placeholder.svg?height=200&width=200",
-    },
-    {
-      id: 3,
-      name: "Related Product 3",
-      price: 99.99,
-      image: "/placeholder.svg?height=200&width=200",
-    },
-    {
-      id: 4,
-      name: "Related Product 4",
-      price: 69.99,
-      image: "/placeholder.svg?height=200&width=200",
-    },
-  ];
+  // const relatedProducts = [
+  //   {
+  //     id: 1,
+  //     name: "Related Product 1",
+  //     price: 89.99,
+  //     image: "/placeholder.svg?height=200&width=200",
+  //   },
+  //   {
+  //     id: 2,
+  //     name: "Related Product 2",
+  //     price: 79.99,
+  //     image: "/placeholder.svg?height=200&width=200",
+  //   },
+  //   {
+  //     id: 3,
+  //     name: "Related Product 3",
+  //     price: 99.99,
+  //     image: "/placeholder.svg?height=200&width=200",
+  //   },
+  //   {
+  //     id: 4,
+  //     name: "Related Product 4",
+  //     price: 69.99,
+  //     image: "/placeholder.svg?height=200&width=200",
+  //   },
+  // ];
 
   const handleVariantSelect = (variant: TSize | null, quantity: number) => {
     setSelectedVariant(variant);
@@ -107,7 +130,7 @@ const ProductDetail = () => {
   );
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full w-full">
       {/* breadcrumb */}
       <nav className="py-2 bg-gray-100">
         <div className="container px-4 mx-auto">
@@ -188,27 +211,37 @@ const ProductDetail = () => {
 
         <Tabs defaultValue="description" className="mb-12">
           <TabsList>
-            <TabsTrigger value="description">Description</TabsTrigger>
-            <TabsTrigger value="specifications">Specifications</TabsTrigger>
-            <TabsTrigger value="reviews">Reviews</TabsTrigger>
+            <TabsTrigger value="description">Mô tả</TabsTrigger>
+            <TabsTrigger value="reviews">Đánh giá</TabsTrigger>
           </TabsList>
           <TabsContent value="description" className="mt-4">
             <div dangerouslySetInnerHTML={{ __html: product?.desc }} />
           </TabsContent>
-          <TabsContent value="specifications" className="mt-4">
-            <ul className="pl-5 space-y-2 list-disc">
-              <li>Specification 1: Value</li>
-              <li>Specification 2: Value</li>
-              <li>Specification 3: Value</li>
-              <li>Specification 4: Value</li>
-            </ul>
-          </TabsContent>
           <TabsContent value="reviews" className="mt-4">
-            <p>Customer reviews will be displayed here.</p>
+            <h2 className="text-lg font-semibold mb-4">
+              Đánh giá của khách hàng
+            </h2>
+            {fakeReviews.map((review) => (
+              <div
+                key={review.id}
+                className="flex items-start mb-4 border-b pb-2"
+              >
+                <Avatar src={review.avatar} size={64} className="mr-4" />
+                <div className="flex-grow">
+                  <Rate
+                    disabled
+                    defaultValue={review.rating}
+                    className="mb-1"
+                  />
+                  <p className="font-semibold">{review.name}</p>
+                  <p className="text-gray-700">{review.comment}</p>
+                </div>
+              </div>
+            ))}
           </TabsContent>
         </Tabs>
 
-        <section className="mb-12">
+        {/* <section className="mb-12">
           <h2 className="mb-6 text-2xl font-bold">Related Products</h2>
           <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
             {relatedProducts.map((product) => (
@@ -223,7 +256,7 @@ const ProductDetail = () => {
               </div>
             ))}
           </div>
-        </section>
+        </section> */}
       </main>
     </div>
   );

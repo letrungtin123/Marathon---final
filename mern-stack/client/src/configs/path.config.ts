@@ -7,7 +7,7 @@ const path = {
 	checkout: '/checkout',
 	register: '/register',
 	forgotPassword: '/forgot-password',
-	profile: '/profile',
+	profile: '/me',
 	aboutus: '/aboutus'
 };
 

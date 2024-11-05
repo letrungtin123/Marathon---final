@@ -3,7 +3,7 @@ import { memo, useEffect, useState } from 'react'
 
 import FormOrder from './components/form/form-order'
 import MainOrder from './components/main-order'
-import Navbar from '@/components/navbar'
+// import Navbar from '@/components/navbar'
 import { TOrder } from '@/types/order.type'
 import { TResponse } from '@/types/common.type'
 import { Tabs } from 'antd'
@@ -37,19 +37,19 @@ const OrderPage = () => {
     }
   }, [isSuccess, data])
 
-  const [inputValue, setInputValue] = useState<string>('')
+  // const [inputValue, setInputValue] = useState<string>('')
 
-  const handleSearch = (value: string) => {
-    setInputValue(value)
-    navigate({
-      pathname: '/orders',
-      search: createSearchParams({
-        ...queryParams,
-        _page: '1',
-        q: value
-      }).toString()
-    })
-  }
+  // const handleSearch = (value: string) => {
+  //   setInputValue(value)
+  //   navigate({
+  //     pathname: '/orders',
+  //     search: createSearchParams({
+  //       ...queryParams,
+  //       _page: '1',
+  //       q: value
+  //     }).toString()
+  //   })
+  // }
 
   const handleChangeTab = (key: string) => {
     switch (key) {
@@ -131,11 +131,11 @@ const OrderPage = () => {
     }
   }
 
-  useEffect(() => {
-    if (queryParams.q) {
-      setInputValue(queryParams.q)
-    }
-  }, [queryParams.q])
+  // useEffect(() => {
+  //   if (queryParams.q) {
+  //     setInputValue(queryParams.q)
+  //   }
+  // }, [queryParams.q])
 
   if (isError) {
     return <div>Error</div>

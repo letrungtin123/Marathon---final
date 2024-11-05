@@ -45,7 +45,7 @@ router.patch(
 router.patch(
   '/me',
   wrapRequestHandler(verifyToken),
-  wrapRequestHandler(validationUpdateProfile),
+  // wrapRequestHandler(validationUpdateProfile),
   wrapRequestHandler(updateProfile),
 );
 
