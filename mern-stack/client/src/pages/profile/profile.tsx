@@ -6,6 +6,7 @@ import { TProfile } from "@/types/user.type";
 import { userApi } from "@/api/user.api";
 import { useNavigate } from "react-router-dom"; // Import useNavigate
 import path from "@/configs/path.config";
+import authApi from "@/api/auth.api";
 
 interface ProfileCardProps {
   token: string;
@@ -24,7 +25,10 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ token }) => {
   });
 
   const [updatedAt, setUpdatedAt] = useState<Date | null>(null);
-  const navigate = useNavigate(); // Initialize navigate function
+  const [showPasswordFields, setShowPasswordFields] = useState(false);
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -54,10 +58,26 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ token }) => {
       await userApi.updateProfile(formData, token);
       setUpdatedAt(new Date());
       message.success("Cập nhật thành công!");
-      navigate(path.home); 
+      navigate(path.home);
     } catch (error) {
       message.error("Đã xảy ra lỗi khi cập nhật!");
       console.error("Update failed:", error);
+    }
+  };
+  const handleResetPassword = async () => {
+    if (newPassword !== confirmPassword) {
+      message.error("Mật khẩu xác nhận không khớp!");
+      return;
+    }
+    try {
+      await authApi.resetPassword(token, { newPassword, confirmPassword });
+      message.success("Đổi mật khẩu thành công!");
+      setShowPasswordFields(false);
+      setNewPassword("");
+      setConfirmPassword("");
+    } catch (error) {
+      message.error("Đổi mật khẩu thất bại!");
+      console.error("Updated password failed!", error);
     }
   };
 
@@ -80,7 +100,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ token }) => {
         </div>
       }
     >
-      <div className="p-4 text-center">
+      <div className="p-4 text-center flex">
         <h2 className="text-xl font-semibold">
           <Input
             name="fullname"
@@ -122,9 +142,43 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ token }) => {
       </Descriptions>
       <div className="flex justify-center">
         <Button type="primary" onClick={handleUpdate}>
-          Cập nhật
+          Cập nhật hồ sơ
         </Button>
       </div>
+      <div className="flex justify-center pt-4">
+        <Button
+          type="primary"
+          onClick={() => setShowPasswordFields(!showPasswordFields)}
+        >
+          Đổi mật khẩu
+        </Button>
+      </div>
+
+      {showPasswordFields && (
+        <div className="mt-4">
+          <Input.Password
+            placeholder="Mật khẩu mới"
+            value={newPassword}
+            onChange={(e) => setNewPassword(e.target.value)}
+            className="mb-2"
+          />
+          <Input.Password
+            placeholder="Xác nhận mật khẩu"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            className="mb-4"
+          />
+          <div className="flex justify-center">
+            <Button
+              type="primary"
+              onClick={handleResetPassword}
+              className="bg-green-500 text-white hover:bg-green-600"
+            >
+              Xác nhận
+            </Button>
+          </div>
+        </div>
+      )}
     </Card>
   );
 };
