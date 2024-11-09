@@ -35,7 +35,7 @@ const Aside = () => {
     <aside className="w-3/12 pr-8 ">
       <div className="space-y-6">
         <div>
-          <h3 className="mb-2 text-lg font-semibold">Danh mục sản phẩm</h3>
+          <h3 className="mb-2 text-lg font-semibold text-green-900">Danh mục sản phẩm</h3>
           <ul className="space-y-2">
             {categories &&
               categories?.length > 0 &&
@@ -65,7 +65,7 @@ const Aside = () => {
           </ul>
         </div>
         <div>
-          <h3 className="mb-2 text-lg font-semibold">
+          <h3 className="mb-2 text-lg font-semibold text-green-900">
             Các sản phẩm kết hợp thương hiệu
           </h3>
           <ul className="space-y-2">
@@ -82,7 +82,7 @@ const Aside = () => {
                           brand: brand._id,
                         }).toString(),
                       }}
-                      className="text-blue-600 hover:underline flex w-full font-semibold "
+                      className="text-green-900 hover:underline flex w-full font-semibold "
                     >
                       {brand.nameBrand}
                       {brand.image && (
@@ -99,7 +99,7 @@ const Aside = () => {
           </ul>
         </div>
         <div>
-          <h3 className="mb-2 text-lg font-semibold">Giá sản phẩm</h3>
+          <h3 className="mb-2 text-lg font-semibold text-green-900">Giá sản phẩm</h3>
           <Slider
             defaultValue={[0, 1000]}
             max={1000}

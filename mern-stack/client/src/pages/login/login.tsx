@@ -13,6 +13,7 @@ import { useForm } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
+import bg from "@/assets/bg.png";
 
 type LoginFormType = Pick<SchemaType, "email" | "password">;
 const loginSchema = schema.pick(["email", "password"]);
@@ -51,33 +52,35 @@ export default function LoginPage() {
     <div
       className="flex flex-col justify-center min-h-screen py-12 bg-cover bg-center"
       style={{
-        backgroundImage:
-          "url(https://captionstags.com/wp-content/uploads/2024/05/flower-shop-captions-slogans-and-taglines.webp)",
+        backgroundImage: `url(${bg})`,
       }}
     >
       <div className="sm:mx-auto sm:w-full sm:max-w-md bg-white bg-opacity-80 rounded-lg shadow-lg">
         <h2 className="mt-6 text-3xl font-extrabold text-center text-gray-900">
           Đăng nhập
         </h2>
-        <section className="flex items-center justify-center w-full h-header mt-3">
-          <p className="text-xl font-extrabold font-nunito-sans">
-            <span className="text-primary">Dash</span>
-            <span className="">Stack</span>
-          </p>
+        <section className="flex items-center justify-center w-full h-header mt-9">
+          <div className="h-16 w-32 bg-gradient-to-r from-green-600 to-green-400 font-semibold rounded-xl flex items-center justify-center text-3xl shadow-md">
+            <div className="text-xl font-extrabold font-nunito-sans text-gray-800">
+              <span className="text-green-800">Dash</span>Stack
+            </div>
+          </div>
         </section>
 
         <div className="mt-8 sm:px-10">
           <div className="px-4 py-8">
             <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
               <div>
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="email" className="text-green-900">
+                  Email
+                </Label>
                 <Input
                   id="email"
                   {...register("email")}
                   type="text"
                   autoComplete="email"
                   className="mt-1"
-				  placeholder="Vui lòng nhập email"
+                  placeholder="Vui lòng nhập email"
                 />
                 {errors.email && (
                   <p className="text-sm text-red-500">{errors.email.message}</p>
@@ -85,7 +88,9 @@ export default function LoginPage() {
               </div>
 
               <div>
-                <Label htmlFor="password">Mật khẩu</Label>
+                <Label htmlFor="password" className="text-green-900">
+                  Mật khẩu
+                </Label>
                 <div className="relative mt-1">
                   <Input
                     id="password"
@@ -93,7 +98,7 @@ export default function LoginPage() {
                     type={showPassword ? "text" : "password"}
                     autoComplete="current-password"
                     className="pr-10"
-					placeholder="Vui lòng nhập mật khẩu"
+                    placeholder="Vui lòng nhập mật khẩu"
                   />
                   <button
                     type="button"
@@ -127,7 +132,7 @@ export default function LoginPage() {
               </div>
 
               <div>
-                <Button type="submit" className="w-full bg-primary">
+                <Button type="submit" className="w-full bg-green-900">
                   Đăng nhập
                 </Button>
               </div>

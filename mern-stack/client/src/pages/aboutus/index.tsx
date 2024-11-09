@@ -41,7 +41,7 @@ const AboutUs: React.FC = () => {
           <section className="flex items-center justify-center w-full h-header mb-3">
             <div className="text-xl font-extrabold font-nunito-sans ">
               <span> 🌸 Chào mừng bạn đã đến với </span>
-              <span className="text-primary">Dash</span>
+              <span className="text-green-900">Dash</span>
               <span className="">Stack. </span>
               <span>Nơi kết nối bạn với những sắc hoa tuyệt đẹp! 🌸</span>
             </div>

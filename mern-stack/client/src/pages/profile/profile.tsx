@@ -88,15 +88,19 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ token }) => {
 
   return (
     <Card
-      className="max-w-md mx-auto bg-white shadow-md rounded-lg overflow-hidden"
+      className="max-w-md mx-auto bg-white shadow-md rounded-lg overflow-hidden "
       cover={
-        <div className="bg-gray-200 flex justify-center items-center p-4">
+        <div
+          className="flex justify-center items-center p-4 "
+          style={{ backgroundColor: "#969F8E" }}
+        >
           <Avatar
             src={formData.avatar || "https://picsum.photos/536/354"}
             size={128}
             className={cn("rounded-full shadow-md")}
             alt="User Avatar"
           />
+          <span className="from-neutral-300 justify-center items-center text-white px-10 font-semibold">Hồ sơ người dùng</span>
         </div>
       }
     >
@@ -141,13 +145,13 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ token }) => {
         </Descriptions.Item>
       </Descriptions>
       <div className="flex justify-center">
-        <Button type="primary" onClick={handleUpdate}>
+        <Button onClick={handleUpdate} className="bg-green-800 text-white">
           Cập nhật hồ sơ
         </Button>
       </div>
       <div className="flex justify-center pt-4">
         <Button
-          type="primary"
+          className="bg-green-800 text-white"
           onClick={() => setShowPasswordFields(!showPasswordFields)}
         >
           Đổi mật khẩu
@@ -172,7 +176,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ token }) => {
             <Button
               type="primary"
               onClick={handleResetPassword}
-              className="bg-green-500 text-white hover:bg-green-600"
+              className="bg-green-500 text-white"
             >
               Xác nhận
             </Button>

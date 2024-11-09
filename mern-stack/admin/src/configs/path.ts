@@ -9,7 +9,8 @@ const path = {
   auth: '/auth',
   login: '/auth/login',
   brand: '/brand',
-  voucher: '/vouchers'
+  voucher: '/vouchers',
+  users: '/users'
 }
 
 export default path

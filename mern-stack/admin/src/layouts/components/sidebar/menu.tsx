@@ -1,4 +1,11 @@
-import { AppstoreOutlined, ShoppingCartOutlined, GiftOutlined, ShoppingOutlined, TagsOutlined } from '@ant-design/icons'
+import {
+  AppstoreOutlined,
+  ShoppingCartOutlined,
+  GiftOutlined,
+  ShoppingOutlined,
+  TagsOutlined,
+  UserOutlined
+} from '@ant-design/icons'
 import { DashboardIcon } from '@/components/icons'
 import path from '@/configs/path'
 
@@ -38,5 +45,11 @@ export const menus = [
     title: 'Khuyến mãi',
     icon: <GiftOutlined />,
     link: path.voucher
+  },
+  {
+    id: 7,
+    title: 'Người dùng',
+    icon: <UserOutlined />,
+    link: path.users
   }
 ]

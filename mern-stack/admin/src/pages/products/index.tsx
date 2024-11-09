@@ -89,7 +89,7 @@ const ProductPage = () => {
           }).toString()
         })
         break
-      case '4':
+      case '4': {
         const newQueryParams = _.omit(queryParams, 'status')
         navigate({
           pathname: '/products',
@@ -101,6 +101,7 @@ const ProductPage = () => {
           }).toString()
         })
         break
+      }
       default:
         navigate({
           pathname: '/products',
@@ -161,12 +162,12 @@ const ProductPage = () => {
   ]
 
   return (
-    <div className='bg-gray-third py-[30px] px-[30px]'>
+    <div className='bg-gray-third py-[30px] px-[30px] '>
       <Navbar
         button={{
           title: 'Thêm sản phẩm',
           size: 'large',
-          type: 'primary',
+          className: 'bg-[#14532D] text-white border-[#14532D] hover:bg-[#14532D]',
           onClick: () => onOpenModal('add')
         }}
         input={{

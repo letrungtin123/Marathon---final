@@ -18,13 +18,13 @@ import { Link } from "react-router-dom";
 import coupon from "@/assets/coupon.png";
 import home from "@/assets/home.gif";
 import aboutus from "@/assets/documents.gif";
-import flower from "@/assets/flower.gif";
 import holicolor from "@/assets/holi-colors.gif";
 import event from "@/assets/event.gif";
 import love from "@/assets/kpop.gif";
 const HeaderLayout = () => {
   const { isAuthenticated, setIsAuthenticated } = useAuth();
   const queryClient = useQueryClient();
+
   const { data } = useQuery({
     queryKey: ["me"],
     queryFn: () => userApi.getProfile(),
@@ -32,7 +32,6 @@ const HeaderLayout = () => {
     enabled: isAuthenticated,
   });
   const myInfo = data?.data;
-
   // get all cars
   const { data: responseCarts } = useQuery({
     queryKey: ["carts"],
@@ -40,14 +39,13 @@ const HeaderLayout = () => {
     enabled: isAuthenticated,
     retry: 2,
   });
-
   const carts = responseCarts?.data;
 
   const handleLogout = () => {
-		queryClient.removeQueries({ queryKey: ["carts"] });
-		removeAccessTokenFromLS();
-		setIsAuthenticated(false);
-	};
+    queryClient.removeQueries({ queryKey: ["carts"] });
+    removeAccessTokenFromLS();
+    setIsAuthenticated(false);
+  };
 
   return (
     <header className="bg-white shadow-md sticky top-0 right-0 left-0 z-50">
@@ -58,9 +56,11 @@ const HeaderLayout = () => {
               to={`/`}
               className="text-xl font-extrabold font-nunito-sans flex items-center p-0 m-0"
             >
-              <span className="text-primary">Dash</span>
-              <span className="">Stack</span>
-              <img src={flower} alt="flower" className="w-8 h-8 p-0 m-0" />
+              <div className="h-12 w-32 bg-gradient-to-r from-green-600 to-green-400 font-semibold rounded-xl flex items-center justify-center text-3xl shadow-md">
+                <div className="text-xl font-extrabold font-nunito-sans text-gray-800">
+                  <span className="text-green-800">Dash</span>Stack
+                </div>
+              </div>
             </Link>
           </section>
           <div className="relative p-1">
@@ -76,7 +76,7 @@ const HeaderLayout = () => {
               to={`/`}
               className="text-xl font-extrabold font-nunito-sans flex px-3 justify-center items-center"
             >
-              <Button variant="ghost" className="p-0 m-0">
+              <Button variant="ghost" className="p-0 m-0 ">
                 Trang chủ
               </Button>
               <img src={home} alt="Home" className="w-8 h-8 p-0 m-0" />
@@ -86,7 +86,7 @@ const HeaderLayout = () => {
           <DropdownMenu>
             <div className="flex items-center px-5">
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="p-0 m-0">
+                <Button variant="ghost" className="p-0 m-0 ">
                   Hoa lễ
                 </Button>
               </DropdownMenuTrigger>
@@ -114,7 +114,7 @@ const HeaderLayout = () => {
           <DropdownMenu>
             <div className="flex items-center px-5">
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="p-0 m-0">
+                <Button variant="ghost" className="p-0 m-0 ">
                   Hoa sự kiện
                 </Button>
               </DropdownMenuTrigger>
@@ -137,7 +137,7 @@ const HeaderLayout = () => {
           <DropdownMenu>
             <div className="flex items-center px-5">
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="p-0 m-0">
+                <Button variant="ghost" className="p-0 m-0 ">
                   Hoa theo chủ đề
                 </Button>
               </DropdownMenuTrigger>
@@ -164,7 +164,7 @@ const HeaderLayout = () => {
               to={path.aboutus}
               className="text-xl font-extrabold font-nunito-sans flex items-center px-0 gap-0"
             >
-              <Button variant="ghost" className="p-0 m-0">
+              <Button variant="ghost" className="p-0 m-0 ">
                 Về chúng tôi{" "}
               </Button>
               <img src={aboutus} alt="Home" className="w-8 h-8 p-0 m-0" />
@@ -180,7 +180,7 @@ const HeaderLayout = () => {
             <Button variant="ghost" size="icon" className="relative">
               <ShoppingCart className="w-6 h-6" />
 
-              <div className="absolute size-5 rounded-full top-0 right-0 bg-blue-500 text-white flex items-center justify-center text-xs">
+              <div className="absolute size-5 rounded-full top-0 right-0 bg-green-900 text-white flex items-center justify-center text-xs">
                 {carts?.carts?.length ?? 0}
               </div>
             </Button>

@@ -10,7 +10,6 @@ import { useMutation } from '@tanstack/react-query'
 import { jwtDecode } from 'jwt-decode'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-
 const LoginPage = () => {
   const { t } = useTranslation()
   const [form] = Form.useForm()
@@ -51,63 +50,69 @@ const LoginPage = () => {
   }
 
   return (
-    <div className='flex flex-col justify-center w-full h-full gap-2.5 md:w-2/3 lg:w-full'>
-      <div className='h-[60px] w-[120px] bg-[#EEF2FF]  font-semibold rounded-xl flex items-center justify-center text-[35px]'>
-        <div className='text-xl font-extrabold font-nunito-sans'>
-          <span className='text-primary'>Dash</span>
-          <span className=''>Stack</span>
+    <div className='sm:mx-auto sm:w-full sm:max-w-md p-6 bg-white bg-opacity-90 rounded-xl shadow-lg border border-gray-200'>
+      <div className='flex flex-col items-center w-full h-full'>
+        <div className='h-16 w-32 bg-gradient-to-r from-green-600 to-green-400 font-semibold rounded-xl flex items-center justify-center text-3xl shadow-md'>
+          <div className='text-xl font-extrabold font-nunito-sans text-gray-800'>
+            <span className='text-green-800'>Dash</span>Stack
+          </div>
         </div>
-      </div>
 
-      <div className='mt-[45px]'>
-        <h1 className='font-semibold text-[32px] text-black'>Cửa hàng kinh doanh hoa tươi</h1>
-        <p className='text-base font-normal text-[#4B5563]'>Quản lí tối ưu và hiệu quả</p>
-      </div>
+        <div className='mt-8 text-center'>
+          <h1 className='font-semibold text-3xl text-gray-800'>Cửa hàng kinh doanh hoa tươi</h1>
+          <p className='text-lg font-medium text-gray-600 mt-2'>Quản lí tối ưu và hiệu quả</p>
+        </div>
 
-      <Form layout='vertical' className='mt-[35px]' onFinish={onSubmit} form={form}>
-        <Form.Item
-          name={'email'}
-          label={<span className='font-semibold'>{t('form.email')}</span>}
-          rules={[
-            { required: true, message: t('validate.required') },
-            {
-              type: 'email',
-              message: t('validate.email')
+        <Form layout='vertical' className='mt-8 w-full' onFinish={onSubmit} form={form}>
+          <Form.Item
+            name='email'
+            label={<span className='font-semibold text-gray-700'>{t('form.email')}</span>}
+            rules={[
+              { required: true, message: t('validate.required') },
+              {
+                type: 'email',
+                message: t('validate.email')
+              }
+            ]}
+          >
+            <Input
+              placeholder='Email'
+              className='h-12 w-full rounded-lg border-gray-300 focus:border-green-600 focus:ring-1 focus:ring-green-500'
+            />
+          </Form.Item>
+
+          <Form.Item
+            name='password'
+            label={
+              <div className='flex items-center justify-between w-full'>
+                <span className='font-semibold text-gray-700'>{t('form.password')}</span>
+                <Link to='/forgot-password' className='text-green-700 font-semibold hover:text-green-600'>
+                  {t('form.forgotPassword')}
+                </Link>
+              </div>
             }
-          ]}
-        >
-          <Input placeholder='Email' className='h-[48px] w-full' />
-        </Form.Item>
+            rules={[
+              { required: true, message: t('validate.required') },
+              {
+                min: 6,
+                message: t('validate.min', { count: 6 })
+              }
+            ]}
+          >
+            <Input.Password
+              placeholder='Password'
+              className='h-12 w-full rounded-lg border-gray-300 focus:border-green-600 focus:ring-1 focus:ring-green-500'
+            />
+          </Form.Item>
 
-        <Form.Item
-          name={'password'}
-          label={
-            <div className='flex items-center justify-between flex-1'>
-              <span className='font-semibold'>{t('form.password')}</span>
-              <Link to={'/forgot-password'} className='text-[#4F46E5] font-semibold hover:text-[#4F46E5]'>
-                {t('form.forgotPassword')}
-              </Link>
-            </div>
-          }
-          rules={[
-            { required: true, message: t('validate.required') },
-            {
-              min: 6,
-              message: t('validate.min', { count: 6 })
-            }
-          ]}
-        >
-          <Input.Password placeholder='Password' className='h-[48px] w-full' />
-        </Form.Item>
-
-        <Button
-          type='primary'
-          htmlType='submit'
-          className='h-[48px] mt-5 w-full bg-[#4F46E5] hover:!bg-[#4F46E5] text-base'
-        >
-          {isLoading ? 'Loading...' : t('form.login')}
-        </Button>
-      </Form>
+          <Button
+            htmlType='submit'
+            className='h-12 mt-5 w-full bg-green-900 hover:bg-green-600 text-white font-semibold rounded-lg shadow-md'
+          >
+            {isLoading ? 'Loading...' : t('form.login')}
+          </Button>
+        </Form>
+      </div>
     </div>
   )
 }

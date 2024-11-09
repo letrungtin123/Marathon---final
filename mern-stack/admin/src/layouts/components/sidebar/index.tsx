@@ -19,10 +19,11 @@ const Sidebar = () => {
   return (
     <div className='h-screen overflow-y-scroll border-r border-r-gray-light scrollbar-hide'>
       <section className='flex items-center justify-center w-full h-header'>
-        <p className='text-xl font-extrabold font-nunito-sans'>
-          <span className='text-primary'>Dash</span>
-          <span className=''>Stack</span>
-        </p>
+        <div className='h-10 w-32 bg-gradient-to-r from-green-600 to-green-400 font-semibold rounded-xl flex items-center justify-center text-3xl shadow-md'>
+          <div className='text-xl font-extrabold font-nunito-sans text-gray-800'>
+            <span className='text-green-800'>Dash</span>Stack
+          </div>
+        </div>
       </section>
 
       {/* menu */}
@@ -36,12 +37,12 @@ const Sidebar = () => {
             <Link to={menu.link} className='flex items-center justify-center w-full h-full'>
               <div
                 className={cn('absolute top-0 bottom-0 left-0 w-1 h-full rounded-r-md', {
-                  'bg-primary': activeSidebar === index + 1
+                  'bg-green-900': activeSidebar === index + 1
                 })}
               ></div>
               <div
                 className={cn('w-full px-4 rounded-md text-black flex items-center !gap-3 fill-black', {
-                  'text-white bg-primary fill-white': activeSidebar === index + 1
+                  'text-white bg-green-900 fill-white': activeSidebar === index + 1
                 })}
               >
                 {menu.icon}

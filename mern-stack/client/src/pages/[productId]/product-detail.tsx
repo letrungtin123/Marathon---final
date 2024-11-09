@@ -1,5 +1,5 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ChevronRight, CreditCard, ShoppingCart, Star } from "lucide-react";
+import { ChevronRight, ShoppingCart, Star } from "lucide-react";
 
 import { cartApi } from "@/api/cart.api";
 import { productApi } from "@/api/product.api";
@@ -162,7 +162,7 @@ const ProductDetail = () => {
             <h1 className="text-3xl font-medium flex items-center gap-4">
               {product?.nameProduct}{" "}
               {discount > 0 && (
-                <span className="text-xs rounded-lg px-3 py-1 bg-primary text-white">
+                <span className="text-xs rounded-lg px-3 py-1 bg-green-900 text-white">
                   -{discount}%
                 </span>
               )}
@@ -199,12 +199,12 @@ const ProductDetail = () => {
             />
 
             <div className="flex space-x-4">
-              <Button className="flex-1" onClick={() => handleAddToCart()}>
+              <Button className="flex-1 bg-green-900" onClick={() => handleAddToCart()}>
                 <ShoppingCart className="w-4 h-4 mr-2" /> Add to Cart
               </Button>
-              <Button variant="secondary" className="flex-1">
+              {/* <Button variant="secondary" className="flex-1">
                 <CreditCard className="w-4 h-4 mr-2" /> Buy Now
-              </Button>
+              </Button> */}
             </div>
           </div>
         </div>

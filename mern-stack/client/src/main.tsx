@@ -9,7 +9,6 @@ import App from "./App.tsx";
 import { Toaster } from "./components/ui/sonner.tsx";
 import { persistor, store } from "./stores/store.ts";
 
-
 // Create a client
 const queryClient = new QueryClient();
 

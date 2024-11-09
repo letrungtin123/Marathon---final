@@ -51,7 +51,7 @@ const VoucherPage = () => {
         button={{
           title: 'Thêm khuyến mãi sản phẩm',
           size: 'large',
-          type: 'primary',
+          className: 'bg-[#14532D] text-white border-[#14532D] hover:bg-[#14532D]',
           onClick: () => onOpenModal('add')
         }}
         input={{

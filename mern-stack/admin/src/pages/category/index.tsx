@@ -65,7 +65,7 @@ const CategoryPage = () => {
         button={{
           title: 'Thêm danh mục sản phẩm',
           size: 'large',
-          type: 'primary',
+          className: 'bg-[#14532D] text-white border-[#14532D] hover:bg-[#14532D]',
           onClick: () => onOpenModal('add')
         }}
         input={{
