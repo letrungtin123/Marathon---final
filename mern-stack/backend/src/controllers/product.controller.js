@@ -222,34 +222,53 @@ export const productController = {
 
     return res.status(HTTP_STATUS.OK).json({ message: 'Update product successfully', success: true, data: product });
   },
-  // delete product
+  // Controller method for permanently deleting a product
   deleteProduct: async (req, res) => {
-    const { productId } = req.params;
+    try {
+      const { productId } = req.params;
 
-    // check id product invalid
-    await productController.checkIdProductInvalid(req, res);
+      // 1. Validate `productId`
+      if (!mongoose.Types.ObjectId.isValid(productId)) {
+        return res.status(HTTP_STATUS.BAD_REQUEST).json({ message: 'Invalid product ID', success: false });
+      }
 
-    // check product exist
-    const productExist = await productController.checkProductExist(req, res);
+      // 2. Check if the product exists
+      const productExist = await productService.getProductById(productId);
+      if (!productExist) {
+        return res.status(HTTP_STATUS.NOT_FOUND).json({ message: 'Product not found', success: false });
+      }
 
-    // xoas product_id trong category và brand cũ
-    const result = await productController.removeProductFromCateAndBrand(
-      productId,
-      productExist.category._id,
-      productExist.brand._id,
-    );
+      // 3. Ensure the product can be deleted (e.g., must be marked as deleted or inactive)
+      if (!productExist.is_deleted || !['active', 'inactive'].includes(productExist.status)) {
+        return res.status(HTTP_STATUS.BAD_REQUEST).json({
+          message: 'Product cannot be permanently deleted. Verify the status and is_deleted flag.',
+          success: false,
+        });
+      }
 
-    // delete product
-    if (!result) {
-      return res.status(HTTP_STATUS.BAD_REQUEST).json({ message: 'Delete product failed', success: false });
+      // 4. Remove references from category and brand (if applicable)
+      if (productExist.category) {
+        await productService.removeProductFromCategory(productId, productExist.category._id);
+      }
+      if (productExist.brand) {
+        await productService.removeProductFromBrand(productId, productExist.brand._id);
+      }
+
+      // 5. Perform the deletion
+      const productDeleteResult = await productService.deleteProduct(productId);
+      if (!productDeleteResult) {
+        return res
+          .status(HTTP_STATUS.INTERNAL_SERVER_ERROR)
+          .json({ message: 'Failed to delete product', success: false });
+      }
+
+      return res.status(HTTP_STATUS.OK).json({ message: 'Product deleted successfully', success: true });
+    } catch (error) {
+      console.error('Error in deleteProduct:', error);
+      return res
+        .status(HTTP_STATUS.INTERNAL_SERVER_ERROR)
+        .json({ message: 'Server error during deletion', success: false });
     }
-
-    const productDelete = await productService.deleteProduct(productId);
-    if (!productDelete) {
-      return res.status(HTTP_STATUS.BAD_REQUEST).json({ message: 'Delete product failed', success: false });
-    }
-
-    return res.status(HTTP_STATUS.OK).json({ message: 'Delete product successfully', success: true });
   },
 
   // delete mutiple
@@ -314,5 +333,43 @@ export const productController = {
       success: true,
       status: HTTP_STATUS.OK,
     });
+  },
+  // softDeleteProduct controller
+  softDeleteProduct: async (req, res) => {
+    try {
+      const { productId } = req.params;
+
+      // Check if productId is a valid MongoDB ObjectId
+      if (!mongoose.Types.ObjectId.isValid(productId)) {
+        return res.status(HTTP_STATUS.BAD_REQUEST).json({ message: 'Invalid product ID', success: false });
+      }
+
+      // Fetch the product by ID
+      const product = await productService.getProductById(productId);
+      if (!product) {
+        return res.status(HTTP_STATUS.NOT_FOUND).json({ message: 'Product not found', success: false });
+      }
+
+      // Determine if the product can be soft-deleted or restored
+      const newIsDeletedStatus = !product.is_deleted;
+      const updatedProduct = await productService.updateDeleted(productId, newIsDeletedStatus);
+
+      if (!updatedProduct) {
+        return res
+          .status(HTTP_STATUS.INTERNAL_SERVER_ERROR)
+          .json({ message: 'Failed to update product deletion status', success: false });
+      }
+
+      return res.status(HTTP_STATUS.OK).json({
+        message: newIsDeletedStatus ? 'Product soft-deleted successfully' : 'Product restored successfully',
+        success: true,
+        data: updatedProduct,
+      });
+    } catch (error) {
+      console.error('Error in softDeleteProduct:', error);
+      return res
+        .status(HTTP_STATUS.INTERNAL_SERVER_ERROR)
+        .json({ message: 'Server error during soft delete', success: false });
+    }
   },
 };

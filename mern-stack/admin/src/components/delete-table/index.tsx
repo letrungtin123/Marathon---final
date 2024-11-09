@@ -1,5 +1,4 @@
 import { Button, Modal } from 'antd'
-
 import { ArrowRestoreIcon } from '../icons'
 import { DeleteOutlined } from '@ant-design/icons'
 import { cn } from '@/utils/cn'
@@ -58,10 +57,8 @@ const DeleteTable = <T extends { is_deleted?: boolean }>({
 
       <Modal
         open={openModalDelete}
-        title={<p className='w-full text-2xl font-semibold text-center'>Xoá sản phẩm</p>}
-        onOk={() => {
-          setOpenModalDelete(false)
-        }}
+        title={<p className='w-full text-2xl font-semibold text-center'>{text.title}</p>}
+        onOk={() => setOpenModalDelete(false)}
         closable={false}
         onCancel={() => setOpenModalDelete(false)}
         footer={
@@ -75,10 +72,17 @@ const DeleteTable = <T extends { is_deleted?: boolean }>({
               className='w-full max-w-[140px]'
               onClick={() => {
                 setOpenModalDelete(false)
-                handleDelete(
-                  selectionSingle && rowSelections.length === 0 ? selectionSingle : rowSelections,
-                  checkStatus ? false : true
-                )
+
+                if (rowSelections.length > 1 && checkStatus) {
+                  // Restore multiple deleted products
+                  handleDelete(rowSelections, false)
+                } else if (selectionSingle && selectionSingle.is_deleted) {
+                  // Hard delete a single deleted product
+                  handleDelete(selectionSingle, true)
+                } else {
+                  // Soft delete or restore a single product based on current `is_deleted` status
+                  handleDelete(selectionSingle || rowSelections[0], !selectionSingle?.is_deleted)
+                }
               }}
             >
               {text.title}

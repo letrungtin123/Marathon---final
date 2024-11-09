@@ -52,11 +52,15 @@ export const productService = {
   removeProductFromBrand: async (productId, brandId) => {
     return await Brand.findByIdAndUpdate({ _id: brandId }, { $pull: { products: productId } }, { new: true });
   },
-  // delete product
+  //delete
   deleteProduct: async (productId) => {
-    return await Product.findByIdAndDelete(productId);
+    try {
+      return await Product.findByIdAndDelete(productId);
+    } catch (error) {
+      console.error('Error deleting product:', error);
+      throw new Error('Product deletion failed'); // Explicitly throw an error for debugging
+    }
   },
-
   // update quantity product when order
   updateQuantityProduct: async (productId, sizeId, quantity) => {
     return await Product.findOneAndUpdate(

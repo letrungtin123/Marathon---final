@@ -62,4 +62,11 @@ router.patch(
   productController.updateManyProduct,
 );
 
+//xóa mềm 1 sản phẩm
+router.patch(
+  '/product-soft-delete/:productId', 
+  wrapRequestHandler(verifyToken),   
+  wrapRequestHandler(checkPermission), 
+  wrapRequestHandler(productController.softDeleteProduct) 
+);
 export default router;

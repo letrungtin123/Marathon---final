@@ -13,10 +13,15 @@ export const getProducts = async (token: string, params?: TQueryParams): Promise
   return response.data
 }
 
-export const deleteProduct = async (idProduct: string, token: string): Promise<TBaseResponseDelete> => {
-  const response = await api.delete<TBaseResponseDelete>(`/product/${idProduct}`, {
+export const deleteProduct = async (productId: string, token: string): Promise<TBaseResponseDelete> => {
+  if (!productId || !token) {
+    throw new Error('Product ID and token are required for deletion.')
+  }
+
+  const response = await api.delete<TBaseResponseDelete>(`/product/${productId}`, {
     headers: {
-      Authorization: `Bearer ${token}`
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json'
     }
   })
 
@@ -24,13 +29,13 @@ export const deleteProduct = async (idProduct: string, token: string): Promise<T
 }
 
 // xoá mềm sản phẩm (chuyển sản phẩm vào thùng rác)
-export const softDeleteProduct = async (
-  idProduct: string,
-  query: string,
-  token: string
-): Promise<TBaseResponseDelete> => {
+export const softDeleteProduct = async (idProduct: string, token: string): Promise<TBaseResponseDelete> => {
+  if (!idProduct || !token) {
+    throw new Error('Product ID and token are required for soft deletion.')
+  }
+
   const response = await api.patch<TBaseResponseDelete>(
-    `/product/${idProduct}${query ? query : ''}`,
+    `/product-soft-delete/${idProduct}`,
     {},
     {
       headers: {
@@ -50,15 +55,14 @@ export const softDeleteMultipleProduct = async (
 ) => {
   const response = await api.patch<TBaseResponseDelete>(
     `/product-delete-multiple`,
-
+    {}, // data rỗng
     {
       params: {
         id: params.id,
         deleted: params.is_deleted
       },
       headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json'
+        Authorization: `Bearer ${token}`
       }
     }
   )

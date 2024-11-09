@@ -14,7 +14,7 @@ export const AuthContext = createContext<AuthContextType>({
 })
 
 export const AuthProvider = ({ children, token }: AuthProviderProps) => {
-  const [accessToken, _] = useState<string>(token)
+  const [accessToken] = useState<string>(token)
 
   return <AuthContext.Provider value={{ accessToken }}>{children}</AuthContext.Provider>
 }

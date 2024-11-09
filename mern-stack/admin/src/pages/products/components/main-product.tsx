@@ -3,7 +3,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { Table, notification } from 'antd'
 import { createSearchParams, useNavigate } from 'react-router-dom'
 
-import { softDeleteMultipleProduct } from '@/apis/product.api'
+import { deleteProduct, softDeleteMultipleProduct, softDeleteProduct } from '@/apis/product.api'
 import DeleteTable from '@/components/delete-table'
 import { useAuth } from '@/contexts/auth-context'
 import { useQueryParams } from '@/hooks/useQueryParams'
@@ -56,10 +56,61 @@ const MainProduct = ({ products, isLoading, getData, totalDocs }: MainProductPro
 
   const handleDelete = (values: TProduct[] | TProduct, is_deleted?: boolean) => {
     if (Array.isArray(values)) {
+      // Multiple product restore if `is_deleted` is false
       const ids = values.map((item) => item._id)
-      deleteMultipleMutation.mutate({ id: ids, is_deleted })
+      deleteMultipleMutation.mutate({ id: ids, is_deleted: false })
     } else {
-      deleteMultipleMutation.mutate({ id: values._id, is_deleted })
+      const { _id, is_deleted: currentIsDeleted } = values
+
+      if (is_deleted === true && currentIsDeleted) {
+        // Hard delete if single item is selected with `is_deleted = true`
+        deleteProduct(_id, accessToken)
+          .then(() => {
+            notification.success({
+              message: 'Đã xóa vĩnh viễn sản phẩm!',
+              description: 'Sản phẩm đã bị xóa vĩnh viễn.'
+            })
+            queryClient.invalidateQueries({ queryKey: ['products', queryParams] })
+          })
+          .catch(() => {
+            notification.error({
+              message: 'Xóa vĩnh viễn sản phẩm không thành công',
+              description: 'Có lỗi xảy ra khi xóa vĩnh viễn sản phẩm.'
+            })
+          })
+      } else if (is_deleted === false && currentIsDeleted) {
+        // Restore a single deleted product
+        softDeleteProduct(_id, accessToken)
+          .then(() => {
+            notification.success({
+              message: 'Đã khôi phục sản phẩm!',
+              description: 'Sản phẩm đã được khôi phục từ thùng rác.'
+            })
+            queryClient.invalidateQueries({ queryKey: ['products', queryParams] })
+          })
+          .catch(() => {
+            notification.error({
+              message: 'Khôi phục sản phẩm thất bại!',
+              description: 'Đã có lỗi xảy ra khi khôi phục sản phẩm.'
+            })
+          })
+      } else if (is_deleted === true && !currentIsDeleted) {
+        // Soft delete a single product
+        softDeleteProduct(_id, accessToken)
+          .then(() => {
+            notification.success({
+              message: 'Đã chuyển sản phẩm vào thùng rác!',
+              description: 'Sản phẩm đã bị chuyển vào thùng rác.'
+            })
+            queryClient.invalidateQueries({ queryKey: ['products', queryParams] })
+          })
+          .catch(() => {
+            notification.error({
+              message: 'Xóa mềm sản phẩm thất bại!',
+              description: 'Đã có lỗi xảy ra khi chuyển sản phẩm vào thùng rác.'
+            })
+          })
+      }
     }
   }
 
