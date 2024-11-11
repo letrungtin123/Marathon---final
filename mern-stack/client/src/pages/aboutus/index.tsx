@@ -1,8 +1,8 @@
 import { Card, Col, Image, Layout, Row, Typography } from "antd";
 import { MailOutlined, PhoneOutlined } from "@ant-design/icons";
-import bgflower1 from "@/assets/bgflower1.png"
-import bgflower2 from "@/assets/bgflower2.png"
-import bgflower3 from "@/assets/bgflower3.png"
+import bgflower1 from "@/assets/bgflower1.png";
+import bgflower2 from "@/assets/bgflower2.png";
+import bgflower3 from "@/assets/bgflower3.png";
 import React from "react";
 
 const { Content } = Layout;
@@ -85,8 +85,10 @@ const AboutUs: React.FC = () => {
                   </div>
                 }
               >
-                <Title level={4}>Về chúng tôi</Title>
-                <Paragraph>
+                <Title level={4} className="text-xl font-bold text-gray-800">
+                  Về chúng tôi
+                </Title>
+                <Paragraph className="text-gray-600">
                   DashStack ra đời từ niềm đam mê và tình yêu dành cho hoa. Bắt
                   đầu từ một cửa hàng nhỏ vào năm 2003, chúng tôi đã không ngừng
                   nỗ lực phát triển để trở thành một trong những thương hiệu hoa
@@ -94,51 +96,57 @@ const AboutUs: React.FC = () => {
                 </Paragraph>
               </Card>
             </Col>
+
             <Col span={8}>
               <Card
                 hoverable
-                style={cardStyle}
+                className="flex flex-col justify-between h-full rounded-lg shadow-md"
                 cover={
-                  <div style={imageContainerStyle}>
+                  <div className="h-48 overflow-hidden rounded-t-lg">
                     <Image
                       alt="Our Services"
                       src={bgflower3}
-                      style={imageStyle}
+                      className="w-full h-full object-cover"
                     />
                   </div>
                 }
               >
-                <Title level={4}>Dịch vụ</Title>
-                <Paragraph>
-                  Tại DashStack, chúng tôi cam kết mang đến những dịch
-                  vụ hoàn hảo, đáp ứng mọi nhu cầu của khách hàng: Giao
-                  hoa tận nơi: Dịch vụ giao hoa nhanh chóng, tận tâm, đảm bảo
-                  hoa đến tay người nhận trong tình trạng tươi mới nhất.
+                <Title level={4} className="text-xl font-bold text-gray-800">
+                  Dịch vụ
+                </Title>
+                <Paragraph className="text-gray-600">
+                  Tại DashStack, chúng tôi cam kết mang đến những dịch vụ hoàn
+                  hảo, đáp ứng mọi nhu cầu của khách hàng: Giao hoa tận nơi:
+                  Dịch vụ giao hoa nhanh chóng, tận tâm, đảm bảo hoa đến tay
+                  người nhận trong tình trạng tươi mới nhất.
                 </Paragraph>
               </Card>
             </Col>
+
             <Col span={8}>
               <Card
                 hoverable
-                style={cardStyle}
+                className="flex flex-col justify-between h-full rounded-lg shadow-md"
                 cover={
-                  <div style={imageContainerStyle}>
+                  <div className="h-48 overflow-hidden rounded-t-lg">
                     <Image
                       alt="Contact Us"
                       src={bgflower2}
-                      style={imageStyle}
+                      className="w-full h-full object-cover"
                     />
                   </div>
                 }
               >
-                <Title level={4}>Liên hệ</Title>
-                <Paragraph>
-                  <Text>
-                    <PhoneOutlined /> +123 456 789
+                <Title level={4} className="text-xl font-bold text-gray-800">
+                  Liên hệ
+                </Title>
+                <Paragraph className="text-gray-600">
+                  <Text className="flex items-center">
+                    <PhoneOutlined className="mr-2" /> +123 456 789
                   </Text>
                   <br />
-                  <Text>
-                    <MailOutlined /> contact@DashStack.com
+                  <Text className="flex items-center">
+                    <MailOutlined className="mr-2" /> contact@DashStack.com
                   </Text>
                 </Paragraph>
               </Card>

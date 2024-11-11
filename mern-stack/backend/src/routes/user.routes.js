@@ -35,7 +35,7 @@ router.get(
 
 // update status user
 router.patch(
-  '/user/:userId/:status',
+  '/user/:userId',
   wrapRequestHandler(verifyToken),
   wrapRequestHandler(checkPermission),
   wrapRequestHandler(updateStatus),

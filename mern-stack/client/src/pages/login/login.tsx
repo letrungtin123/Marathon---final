@@ -22,6 +22,7 @@ export default function LoginPage() {
   const navigate = useNavigate();
   const { setIsAuthenticated } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
+  const [loginError, setLoginError] = useState<string | null>(null);
 
   const {
     register,
@@ -35,17 +36,24 @@ export default function LoginPage() {
   const loginMutation = useMutation({
     mutationKey: ["login"],
     mutationFn: (body: LoginFormType) => authApi.login(body),
-    onSuccess: () => {
-      setIsAuthenticated(true);
-      navigate(path.home);
+    onSuccess: (data) => {
+      // Kiểm tra nếu trạng thái người dùng là inactive
+      if (data?.user?.status === "inactive") {
+        setLoginError("Tài khoản đã bị vô hiệu hóa."); // Set error message
+        setIsAuthenticated(false);
+      } else {
+        setIsAuthenticated(true);
+        navigate(path.home); // Redirect to home if login successful
+      }
     },
     onError: () => {
       setIsAuthenticated(false);
-      navigate(path.login);
+      navigate(path.login); // Stay on login page if error
     },
   });
 
   const onSubmit = (values: LoginFormType) => {
+    setLoginError(null);
     loginMutation.mutate(values);
   };
   return (
@@ -118,7 +126,9 @@ export default function LoginPage() {
                   </p>
                 )}
               </div>
-
+              {loginError && (
+                <div className="text-sm text-red-500">{loginError}</div> // Display error if any
+              )}
               <div className="flex items-center justify-between">
                 <div></div>
                 <div className="text-sm">

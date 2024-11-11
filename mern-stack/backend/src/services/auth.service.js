@@ -21,7 +21,7 @@ export const updatePassword = async (userId, newPassword) => {
 };
 
 // update status user
-export const updateStatusUser = async (userId, status) => {
-  const newUser = await User.findByIdAndUpdate({ _id: userId }, { status }, { new: true });
-  return Boolean(newUser);
+export const updateStatusUser = async (userId, body) => {
+  const newUser = await User.findByIdAndUpdate({ _id: userId },body, { new: true });
+  return newUser;
 };

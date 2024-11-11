@@ -14,7 +14,7 @@ export const registerController = async (req, res) => {
   // check email
   const user = await checkEmailExist(body.email);
   if (user) {
-    return res.status(HTTP_STATUS.UNAUTHORIZED).json({ message: 'Email already exist', success: false });
+    return res.status(HTTP_STATUS.UNAUTHORIZED).json({ message: 'Email đã tồn tại!', success: false });
   }
 
   // hash password
@@ -46,6 +46,13 @@ export const loginController = async (req, res) => {
     return res.status(HTTP_STATUS.UNAUTHORIZED).json({ message: 'Email not found!', success: false });
   }
 
+  //check status
+  if (user.status === 'inactive') {
+    return res.status(HTTP_STATUS.FORBIDDEN).json({
+      message: 'Tài khoản của bạn đã bị vô hiệu hóa. Vui lòng liên hệ với quản trị viên.',
+      success: false,
+    });
+  }
   // compare password
   const isMatch = await handleComparePassword({ password: body.password, hashPassword: user.password });
   if (!isMatch) {

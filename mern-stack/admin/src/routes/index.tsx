@@ -12,6 +12,7 @@ import { createBrowserRouter } from 'react-router-dom'
 import path from '@/configs/path'
 import BrandPage from '@/pages/brand'
 import VoucherPage from '@/pages/voucher'
+import UserPage from '@/pages/users'
 
 const routes = createBrowserRouter([
   {
@@ -29,7 +30,8 @@ const routes = createBrowserRouter([
       { path: path.category, element: <CategoryPage /> },
       { path: path.brand, element: <BrandPage /> },
       { path: path.messagers, element: <Messagers /> },
-      { path: path.voucher, element: <VoucherPage /> }
+      { path: path.voucher, element: <VoucherPage /> },
+      { path: path.users, element: <UserPage /> }
     ]
   },
   {

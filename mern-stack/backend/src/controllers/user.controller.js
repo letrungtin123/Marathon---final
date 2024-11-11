@@ -104,14 +104,15 @@ export const getUsers = async (req, res) => {
 
 // update status
 export const updateStatus = async (req, res) => {
-  const { userId, status } = req.params;
+  const { userId } = req.params;
+  const body = req.body;
 
-  const result = await updateStatusUser(userId, status);
+  const result = await updateStatusUser(userId, body);
   if (!result) {
-    return res.status(HTTP_STATUS.BAD_REQUEST).json({ message: 'Update status faild!', success: false });
+    return res.status(HTTP_STATUS.BAD_REQUEST).json({ message: 'Update status user faild!', success: false });
   }
 
-  return res.status(HTTP_STATUS.OK).json({ message: 'Update status success!', success: true });
+  return res.status(HTTP_STATUS.OK).json({ message: 'Update status user success!', success: true });
 };
 
 // update profile
