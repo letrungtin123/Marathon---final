@@ -7,12 +7,10 @@ import { userApi } from "@/api/user.api";
 import { useNavigate } from "react-router-dom"; // Import useNavigate
 import path from "@/configs/path.config";
 import authApi from "@/api/auth.api";
+import { getAccessTokenFromLS } from "@/utils/auth.util";
 
-interface ProfileCardProps {
-  token: string;
-}
-
-const ProfileCard: React.FC<ProfileCardProps> = ({ token }) => {
+const ProfileCard: React.FC = () => {
+  const token = getAccessTokenFromLS();
   const [formData, setFormData] = useState<TProfile>({
     _id: "",
     fullname: "",
@@ -100,7 +98,9 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ token }) => {
             className={cn("rounded-full shadow-md")}
             alt="User Avatar"
           />
-          <span className="from-neutral-300 justify-center items-center text-white px-10 font-semibold">Hồ sơ người dùng</span>
+          <span className="from-neutral-300 justify-center items-center text-white px-10 font-semibold">
+            Hồ sơ người dùng
+          </span>
         </div>
       }
     >

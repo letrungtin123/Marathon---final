@@ -21,16 +21,21 @@ const LoginPage = () => {
     mutationKey: ['auth-login'],
     mutationFn: (body: TBodyLogin) => login(body),
     onSuccess: (data) => {
+      // Kiểm tra trạng thái người dùng
+      if (data.user?.status === 'inactive') {
+        message.error('Tài khoản đã bị vô hiệu hóa.')
+        setIsLoading(false)
+        return
+      }
       const token = data.accessToken
       dispatch(setAccessToken(data.accessToken))
 
-      // giải mã token để kiểm tra xem có phải là admin hay không
+      // giải mã token để kiểm tra xem có phải là admin hoặc staff hay không
       const decode = jwtDecode(token) as PayloadLogin
       if (decode.role === ERole.CUSTORMER) {
         message.error('Tài khoản hoặc mật khẩu không đúng')
         return
       }
-
       setIsLoading(false)
       message.success('Login success')
       // set token to local storage or cookie
@@ -38,9 +43,13 @@ const LoginPage = () => {
       // redirect to home page
       navigate('/')
     },
-    onError: () => {
+    onError: (error) => {
       setIsLoading(false)
-      message.error('Tài khoản hoặc mật khẩu không đúng')
+      if (error instanceof Error && error.message === 'Tài khoản đã bị vô hiệu hóa.') {
+        message.error(error.message)
+      } else {
+        message.error('Tài khoản hoặc mật khẩu không đúng')
+      }
     }
   })
 

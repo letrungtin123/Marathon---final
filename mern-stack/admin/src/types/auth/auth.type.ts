@@ -9,6 +9,13 @@ export type TResponseLogin = {
   message: string
   success: boolean
   accessToken: string
+  user?: {
+    status: string
+  }
+}
+export type TBodyResetPassword = {
+  newPassword: string
+  confirmPassword: string
 }
 
 export interface PayloadLogin extends JwtPayload {

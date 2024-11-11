@@ -10,7 +10,8 @@ const path = {
   login: '/auth/login',
   brand: '/brand',
   voucher: '/vouchers',
-  users: '/users'
+  users: '/users',
+  profile: '/me'
 }
 
 export default path

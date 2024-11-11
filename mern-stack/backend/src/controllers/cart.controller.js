@@ -58,7 +58,7 @@ export const cartController = {
       await newCart.save();
 
       return res.status(HTTP_STATUS.OK).json({
-        message: 'Add to cart successfully',
+        message: 'Thêm sản phẩm vào giỏ hàng thành công!',
         success: true,
       });
     }

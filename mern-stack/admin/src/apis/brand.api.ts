@@ -36,7 +36,6 @@ export const updateBrand = async (body: TBrand, token: string) => {
 
   return response.data
 }
-console.log('🚀 ~ updateBrand ~ response.data:', updateBrand)
 
 // delete
 export const deleteBrand = async (id: string, token: string) => {

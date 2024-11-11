@@ -104,7 +104,7 @@ const FormOrder = ({ currentData, onClose, refetch }: IFormOrderProps) => {
       setValue(dataOrder.note || '')
     }
   }, [currentData, form])
-  console.log('🚀 ~ useEffect ~ currentData.currentData:', currentData.currentData)
+
   return (
     <Drawer
       title={currentData.type === 'add' ? 'Thêm đơn hàng' : 'Cập nhật đơn hàng'}

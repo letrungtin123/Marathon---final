@@ -3,11 +3,12 @@ import { itemUser } from './init'
 import { ArrowDownCircleIcon } from '@/components/icons'
 import { Dropdown } from 'antd'
 import { useTranslation } from 'react-i18next'
+import { useNavigate } from 'react-router-dom'
 
 const InfoUser = () => {
   const { t } = useTranslation()
-
-  const items = itemUser(t)
+  const navigate = useNavigate()
+  const items = itemUser(t, navigate)
 
   return (
     <Dropdown menu={{ items }}>

@@ -65,7 +65,7 @@ const ProductDetail = () => {
     mutationKey: ["add-to-cart"],
     mutationFn: (body: TAddToCart) => cartApi.addToCart(body),
     onSuccess: () => {
-      toast.success("Add to cart success!");
+      toast.success("Thêm sản phẩm vào giỏ hàng thành công!");
       queryClient.invalidateQueries({ queryKey: ["carts"] });
     },
     onError: () => {
@@ -119,7 +119,7 @@ const ProductDetail = () => {
       };
       addToCartMutation.mutate(data);
     } else {
-      toast.warning("Please select a size, color and quantity");
+      toast.warning("Vui lòng chọn màu sắc, kích cỡ và số lượng");
     }
   };
 
@@ -136,10 +136,10 @@ const ProductDetail = () => {
         <div className="container px-4 mx-auto">
           <div className="flex items-center space-x-2 text-sm text-gray-600">
             <Link to={path.home} className="hover:text-gray-900">
-              Home
+              Trang chủ
             </Link>
             <ChevronRight className="w-4 h-4" />
-            <p className="hover:text-gray-900">Products</p>
+            <p className="hover:text-gray-900">Sản phẩm</p>
             <ChevronRight className="w-4 h-4" />
             <span className="text-gray-900 font-medium">
               {product.nameProduct}

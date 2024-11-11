@@ -1,5 +1,7 @@
+import path from '@/configs/path'
 import { MenuProps } from 'antd'
 import { TFunction } from 'i18next'
+import { useNavigate } from 'react-router-dom'
 
 export const itemsLanguage = (t: TFunction) => {
   const items: MenuProps['items'] = [
@@ -16,10 +18,11 @@ export const itemsLanguage = (t: TFunction) => {
   return items
 }
 
-export const itemUser = (t: TFunction) => {
+export const itemUser = (t: TFunction, navigate: ReturnType<typeof useNavigate>) => {
   const itemsUser: MenuProps['items'] = [
     {
       key: '1',
+      onClick: () => navigate(`${path.profile}`),
       label: <p className=''>{t('userMenu.profile')}</p>
     },
     {

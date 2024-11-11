@@ -13,6 +13,8 @@ import path from '@/configs/path'
 import BrandPage from '@/pages/brand'
 import VoucherPage from '@/pages/voucher'
 import UserPage from '@/pages/users'
+import ProfileCard from '@/pages/profile/profile'
+// import { useAppSelector } from '@/stores/hooks'
 
 const routes = createBrowserRouter([
   {
@@ -31,7 +33,8 @@ const routes = createBrowserRouter([
       { path: path.brand, element: <BrandPage /> },
       { path: path.messagers, element: <Messagers /> },
       { path: path.voucher, element: <VoucherPage /> },
-      { path: path.users, element: <UserPage /> }
+      { path: path.users, element: <UserPage /> },
+      { path: path.profile, element: <ProfileCard /> }
     ]
   },
   {

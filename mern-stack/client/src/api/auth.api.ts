@@ -6,8 +6,8 @@ import {
 } from "@/types/auth.type";
 
 const authApi = {
-  login: (body: { email: string; password: string }) => {
-    return http
+  login: async (body: { email: string; password: string }) => {
+    return await http
       .post(`/login`, body)
       .then((response) => {
         const { data } = response;

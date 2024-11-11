@@ -9,15 +9,16 @@ import { useTranslation } from 'react-i18next'
 import InfoUser from './info-user'
 import { itemsLanguage } from './init'
 import Notification from './notification'
+// import { useNavigate } from 'react-router-dom'
 
 const Header = () => {
   const { t } = useTranslation()
   const { language } = useAppSelector((state: RootState) => state.language)
   const { setLanguage } = useLanguage()
   const dispath = useAppDispatch()
-
   const items = itemsLanguage(t)
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleDropdownItemClick = (e: any) => {
     const key = e.key
     setLanguage(key)

@@ -10,7 +10,6 @@ export const getOrders = async (token: string, params?: TQueryParams): Promise<T
       Authorization: `Bearer ${token}`
     }
   })
-  console.log('🚀 ~ getOrders ~ response.data:', response.data)
   return response.data
 }
 

@@ -11,4 +11,14 @@ export type TUser = {
   avatar: string
 }
 
+export interface TProfile {
+  _id?: string
+  fullname: string
+  email: string
+  phone: string | number
+  address: string
+  updatedAt?: Date
+  status?: string
+  avatar?: string
+}
 export type TFormUser = Pick<TUser, 'status'>
