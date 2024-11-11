@@ -10,6 +10,7 @@ import { useMutation } from '@tanstack/react-query'
 import { jwtDecode } from 'jwt-decode'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import Logo from '@/assets/images/LogoProject.png'
 const LoginPage = () => {
   const { t } = useTranslation()
   const [form] = Form.useForm()
@@ -61,9 +62,9 @@ const LoginPage = () => {
   return (
     <div className='sm:mx-auto sm:w-full sm:max-w-md p-6 bg-white bg-opacity-90 rounded-xl shadow-lg border border-gray-200'>
       <div className='flex flex-col items-center w-full h-full'>
-        <div className='h-16 w-32 bg-gradient-to-r from-green-600 to-green-400 font-semibold rounded-xl flex items-center justify-center text-3xl shadow-md'>
-          <div className='text-xl font-extrabold font-nunito-sans text-gray-800'>
-            <span className='text-green-800'>Dash</span>Stack
+        <div className='h-20 w-40  font-semibold  flex items-center justify-center text-3xl '>
+          <div className='text-xl '>
+            <img src={Logo} alt='' />
           </div>
         </div>
 

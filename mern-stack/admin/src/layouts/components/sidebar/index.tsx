@@ -1,6 +1,6 @@
 import { Link, useLocation } from 'react-router-dom'
 import { useEffect, useState } from 'react'
-
+import Logo from '@/assets/images/LogoProject.png'
 import { Menu } from 'antd'
 import { cn } from '@/utils/cn'
 import { menus } from './menu'
@@ -14,20 +14,21 @@ const Sidebar = () => {
   useEffect(() => {
     const menuIndex = menus.findIndex((menu) => menu.link === pathName)
     setActiveSidebar(menuIndex + 1)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return (
     <div className='h-screen overflow-y-scroll border-r border-r-gray-light scrollbar-hide'>
       <section className='flex items-center justify-center w-full h-header'>
-        <div className='h-10 w-32 bg-gradient-to-r from-green-600 to-green-400 font-semibold rounded-xl flex items-center justify-center text-3xl shadow-md'>
-          <div className='text-xl font-extrabold font-nunito-sans text-gray-800'>
-            <span className='text-green-800'>Dash</span>Stack
+        <div className='h-16 w-32  font-semibold  flex items-center justify-center text-3xl '>
+          <div className='text-xl '>
+            <img src={Logo} alt='' />
           </div>
         </div>
       </section>
 
       {/* menu */}
-      <Menu defaultSelectedKeys={['1']} defaultOpenKeys={['sub1']} mode='inline'>
+      <Menu defaultSelectedKeys={['1']} defaultOpenKeys={['sub1']} mode='inline' className='mt-5'>
         {menus.map((menu, index) => (
           <Menu.Item
             className='relative !rounded-none !bg-white w-full'

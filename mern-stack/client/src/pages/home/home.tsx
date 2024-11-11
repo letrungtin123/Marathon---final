@@ -33,7 +33,7 @@ const HomePage = () => {
   };
 
   return (
-    <main className="container flex flex-col flex-grow px-4 py-8 mx-auto mt-0 space-y-6">
+    <main className="container flex flex-col flex-grow px-4 py-2 mx-auto mt-0 space-y-6">
       {/* Phần Carousel */}
       {isParamsEmpty && (
         <Carousel
@@ -44,7 +44,7 @@ const HomePage = () => {
           autoplaySpeed={1600}
           className="mb-8"
         >
-          <div className="mt-0 h-1.5/4">
+          <div className="mt-0 h-1.6/4">
             <img
               src="https://assets.eflorist.com/images/homepage/immersion/immersion_banner_fall.gif"
               alt="Slide 1"

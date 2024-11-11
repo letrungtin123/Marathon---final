@@ -13,6 +13,7 @@ import { useForm } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
+import Logo from '@/assets/LogoProject.png'
 import bg from "@/assets/bg.png";
 
 type RegisterFormType = Pick<
@@ -63,9 +64,9 @@ export default function RegisterPage() {
           Đăng Ký
         </h2>
         <section className="flex items-center justify-center w-full h-header mt-9">
-          <div className="h-16 w-32 bg-gradient-to-r from-green-600 to-green-400 font-semibold rounded-xl flex items-center justify-center text-3xl shadow-md">
-            <div className="text-xl font-extrabold font-nunito-sans text-gray-800">
-              <span className="text-green-800">Dash</span>Stack
+        <div className="h-20 w-40  font-semibold  flex items-center justify-center text-3xl ">
+            <div className="text-xl ">
+              <img src={Logo} alt="" />
             </div>
           </div>
         </section>

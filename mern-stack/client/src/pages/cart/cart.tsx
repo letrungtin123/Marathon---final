@@ -1,4 +1,4 @@
-import { ChevronRight, Minus, Plus, X } from "lucide-react";
+import { ChevronRight, Minus, Plus } from "lucide-react";
 
 import { cartApi } from "@/api/cart.api";
 import { userApi } from "@/api/user.api";
@@ -67,7 +67,11 @@ const Cart = () => {
     updateQuatityMutation.mutate(body, {
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ["carts"] });
-        toast.success(body.status === "increase" ? "Increase" : "Decrease");
+        toast.success(
+          body.status === "increase"
+            ? "Đã tăng số lượng sản phẩm"
+            : "Đã giảm số lượng sản phẩm"
+        );
       },
     });
   };
@@ -171,7 +175,7 @@ const Cart = () => {
                     <Plus className="w-4 h-4" />
                   </Button>
                 </div>
-                <Button
+                {/* <Button
                   variant="ghost"
                   size="icon"
                   // onClick={() => removeItem(item.id)}
@@ -179,7 +183,7 @@ const Cart = () => {
                   aria-label="Xóa sản phẩm"
                 >
                   <X className="w-4 h-4" />
-                </Button>
+                </Button> */}
               </div>
             ))}
           </div>
@@ -201,7 +205,10 @@ const Cart = () => {
                   <span>{total ? formatCurrency(total + 10000) : 0}đ</span>
                 </div>
               </div>
-              <Button className="w-full mt-6 bg-green-900" onClick={() => handleCheckout()}>
+              <Button
+                className="w-full mt-6 bg-green-900"
+                onClick={() => handleCheckout()}
+              >
                 Tiến hành thanh toán
               </Button>
               <Button

@@ -21,6 +21,7 @@ import aboutus from "@/assets/documents.gif";
 import holicolor from "@/assets/holi-colors.gif";
 import event from "@/assets/event.gif";
 import love from "@/assets/kpop.gif";
+import Logo from "@/assets/LogoProject.png";
 const HeaderLayout = () => {
   const { isAuthenticated, setIsAuthenticated } = useAuth();
   const queryClient = useQueryClient();
@@ -56,10 +57,8 @@ const HeaderLayout = () => {
               to={`/`}
               className="text-xl font-extrabold font-nunito-sans flex items-center p-0 m-0"
             >
-              <div className="h-12 w-32 bg-gradient-to-r from-green-600 to-green-400 font-semibold rounded-xl flex items-center justify-center text-3xl shadow-md">
-                <div className="text-xl font-extrabold font-nunito-sans text-gray-800">
-                  <span className="text-green-800">Dash</span>Stack
-                </div>
+              <div className="h-12 w-32  font-semibold  flex items-center justify-center text-3xl ">
+                <img src={Logo} alt="" />
               </div>
             </Link>
           </section>
