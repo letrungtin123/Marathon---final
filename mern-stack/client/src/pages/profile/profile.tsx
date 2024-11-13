@@ -154,7 +154,7 @@ const ProfileCard: React.FC = () => {
           className="bg-green-800 text-white"
           onClick={() => setShowPasswordFields(!showPasswordFields)}
         >
-          Đổi mật khẩu
+          {showPasswordFields ? "Hủy" : "Đổi mật khẩu"}
         </Button>
       </div>
 

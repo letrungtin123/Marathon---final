@@ -173,7 +173,7 @@ const FormOrder = ({ currentData, onClose, refetch }: IFormOrderProps) => {
                 {currentData.currentData?.products.map((product, index) => (
                   <div key={index} className='ml-4 mb-2'>
                     <div>
-                      <strong>Tên sản phẩm:</strong> {product.productId.nameProduct}
+                      <strong>Tên sản phẩm:</strong> {product.productId?.nameProduct}
                     </div>
                     <div>
                       <strong>Số lượng:</strong> {product.quantity}

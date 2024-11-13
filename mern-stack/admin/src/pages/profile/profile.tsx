@@ -84,7 +84,13 @@ const ProfileCard: React.FC = () => {
 
   return (
     <Card
-      className='max-w-md mx-auto bg-white shadow-md rounded-lg overflow-hidden mt-6 '
+      className='max-w-md mx-auto bg-white shadow-md rounded-lg overflow-hidden mt-6'
+      style={{
+        backgroundImage:
+          'url("https://media.istockphoto.com/id/1330668657/vector/watercolor-vector-card-of-green-branches-and-leaves-isolated-on-a-white-background-flower.jpg?s=612x612&w=0&k=20&c=_6cBkCJh0Cl5SrZNVfzDCm7OVWveILlsVFjY9J-V430=")',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center'
+      }}
       cover={
         <div className='flex justify-center items-center p-4 ' style={{ backgroundColor: '#969F8E' }}>
           <Avatar
@@ -131,7 +137,7 @@ const ProfileCard: React.FC = () => {
       </div>
       <div className='flex justify-center pt-4'>
         <Button className='bg-green-800 text-white' onClick={() => setShowPasswordFields(!showPasswordFields)}>
-          Đổi mật khẩu
+          {showPasswordFields ? 'Hủy' : 'Đổi mật khẩu'}
         </Button>
       </div>
 

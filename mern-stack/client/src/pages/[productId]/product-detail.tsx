@@ -69,7 +69,7 @@ const ProductDetail = () => {
       queryClient.invalidateQueries({ queryKey: ["carts"] });
     },
     onError: () => {
-      toast.error("Add to cart faild!");
+      toast.error("Vui lòng đăng nhập!");
     },
   });
 

@@ -46,7 +46,7 @@ const HomePage = () => {
     datasets: [
       {
         label: 'Doanh thu',
-        data: [1200000, 1500000, 1700000, 1400000, 1900000, 2200000],
+        data: [12000000, 15000000, 17000000, 14000000, 19000000, 22000000],
         borderColor: '#14532D',
         backgroundColor: 'rgba(20, 83, 45, 0.2)',
         pointBorderColor: '#14532D',
@@ -55,7 +55,7 @@ const HomePage = () => {
       },
       {
         label: 'Lợi nhuận',
-        data: [1000000, 1300000, 1600000, 1100000, 1800000, 2100000],
+        data: [10000000, 13000000, 16000000, 11000000, 18000000, 21000000],
         borderColor: '#b04e4e',
         backgroundColor: 'rgba(176, 78, 78, 0.2)',
         pointBorderColor: '#b04e4e',
@@ -64,7 +64,7 @@ const HomePage = () => {
       },
       {
         label: 'Chi tiêu',
-        data: [800000, 900000, 1200000, 1500000, 1400000, 1800000],
+        data: [8000000, 9000000, 12000000, 15000000, 14000000, 18000000],
         borderColor: '#3b5998',
         backgroundColor: 'rgba(59, 89, 152, 0.2)',
         pointBorderColor: '#3b5998',
@@ -79,18 +79,27 @@ const HomePage = () => {
     datasets: [
       {
         label: 'Doanh thu',
-        data: [1200000, 1500000, 1700000, 1400000, 1900000, 2200000],
-        backgroundColor: '#14532D'
+        data: [12000000, 15000000, 17000000, 14000000, 19000000, 22000000],
+        backgroundColor: '#14532D',
+        pointBorderColor: '#14532D',
+        pointBackgroundColor: '#ffffff',
+        tension: 0.4
       },
       {
         label: 'Lợi nhuận',
-        data: [1000000, 1300000, 1600000, 1100000, 1800000, 2100000],
-        backgroundColor: '#b04e4e'
+        data: [10000000, 13000000, 16000000, 11000000, 18000000, 21000000],
+        backgroundColor: '#b04e4e',
+        pointBorderColor: '#14532D',
+        pointBackgroundColor: '#ffffff',
+        tension: 0.4
       },
       {
         label: 'Chi tiêu',
-        data: [800000, 900000, 1200000, 1500000, 1400000, 1800000],
-        backgroundColor: '#3b5998'
+        data: [8000000, 9000000, 12000000, 15000000, 14000000, 18000000],
+        backgroundColor: '#3b5998',
+        pointBorderColor: '#14532D',
+        pointBackgroundColor: '#ffffff',
+        tension: 0.4
       }
     ]
   }
@@ -135,7 +144,7 @@ const HomePage = () => {
           color: '#333',
           callback: (tickValue: string | number) => {
             if (typeof tickValue === 'number') {
-              return tickValue.toLocaleString() + ' VND'
+              return tickValue.toLocaleString()
             }
             return tickValue
           }

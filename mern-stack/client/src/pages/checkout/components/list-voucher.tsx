@@ -10,7 +10,8 @@ import {
 import { formatCurrency } from "@/utils/format-currency.util";
 import { useQuery } from "@tanstack/react-query";
 import dayjs from "dayjs";
-import { CalendarCheck2, TicketCheck } from "lucide-react";
+import { CalendarCheck2 } from "lucide-react";
+import vouchericon from "@/assets/coupontest.gif";
 
 const ListVoucher = () => {
   // call api voucher
@@ -39,7 +40,12 @@ const ListVoucher = () => {
                     {voucher.code}
                   </CardTitle>
                   <p className="flex items-center gap-2">
-                    <TicketCheck /> {formatCurrency(voucher.voucherPrice)}đ
+                    <img
+                      src={vouchericon}
+                      alt="voucher"
+                      className="w-8 h-8 p-0 m-0"
+                    />
+                    {formatCurrency(voucher.voucherPrice)}đ
                   </p>
                 </CardHeader>
                 <CardContent className="pb-0 flex justify-between items-center">
