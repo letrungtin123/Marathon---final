@@ -156,7 +156,7 @@ const MainProduct = ({ products, isLoading, getData, totalDocs }: MainProductPro
           showTotal(total, range) {
             return (
               <div className='flex items-center justify-between w-full mr-auto text-black-second'>
-                Showing {range[0]}-{range[1]} of {total}
+                Hiển thị {range[0]}-{range[1]} sản phẩm của tổng {total} sản phẩm
               </div>
             )
           }

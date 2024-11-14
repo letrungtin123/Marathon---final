@@ -160,11 +160,11 @@ const FormOrder = ({ currentData, onClose, refetch }: IFormOrderProps) => {
             <Col span={9}>
               <Form.Item name={'status'} label='Trạng thái đơn hàng' className='w-25'>
                 <Select value={currentData.currentData?.status} className='w-20 h-full'>
-                  <Select.Option value='pending'>pending</Select.Option>
-                  <Select.Option value='confirmed'>confirmed</Select.Option>
-                  <Select.Option value='delivery'>delivery</Select.Option>
-                  <Select.Option value='completed'>completed</Select.Option>
-                  <Select.Option value='cancelled'> cancelled</Select.Option>
+                  <Select.Option value='pending'>Đang chờ</Select.Option>
+                  <Select.Option value='confirmed'>Đã xác nhận</Select.Option>
+                  <Select.Option value='delivery'>Đang vận chuyển</Select.Option>
+                  <Select.Option value='completed'>Đã hoàn thành</Select.Option>
+                  <Select.Option value='cancelled'> Đã hủy</Select.Option>
                 </Select>
               </Form.Item>
             </Col>

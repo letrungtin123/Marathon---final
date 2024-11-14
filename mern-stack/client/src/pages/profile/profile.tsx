@@ -90,7 +90,12 @@ const ProfileCard: React.FC = () => {
       cover={
         <div
           className="flex justify-center items-center p-4 "
-          style={{ backgroundColor: "#969F8E" }}
+          style={{
+            backgroundImage:
+              'url("https://marketplace.canva.com/EAFUFiGX5ek/1/0/1600w/canva-colorful-watercolor-floral-linktree-background-qRHfsd-4Nmc.jpg")',
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+          }}
         >
           <Avatar
             src={formData.avatar || "https://picsum.photos/536/354"}
@@ -98,13 +103,21 @@ const ProfileCard: React.FC = () => {
             className={cn("rounded-full shadow-md")}
             alt="User Avatar"
           />
-          <span className="from-neutral-300 justify-center items-center text-white px-10 font-semibold">
+          <span className="from-neutral-300 justify-center items-center text-green-900 px-10 font-semibold">
             Hồ sơ người dùng
           </span>
         </div>
       }
     >
-      <div className="p-4 text-center flex">
+      <div
+        className="p-4 text-center flex"
+        style={{
+          backgroundImage:
+            'url("https://images.rawpixel.com/image_800/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIyLTA1L3JtNDI4LTAwNTRfMS5qcGc.jpg")',
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+      >
         <h2 className="text-xl font-semibold">
           <Input
             name="fullname"

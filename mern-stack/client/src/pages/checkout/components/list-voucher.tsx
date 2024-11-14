@@ -32,8 +32,8 @@ const ListVoucher = () => {
           vouchers.map((voucher) => {
             return (
               <Card
-                className="cursor-pointer hover:shadow-md hover:bg-gray-100"
-                key={voucher._id}
+                className="cursor-pointer hover:shadow-md hover:bg-gray-100 bg-lime-50"
+                key={voucher._id} 
               >
                 <CardHeader className="pb-0 flex-row justify-between">
                   <CardTitle className="font-medium text-base">

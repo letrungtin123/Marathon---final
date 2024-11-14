@@ -14,6 +14,7 @@ import { useAuth } from '@/contexts/auth-context'
 import { useQuery } from '@tanstack/react-query'
 import { useQueryParams } from '@/hooks/useQueryParams'
 import { useToggleModal } from '@/hooks/useToggleModal'
+import NavbarNoButton from '@/components/navbar/index(nobutton)'
 
 const OrderPage = () => {
   const { accessToken } = useAuth()
@@ -36,6 +37,18 @@ const OrderPage = () => {
       setOrders(data.docs)
     }
   }, [isSuccess, data])
+  const [inputValue, setInputValue] = useState<string>('')
+  const handleSearch = (value: string) => {
+    setInputValue(value)
+    navigate({
+      pathname: '/orders',
+      search: createSearchParams({
+        ...queryParams,
+        _page: '1',
+        q: value
+      }).toString()
+    })
+  }
 
   // const [inputValue, setInputValue] = useState<string>('')
 
@@ -144,7 +157,6 @@ const OrderPage = () => {
   if (isLoading) {
     return <div>Loading...</div>
   }
-
   const items: TabsProps['items'] = [
     {
       key: '1',
@@ -187,20 +199,14 @@ const OrderPage = () => {
 
   return (
     <div className='bg-gray-third py-[30px] px-[30px]'>
-      {/* <Navbar
-        button={{
-          title: 'Thêm đơn hàng',
-          size: 'large',
-          type: 'primary',
-          onClick: () => onOpenModal('add')
-        }}
+      <NavbarNoButton
         input={{
-          placeholder: 'Search for order',
+          placeholder: 'Search for product',
           onSearch: (value) => handleSearch(value),
           value: inputValue,
           onChange: (value) => setInputValue(value)
         }}
-      /> */}
+      />
 
       <div>
         <Tabs defaultActiveKey={queryParams.tab || '1'} items={items} onChange={(value) => handleChangeTab(value)} />

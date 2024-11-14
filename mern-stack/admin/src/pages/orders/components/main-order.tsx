@@ -57,7 +57,7 @@ const MainOrder = ({ orders, isLoading, getData, totalDocs }: MainOrderProps) =>
           showTotal(total, range) {
             return (
               <div className='flex items-center justify-between w-full mr-auto text-black-second'>
-                Showing {range[0]}-{range[1]} of {total}
+                Hiển thị {range[0]}-{range[1]} đơn của tổng {total} đơn
               </div>
             )
           }

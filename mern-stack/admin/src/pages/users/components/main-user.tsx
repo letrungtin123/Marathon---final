@@ -75,7 +75,7 @@ const MainUser = ({ users, isLoading, totalDocs }: MainUserProps) => {
           showTotal(total, range) {
             return (
               <div className='flex items-center justify-between w-full mr-auto text-black-second'>
-                Showing {range[0]}-{range[1]} of {total}
+                Hiển thị {range[0]}-{range[1]} của tổng {total} người dùng
               </div>
             )
           }

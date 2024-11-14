@@ -91,7 +91,7 @@ const ColumnsTable = ({ getData }: ColumnsTableProps) => {
       }
     },
     {
-      title: 'Actions',
+      title: 'Sửa',
       dataIndex: 'action',
       key: 'action',
       render: (_: string, record: TOrder) => {
