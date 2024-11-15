@@ -7,7 +7,7 @@ export const verifyToken = async (req, res, next) => {
   const { query } = req;
 
   if (!beaerToken) {
-    return res.status(HTTP_STATUS.UNAUTHORIZED).json({ message: 'Access denied!', success: false });
+    return res.status(HTTP_STATUS.UNAUTHORIZED).json({ message: 'Vui lòng đăng nhập!', success: false });
   }
 
   const token = beaerToken.split(' ')[1];

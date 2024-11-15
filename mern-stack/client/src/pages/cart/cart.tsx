@@ -3,28 +3,26 @@ import { ChevronRight, Minus, Plus } from "lucide-react";
 import { cartApi } from "@/api/cart.api";
 import { userApi } from "@/api/user.api";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Separator } from "@/components/ui/separator";
 import path from "@/configs/path.config";
+import { addToListCheckout } from "@/stores/features/cart/cart-slice";
 
 import { Cart as CartType, TUpdateQuantityInCart } from "@/types/cart.type";
 import { formatCurrency } from "@/utils/format-currency.util";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { omit } from "lodash";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { useAppDispatch, useAppSelector } from "@/stores/hook";
-import { RootState } from "@/stores/store";
-import { addToListCheckout } from "@/stores/features/cart/cart-slice";
+import { useAppDispatch } from "@/stores/hook";
+
+type CartItem = CartType & { checked: boolean };
 
 const Cart = () => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { carts: cartsListStore } = useAppSelector(
-    (state: RootState) => state.cart
-  );
-  console.log("🚀 ~ Cart ~ carts:", cartsListStore);
 
   const { data } = useQuery({
     queryKey: ["me"],
@@ -37,10 +35,23 @@ const Cart = () => {
     queryKey: ["carts"],
     queryFn: () => cartApi.getAllCarts(),
   });
-  const total = responseCarts?.data?.total;
   const carts = responseCarts?.data?.carts;
 
-  const [cartItems, setCartItems] = useState<CartType[] | undefined>(carts);
+  const [cartItems, setCartItems] = useState<CartItem[] | undefined>([]);
+
+  // lấy ra những sản phẩm có checked là true
+  const checkedPurchases = useMemo(
+    () => cartItems?.filter((cart) => cart.checked),
+    [cartItems]
+  );
+
+  // tính tổng tiền các sản phẩm có checked là true
+  const totalCheckedPurchase = useMemo(() => {
+    const totalProductChecked = checkedPurchases?.reduce((total, purchase) => {
+      return total + purchase.quantity * purchase.productId.price;
+    }, 0);
+    return totalProductChecked;
+  }, [checkedPurchases]);
 
   const updateQuatityMutation = useMutation({
     mutationKey: ["update-quantity"],
@@ -67,18 +78,25 @@ const Cart = () => {
     updateQuatityMutation.mutate(body, {
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ["carts"] });
-        toast.success(
-          body.status === "increase"
-            ? "Đã tăng số lượng sản phẩm"
-            : "Đã giảm số lượng sản phẩm"
-        );
+        toast.success(body.status === "increase" ? "Increase" : "Decrease");
       },
     });
   };
 
+  const handleCheckedChange = (value: boolean, productId: string) => {
+    const newCarts = cartItems?.map((cart) => {
+      if (cart._id === productId) {
+        return { ...cart, checked: value };
+      }
+      return cart;
+    });
+    setCartItems(newCarts);
+  };
+
   useEffect(() => {
     if (carts) {
-      setCartItems(carts);
+      const purchases = carts.map((cart) => ({ ...cart, checked: false }));
+      setCartItems(purchases);
     }
   }, [carts]);
 
@@ -86,7 +104,10 @@ const Cart = () => {
     return <p>Giỏ hàng của bạn đang trống.</p>;
 
   const handleCheckout = () => {
-    dispatch(addToListCheckout(cartItems));
+    if (!checkedPurchases || checkedPurchases?.length === 0) return;
+    dispatch(
+      addToListCheckout(checkedPurchases.map((item) => omit(item, ["checked"])))
+    );
     navigate(path.checkout);
   };
 
@@ -111,15 +132,26 @@ const Cart = () => {
           <div className="lg:w-2/3">
             {cartItems.map((item) => (
               <div key={item._id} className="flex items-center py-4 border-b">
+                <div className="mr-4">
+                  <Checkbox
+                    checked={item.checked}
+                    onCheckedChange={(value) => {
+                      handleCheckedChange(value as boolean, item._id);
+                    }}
+                  />
+                </div>
                 <img
                   src={item?.productId?.images[0]?.url}
                   alt={item?.productId?.nameProduct}
                   className="object-cover w-20 h-20 rounded"
                 />
                 <div className="flex-grow ml-4">
-                  <h3 className="font-semibold">
+                  <label
+                    htmlFor={`terms-${item._id}`}
+                    className="font-semibold"
+                  >
                     {item?.productId?.nameProduct}
-                  </h3>
+                  </label>
                   <p className="">Size: {item?.size}</p>
                   <div className="flex items-center gap-3">
                     <span className="">Color: </span>
@@ -175,15 +207,6 @@ const Cart = () => {
                     <Plus className="w-4 h-4" />
                   </Button>
                 </div>
-                {/* <Button
-                  variant="ghost"
-                  size="icon"
-                  // onClick={() => removeItem(item.id)}
-                  className="ml-4"
-                  aria-label="Xóa sản phẩm"
-                >
-                  <X className="w-4 h-4" />
-                </Button> */}
               </div>
             ))}
           </div>
@@ -193,20 +216,26 @@ const Cart = () => {
               <div className="space-y-2">
                 <div className="flex justify-between">
                   <span>Tạm tính:</span>
-                  <span>{total ? formatCurrency(total) : 0}đ</span>
+                  <span>
+                    {totalCheckedPurchase
+                      ? formatCurrency(totalCheckedPurchase)
+                      : 0}
+                    đ
+                  </span>
                 </div>
-                <div className="flex justify-between">
-                  <span>Giá ship:</span>
-                  <span>10.000đ</span>
-                </div>
+                {/* <div className="flex justify-between">
+									<span>Giá ship:</span>
+									<span>10.000đ</span>
+								</div> */}
                 <Separator className="my-2" />
-                <div className="flex justify-between font-semibold">
-                  <span>Tổng cộng:</span>
-                  <span>{total ? formatCurrency(total + 10000) : 0}đ</span>
-                </div>
+                {/* <div className="flex justify-between font-semibold">
+									<span>Tổng cộng:</span>
+									<span>{total ? formatCurrency(total + 10000) : 0}đ</span>
+								</div> */}
               </div>
               <Button
-                className="w-full mt-6 bg-green-900"
+                disabled={checkedPurchases?.length === 0}
+                className="w-full mt-6"
                 onClick={() => handleCheckout()}
               >
                 Tiến hành thanh toán

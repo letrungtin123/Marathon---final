@@ -1,3 +1,4 @@
+import { useState } from "react"; // Import useState for managing selected voucher state
 import { voucherApi } from "@/api/voucher.api";
 import { Button } from "@/components/ui/button";
 import {
@@ -7,13 +8,23 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { TVoucher } from "@/types/voucher.type";
 import { formatCurrency } from "@/utils/format-currency.util";
 import { useQuery } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import { CalendarCheck2 } from "lucide-react";
 import vouchericon from "@/assets/coupontest.gif";
 
-const ListVoucher = () => {
+type ListVoucherProps = {
+  onSelectedVoucher: (voucher: TVoucher) => void;
+};
+
+const ListVoucher = ({ onSelectedVoucher }: ListVoucherProps) => {
+  // State to store selected voucher
+  const [selectedVoucherId, setSelectedVoucherId] = useState<string | null>(
+    null
+  );
+
   // call api voucher
   const { data: responseVouchers } = useQuery({
     queryKey: ["voucher"],
@@ -21,6 +32,12 @@ const ListVoucher = () => {
       voucherApi.getVouchers({ status: "active", is_deleted: false }),
   });
   const vouchers = responseVouchers?.data;
+
+  // Handle voucher selection and update selected state
+  const handleVoucherClick = (voucher: TVoucher) => {
+    setSelectedVoucherId(voucher._id); // Update selected voucher state
+    onSelectedVoucher(voucher);
+  };
 
   return (
     <div className="p-6 bg-white rounded-lg shadow">
@@ -30,10 +47,14 @@ const ListVoucher = () => {
         {vouchers &&
           vouchers.length > 0 &&
           vouchers.map((voucher) => {
+            const isSelected = selectedVoucherId === voucher._id; 
             return (
               <Card
-                className="cursor-pointer hover:shadow-md hover:bg-gray-100 bg-lime-50"
-                key={voucher._id} 
+                className={`cursor-pointer hover:shadow-md hover:bg-gray-100 ${
+                  isSelected ? "bg-blue-100" : ""
+                }`} 
+                key={voucher._id}
+                onClick={() => handleVoucherClick(voucher)} 
               >
                 <CardHeader className="pb-0 flex-row justify-between">
                   <CardTitle className="font-medium text-base">
