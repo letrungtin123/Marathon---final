@@ -217,6 +217,9 @@ const HeaderLayout = () => {
                   <Link to={path.profile}>Hồ sơ</Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem>
+                  <Link to={path.orderStatus}>Lịch sử đặt hàng</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem>
                   <Button
                     variant={"ghost"}
                     className="justify-start w-full p-0 text-left h-fit hover:bg-transparent"

@@ -34,6 +34,9 @@ import { formatCurrency } from "@/utils/format-currency.util";
 
 import { CheckCircle, Eye, Package } from "lucide-react";
 import { PopoverClose } from '@radix-ui/react-popover';
+// import { useEffect, useState } from "react";
+// import { orderApi } from "@/api/order.api";
+// import { TOrder } from "@/types/order.type";
 const orders = [
   {
     id: "od1",
@@ -73,6 +76,21 @@ const orders = [
 ];
 
 const OrderStatus = () => {
+  // const [orders, setOrders] = useState<TOrder[]>([]); 
+  // const userId = localStorage.getItem("userId") || ""; 
+
+  // useEffect(() => {
+  //   const fetchOrders = async () => {
+  //     try {
+  //       const data = await orderApi.getOrdersByUserId(userId);
+  //       setOrders(data.data); // Gán danh sách đơn hàng từ API vào state
+  //     } catch (error) {
+  //       console.error("Lỗi khi lấy đơn hàng:", error);
+  //     }
+  //   };
+
+  //   fetchOrders();
+  // }, [userId]);
   const getStatusColor = (status: string) => {
     switch (status) {
       case "completed":

@@ -33,7 +33,7 @@ const DialogOrder = ({ open, onClose }: IDialogModal) => {
 					<Button variant={"outline"} onClick={() => navigate(path.home)}>
 						Về trang chủ
 					</Button>
-					<Button onClick={() => navigate(path.orderStatus)}>
+					<Button onClick={() => navigate(`/order/:userId`)}>
 						Quản lý đơn hàng
 					</Button>
 				</DialogFooter>

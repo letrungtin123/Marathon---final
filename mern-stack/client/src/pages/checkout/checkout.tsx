@@ -172,10 +172,10 @@ const Checkout = () => {
 									<div className="flex items-center mb-2 space-x-2">
 										<RadioGroupItem
 											disabled={true}
-											value="paypal"
-											id="paypal"
+											value="vnpay"
+											id="vnpay"
 										/>
-										<Label htmlFor="paypal">PayPal</Label>
+										<Label htmlFor="vnpay">VNPay</Label>
 									</div>
 									<div className="flex items-center space-x-2">
 										<RadioGroupItem
