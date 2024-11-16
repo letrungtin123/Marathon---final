@@ -67,10 +67,15 @@ export const ValidatePayment = async (req, res) => {
     const signed = hmac.update(new Buffer(signData, 'utf-8')).digest("hex");
 
 
+    const rspCode = vnp_Params['vnp_ResponseCode'];
+
     if(secureHash === signed) {
-        const orderId = vnp_Params['vnp_TxnRef'];
-        const rspCode = vnp_Params['vnp_ResponseCode'];
-        res.status(200).json({RspCode: '00', Message: 'success'})
+        if(rspCode === "00"){
+            res.status(200).json({RspCode: rspCode, Message: 'Success'})
+        }
+        else {
+            res.status(200).json({RspCode: rspCode, Message: 'Failed'})
+        }
     }
     else {
         res.status(200).json({RspCode: '97', Message: 'Fail checksum'})
