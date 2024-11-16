@@ -11,6 +11,7 @@ const path = {
   aboutus: "/aboutus",
   resetpass: "/reset-password",
   orderStatus: "/order-status",
+  vnpayResult: "/vnpay-result",
 };
 
 export default path;

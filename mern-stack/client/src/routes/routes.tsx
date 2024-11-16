@@ -12,6 +12,7 @@ import path from '@/configs/path.config';
 import AboutUs from '@/pages/aboutus';
 import RegisterPage from '@/pages/register';
 import { OrderStatus } from '@/pages/order-status';
+import VNPayResult from '@/pages/vnpay/afterbanking';
 
 export const routes = createBrowserRouter([
 	{
@@ -49,6 +50,14 @@ export const routes = createBrowserRouter([
 				element: (
 					<RootLayout>
 						<OrderStatus />
+					</RootLayout>
+				),
+			},
+			{
+				path: path.vnpayResult, 
+				element: (
+					<RootLayout>
+						<VNPayResult />
 					</RootLayout>
 				),
 			},

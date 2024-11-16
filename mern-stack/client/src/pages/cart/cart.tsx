@@ -235,7 +235,7 @@ const Cart = () => {
               </div>
               <Button
                 disabled={checkedPurchases?.length === 0}
-                className="w-full mt-6"
+                className="w-full mt-6 bg-green-900"
                 onClick={() => handleCheckout()}
               >
                 Tiến hành thanh toán

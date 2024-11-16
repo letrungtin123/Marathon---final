@@ -1,4 +1,3 @@
-
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -32,8 +31,9 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { formatCurrency } from "@/utils/format-currency.util";
 
-import { CheckCircle, Eye, Package } from "lucide-react";
-import { PopoverClose } from '@radix-ui/react-popover';
+import { CheckCircle, Eye } from "lucide-react";
+import { PopoverClose } from "@radix-ui/react-popover";
+import box from "@/assets/box.gif";
 // import { useEffect, useState } from "react";
 // import { orderApi } from "@/api/order.api";
 // import { TOrder } from "@/types/order.type";
@@ -76,8 +76,8 @@ const orders = [
 ];
 
 const OrderStatus = () => {
-  // const [orders, setOrders] = useState<TOrder[]>([]); 
-  // const userId = localStorage.getItem("userId") || ""; 
+  // const [orders, setOrders] = useState<TOrder[]>([]);
+  // const userId = localStorage.getItem("userId") || "";
 
   // useEffect(() => {
   //   const fetchOrders = async () => {
@@ -155,7 +155,7 @@ const OrderStatus = () => {
 
               <CardFooter className="flex justify-between">
                 <div className="flex items-center space-x-1 text-sm text-muted-foreground">
-                  <Package className="size-4" />
+                  <img src={box} alt="box" className="w-8 h-8 p-0 mb-2" />
                   <span className="">{order.items} sản phẩm</span>
                 </div>
 
