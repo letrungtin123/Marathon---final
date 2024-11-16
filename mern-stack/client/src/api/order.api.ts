@@ -10,6 +10,13 @@ export const orderApi = {
     );
     return response.data;
   },
+  //get order by user id
+  getOrderByUserId: async (userId: string) => {
+    const response = await http.get<{ message: string; success: boolean }>(
+      `/order/${userId}`
+    );
+    return response.data;
+  },
 };
 
 //   // get orders by user id
