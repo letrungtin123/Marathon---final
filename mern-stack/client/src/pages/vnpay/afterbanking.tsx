@@ -13,12 +13,16 @@ const VNPayResult = () => {
       try {
         const queryParams = new URLSearchParams(window.location.search);
         const response = await fetch(
-          `http://localhost:8080/api/v1/vnpay_return?${queryParams.toString()}`
+          `http://localhost:8080/api/v1/vnpay_ipn?${queryParams.toString()}`
         );
         const data = await response.json();
-        if (data.code === "00") {
+        if (data.RspCode === "00") {
           setResult(data);
           toast.success("Thanh toán thành công!");
+
+          // create order
+
+
         } else {
           toast.error("Thanh toán thất bại.");
           navigate(path.checkout); // Redirect về trang thanh toán nếu thất bại

@@ -10,6 +10,7 @@ import productRoutes from './product.routes.js';
 import roomRoutes from './room.routes.js';
 import userRoutes from './user.routes.js';
 import voucherRoutes from './voucher.routes.js';
+import paymentRoutes from "./payment.routes.js";
 
 const router = express.Router();
 
@@ -25,6 +26,7 @@ const rootRoutes = [
   voucherRoutes,
   roomRoutes,
   messagers,
+  paymentRoutes,
 ];
 
 rootRoutes.map((route) => {
