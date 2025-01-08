@@ -5,7 +5,7 @@ import type { SizeType } from 'antd/es/config-provider/SizeContext'
 import { GlassesIcon } from '../icons'
 
 interface NavbarProps {
-  button: {
+  button?: {
     title: React.ReactNode
     size?: SizeType
     type?: 'default' | 'primary' | 'dashed' | 'link' | 'text'
@@ -22,13 +22,15 @@ interface NavbarProps {
 }
 
 const Navbar = ({ button, input }: NavbarProps) => {
-  const { title, size, type, className, onClick, ...restButton } = button
+  const { title, size, type, className, onClick, ...restButton } = button || {}
   const { placeholder, className: inputClassName, onSearch, value, onChange, ...restInput } = input
   return (
-    <div className='flex items-center justify-between w-full pb-7'>
-      <Button size={size} type={type} {...restButton} className={cn(className)} onClick={onClick}>
-        {title}
-      </Button>
+    <div className={cn('flex items-center justify-between w-full pb-7', { 'justify-end': !button })}>
+      {button && (
+        <Button size={size} type={type} {...restButton} className={cn(className)} onClick={onClick}>
+          {title}
+        </Button>
+      )}
 
       <Input
         className={cn('h-[38px] rounded-[50px] w-[250px] border border-gray-six', inputClassName)}

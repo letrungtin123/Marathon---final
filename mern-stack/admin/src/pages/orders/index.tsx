@@ -1,220 +1,84 @@
-import { createSearchParams, useNavigate } from 'react-router-dom'
-import { memo, useEffect, useState } from 'react'
-
-import FormOrder from './components/form/form-order'
-import MainOrder from './components/main-order'
-// import Navbar from '@/components/navbar'
-import { TOrder } from '@/types/order.type'
-import { TResponse } from '@/types/common.type'
-import { Tabs } from 'antd'
-import type { TabsProps } from 'antd'
-// import _ from 'lodash'
-import { getOrders } from '@/apis/order.api'
+import { orderApi } from '@/apis/order.api'
+import Navbar from '@/components/navbar'
+import path from '@/configs/path'
 import { useAuth } from '@/contexts/auth-context'
-import { useQuery } from '@tanstack/react-query'
 import { useQueryParams } from '@/hooks/useQueryParams'
-import { useToggleModal } from '@/hooks/useToggleModal'
-import NavbarNoButton from '@/components/navbar/index(nobutton)'
+import { useQuery } from '@tanstack/react-query'
+import { Tabs, TabsProps } from 'antd'
+import { createSearchParams, useNavigate } from 'react-router-dom'
+import TableOrder from './components/table-order'
 
 const OrderPage = () => {
+  const params = useQueryParams()
   const { accessToken } = useAuth()
-
-  const queryParams = useQueryParams()
-
-  const [orders, setOrders] = useState<TOrder[]>([])
   const navigate = useNavigate()
 
-  const { currentModal, onCloseModal, onOpenModal } = useToggleModal<TOrder>()
-
-  const { data, isError, isLoading, isSuccess, isFetching, refetch } = useQuery<TResponse<TOrder>, Error>({
-    queryKey: ['orders', queryParams],
-    queryFn: () => getOrders(accessToken, queryParams),
-    keepPreviousData: true
+  const { data } = useQuery({
+    queryKey: ['orders', params],
+    queryFn: () =>
+      orderApi.getAllOrders(
+        Object.keys(params).length === 0 ? { status: 'pending', _page: 1, _limit: 10 } : params,
+        accessToken
+      )
   })
+  const orders = data?.docs
 
-  useEffect(() => {
-    if (isSuccess) {
-      setOrders(data.docs)
+  const items: TabsProps['items'] = [
+    {
+      key: 'pending',
+      label: 'Chờ xác nhận',
+      children: <TableOrder data={orders} />
+    },
+    {
+      key: 'confirmed',
+      label: 'Đã xác nhận',
+      children: <TableOrder data={orders} />
+    },
+    {
+      key: 'delivery',
+      label: 'Đang giao hàng',
+      children: <TableOrder data={orders} />
+    },
+    {
+      key: 'completed',
+      label: 'Đã giao hàng',
+      children: <TableOrder data={orders} />
+    },
+    {
+      key: 'cancelled',
+      label: 'Đã hủy',
+      children: <TableOrder data={orders} />
     }
-  }, [isSuccess, data])
-  const [inputValue, setInputValue] = useState<string>('')
-  const handleSearch = (value: string) => {
-    setInputValue(value)
+  ]
+
+  const handleChangeTab = (key: string) => {
     navigate({
-      pathname: '/orders',
+      pathname: path.orders,
       search: createSearchParams({
-        ...queryParams,
-        _page: '1',
-        q: value
+        ...params,
+        status: key
       }).toString()
     })
   }
 
-  // const [inputValue, setInputValue] = useState<string>('')
-
-  // const handleSearch = (value: string) => {
-  //   setInputValue(value)
-  //   navigate({
-  //     pathname: '/orders',
-  //     search: createSearchParams({
-  //       ...queryParams,
-  //       _page: '1',
-  //       q: value
-  //     }).toString()
-  //   })
-  // }
-
-  const handleChangeTab = (key: string) => {
-    switch (key) {
-      case '1':
-        navigate({
-          pathname: '/orders',
-          search: createSearchParams({
-            _page: '1',
-            _limit: '8',
-            tab: key
-          }).toString()
-        })
-        break
-      case '2':
-        navigate({
-          pathname: '/orders',
-          search: createSearchParams({
-            ...queryParams,
-            _page: '1',
-            status: 'pending',
-            tab: key
-          }).toString()
-        })
-        break
-      case '3':
-        navigate({
-          pathname: '/orders',
-          search: createSearchParams({
-            ...queryParams,
-            _page: '1',
-            status: 'confirmed',
-            tab: key
-          }).toString()
-        })
-        break
-      case '4':
-        navigate({
-          pathname: '/orders',
-          search: createSearchParams({
-            ...queryParams,
-            _page: '1',
-            status: 'delivery',
-            tab: key
-          }).toString()
-        })
-        break
-      case '5':
-        navigate({
-          pathname: '/orders',
-          search: createSearchParams({
-            ...queryParams,
-            _page: '1',
-            status: 'completed',
-            tab: key
-          }).toString()
-        })
-        break
-      case '6':
-        navigate({
-          pathname: '/orders',
-          search: createSearchParams({
-            ...queryParams,
-            _page: '1',
-            status: 'cancelled',
-            tab: key
-          }).toString()
-        })
-        break
-      default:
-        navigate({
-          pathname: '/orders',
-          search: createSearchParams({
-            ...queryParams,
-            _page: '1',
-            tab: key
-          }).toString()
-        })
-        break
-    }
-  }
-
-  // useEffect(() => {
-  //   if (queryParams.q) {
-  //     setInputValue(queryParams.q)
-  //   }
-  // }, [queryParams.q])
-
-  if (isError) {
-    return <div>Error</div>
-  }
-
-  if (isLoading) {
-    return <div>Loading...</div>
-  }
-  const items: TabsProps['items'] = [
-    {
-      key: '1',
-      label: 'Tất cả đơn hàng',
-      children: (
-        <MainOrder
-          totalDocs={data.totalDocs}
-          isLoading={isFetching || isLoading}
-          orders={orders}
-          getData={onOpenModal}
-        />
-      )
-    },
-    {
-      key: '2',
-      label: 'Đơn hàng đang chờ',
-      children: <MainOrder totalDocs={data.totalDocs} isLoading={isFetching || isLoading} orders={orders} />
-    },
-    {
-      key: '3',
-      label: 'Đơn hàng đã xác nhận',
-      children: <MainOrder totalDocs={data.totalDocs} isLoading={isFetching || isLoading} orders={orders} />
-    },
-    {
-      key: '4',
-      label: 'Đơn hàng đang vận chuyển',
-      children: <MainOrder totalDocs={data.totalDocs} isLoading={isFetching || isLoading} orders={orders} />
-    },
-    {
-      key: '5',
-      label: 'Đơn hàng đã giao',
-      children: <MainOrder totalDocs={data.totalDocs} isLoading={isFetching || isLoading} orders={orders} />
-    },
-    {
-      key: '6',
-      label: 'Đơn hàng đã hủy',
-      children: <MainOrder totalDocs={data.totalDocs} isLoading={isFetching || isLoading} orders={orders} />
-    }
-  ]
-
   return (
     <div className='bg-gray-third py-[30px] px-[30px]'>
-      <NavbarNoButton
+      <Navbar
+        // button={{
+        //   title: 'Thêm đơn hàng',
+        //   size: 'large',
+        //   type: 'primary'
+        // }}
         input={{
-          placeholder: 'Search for product',
-          onSearch: (value) => handleSearch(value),
-          value: inputValue,
-          onChange: (value) => setInputValue(value)
+          placeholder: 'Search for order'
         }}
       />
 
       <div>
-        <Tabs defaultActiveKey={queryParams.tab || '1'} items={items} onChange={(value) => handleChangeTab(value)} />
+        <Tabs defaultActiveKey={params?.status ?? '1'} items={items} onChange={(key) => handleChangeTab(key)} />
       </div>
-
-      <FormOrder currentData={currentModal} onClose={onCloseModal} refetch={refetch} />
     </div>
   )
 }
 
-export default memo(OrderPage)
+export default OrderPage
