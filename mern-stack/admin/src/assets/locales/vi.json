@@ -25,7 +25,7 @@
   "validate": {
     "required": "Trường này là bắt buộc",
     "email": "Địa chỉ email không hợp lệ",
-    "min": "Phải có ít nhất {min} ký tự",
+    "min": "Phải có ít nhất 6 ký tự",
     "max": "Phải có nhiều nhất {max} ký tự",
     "confirmPassword": "Mật khẩu không khớp"
   }

@@ -16,7 +16,7 @@ router.post(
 );
 
 // lấy danh sách đơn hàng theo userId
-router.get('/order/:userId', wrapRequestHandler(verifyToken), wrapRequestHandler(orderController.getOrdersByUserId));
+router.get('/order', wrapRequestHandler(verifyToken), wrapRequestHandler(orderController.getOrdersByUserId));
 
 // lấy danh sách đơn hàng
 router.get(

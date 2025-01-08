@@ -177,7 +177,7 @@ const ProductDetail = () => {
                   />
                 ))}
               </div>
-              <span className="text-gray-600">(120 reviews)</span>
+              <span className="text-gray-600">(120 đánh giá)</span>
             </div>
             <div className="flex items-center gap-4">
               <span className="text-2xl font-bold">
@@ -200,7 +200,7 @@ const ProductDetail = () => {
 
             <div className="flex space-x-4">
               <Button className="flex-1 bg-green-900" onClick={() => handleAddToCart()}>
-                <ShoppingCart className="w-4 h-4 mr-2" /> Add to Cart
+                <ShoppingCart className="w-4 h-4 mr-2" /> Thêm vào giỏ hàng
               </Button>
               {/* <Button variant="secondary" className="flex-1">
                 <CreditCard className="w-4 h-4 mr-2" /> Buy Now

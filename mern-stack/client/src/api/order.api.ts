@@ -1,5 +1,6 @@
 import http from "@/configs/instance.config";
-import { TCreateOrder } from "@/types/order.type";
+import { TResponseNoPagination } from "@/types/common.type";
+import { TCancelOrder, TCreateOrder, TOrder } from "@/types/order.type";
 
 export const orderApi = {
   // create order
@@ -11,17 +12,17 @@ export const orderApi = {
     return response.data;
   },
   //get order by user id
-  getOrderByUserId: async (userId: string) => {
-    const response = await http.get<{ message: string; success: boolean }>(
-      `/order/${userId}`
+  getOrder: async () => {
+    const response = await http.get<TResponseNoPagination<TOrder>>(`/order`);
+    return response.data;
+  },
+
+  //cancel order
+  cancelOrder: async (orderId: string, body: TCancelOrder) => {
+    const response = await http.patch<{ message: string; success: boolean }>(
+      `/order/cancel/${orderId}`,
+      body
     );
     return response.data;
   },
 };
-
-//   // get orders by user id
-//   getOrdersByUserId: async (userId: string) => {
-//     const response = await http.get(`/order/${userId}`);
-//     console.log("🚀 ~ getOrdersByUserId: ~ response.data:", response.data);
-//     return response.data;
-//   },

@@ -26,9 +26,55 @@ import FormUser, {
 } from "@/pages/checkout/components/form-user";
 import ListVoucher from "./components/list-voucher";
 import { useAppSelector } from "@/stores/hook";
+import { Button } from "antd";
 
 const FEE_SHIPPING = 3000;
 
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const handleVNpay = async (data: any, paymentMethod: string) => {
+  if (paymentMethod === "vnpay") {
+    // Xử lý VNPay
+    try {
+      const response = await fetch(
+        "http://localhost:8080/api/v1/create_payment_url",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            amount: data.total,
+            orderDescription: `Thanh toán đơn hàng ${data?._id}`,
+            bankCode: "",
+          }),
+        }
+      );
+
+      if (response.ok) {
+        const paymentData = await response.json();
+        if (paymentData.paymentUrl) {
+          window.location.href = paymentData.paymentUrl;
+        } else {
+          toast.error("Không tạo được liên kết thanh toán VNPay.");
+        }
+      } else {
+        const errorData = await response.json();
+        console.error("Error creating VNPay payment URL:", errorData);
+        toast.error("Có lỗi xảy ra trong quá trình xử lý thanh toán VNPay.");
+      }
+
+      const paymentData = await response.json();
+      if (paymentData.paymentUrl) {
+        window.location.href = paymentData.paymentUrl;
+      } else {
+        toast.error("Không tạo được liên kết thanh toán VNPay.");
+      }
+    } catch (error) {
+      console.error("Error creating VNPay payment URL:", error);
+      toast.error("Có lỗi xảy ra trong quá trình xử lý thanh toán VNPay.");
+    }
+    return; // Kết thúc nếu chọn VNPay
+  }
+}
 const Checkout = () => {
   const { status } = useQueryParams();
   const navigate = useNavigate();
@@ -61,6 +107,7 @@ const Checkout = () => {
     }, 0);
     return totalProductChecked;
   }, [cartItems]);
+  
 
   useEffect(() => {
     (async () => {
@@ -100,7 +147,7 @@ const Checkout = () => {
     mutationKey: ["create-order"],
     mutationFn: (body: TCreateOrder) => orderApi.createOrder(body),
   });
-
+  // useEffect()
   // handle submit form user
   const onSubmit = async (values: FormUserType) => {
     const data = {
@@ -126,53 +173,11 @@ const Checkout = () => {
       voucher: voucherId,
     } as TCreateOrder;
     console.log(data);
-    if (paymentMethod === "vnpay") {
-      // Xử lý VNPay
-      try {
-        const response = await fetch(
-          "http://localhost:8080/api/v1/create_payment_url",
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              amount: data.total,
-              orderDescription: `Thanh toán đơn hàng ${myInfo?._id}`,
-              bankCode: "",
-            }),
-          }
-        );
-
-        if (response.ok) {
-          const paymentData = await response.json();
-          if (paymentData.paymentUrl) {
-            window.location.href = paymentData.paymentUrl;
-          } else {
-            toast.error("Không tạo được liên kết thanh toán VNPay.");
-          }
-        } else {
-          const errorData = await response.json();
-          console.error("Error creating VNPay payment URL:", errorData);
-          toast.error("Có lỗi xảy ra trong quá trình xử lý thanh toán VNPay.");
-        }
-
-        const paymentData = await response.json();
-        if (paymentData.paymentUrl) {
-          window.location.href = paymentData.paymentUrl;
-        } else {
-          toast.error("Không tạo được liên kết thanh toán VNPay.");
-        }
-      } catch (error) {
-        console.error("Error creating VNPay payment URL:", error);
-        toast.error("Có lỗi xảy ra trong quá trình xử lý thanh toán VNPay.");
-      }
-      return; // Kết thúc nếu chọn VNPay
-    }
-
     // call api
     createOrderMutation.mutate(data, {
-      onSuccess: (data) => {
-        console.log("🚀 ~ onSubmit ~ data:", data);
+      onSuccess: () => {
         toast.success("Create order success!");
+        handleVNpay(data, paymentMethod)
         navigate({
           pathname: path.checkout,
           search: createSearchParams({
@@ -184,6 +189,7 @@ const Checkout = () => {
         toast.error("Create order failed!");
       },
     });
+    
   };
 
   return (
@@ -271,8 +277,10 @@ const Checkout = () => {
                     <span>{formatCurrency(totalMoney - voucherPrice)}</span>
                   </div>
                 </div>
-                <Label
-                  htmlFor="submit-form"
+                <Button
+                  // htmlFor="submit-form"
+                  htmlType="submit"
+                  loading={createOrderMutation.isSuccess}
                   onClick={form.handleSubmit(onSubmit)}
                   className={cn(
                     "w-full mt-6 h-9 flex items-center text-white gap-2 cursor-pointer justify-center rounded-md bg-green-900",
@@ -284,7 +292,7 @@ const Checkout = () => {
                 >
                   <CreditCard className="w-4 h-4 mr-2 " />
                   Thanh toán {formatCurrency(totalMoney - voucherPrice)}
-                </Label>
+                </Button>
               </div>
 
               {/* voucher */}

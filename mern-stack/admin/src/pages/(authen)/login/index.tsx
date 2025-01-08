@@ -38,7 +38,7 @@ const LoginPage = () => {
         return
       }
       setIsLoading(false)
-      message.success('Login success')
+      message.success('Đăng nhập thành công!')
       // set token to local storage or cookie
 
       // redirect to home page

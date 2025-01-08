@@ -149,7 +149,7 @@ const ProductController = ({
 
       {selectedVariant && (
         <div className="mt-4">
-          <h3 className="text-lg font-medium">Available</h3>
+          <h3 className="text-lg font-medium">Mô tả</h3>
           <p>Kích cỡ: {selectedVariant.size}</p>
           <p>Màu sắc: {selectedVariant.color}</p>
           <p className="">Số lượng khả dụng: {selectedVariant.quantity}</p>

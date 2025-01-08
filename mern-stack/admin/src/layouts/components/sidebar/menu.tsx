@@ -12,7 +12,7 @@ import path from '@/configs/path'
 export const menus = [
   {
     id: 1,
-    title: 'Dashboard',
+    title: 'Thống kê ',
     icon: <DashboardIcon className='fill-inherit' />,
     link: path.home
   },

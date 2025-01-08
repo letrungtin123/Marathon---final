@@ -12,7 +12,7 @@ export const orderValidation = Joi.object({
   note: Joi.string().messages({
     'string.empty': 'note is not allowed to be empty',
   }),
-  paymentMethod: Joi.string().valid('cod', 'payment').required().messages({
+  paymentMethod: Joi.string().valid('cod', 'vnpay').required().messages({
     'any.required': 'payment is required',
     'string.empty': 'payment is not allowed to be empty',
   }),

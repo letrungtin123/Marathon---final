@@ -13,7 +13,6 @@ function App() {
   const { language } = useAppSelector((state: RootState) => state.language)
   const { accessToken } = useAppSelector((state: RootState) => state.auth)
 
-  console.log('Access Token from Redux:', accessToken)
   return (
     <LanguageProvider languageLocal={language}>
       <AuthProvider token={accessToken}>

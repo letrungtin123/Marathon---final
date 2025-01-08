@@ -117,7 +117,7 @@ const Cart = () => {
         <div className="container px-4 mx-auto">
           <div className="flex items-center space-x-2 text-sm text-gray-600">
             <Link to={path.home} className="hover:text-gray-900">
-              Home
+              Trang chủ
             </Link>
             <ChevronRight className="w-4 h-4" />
             <span className="text-gray-900 font-medium">Giỏ hàng của bạn</span>

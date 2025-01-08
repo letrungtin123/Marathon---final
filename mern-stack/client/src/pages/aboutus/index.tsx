@@ -2,7 +2,7 @@ import { Card, Col, Image, Layout, Row, Typography } from "antd";
 import { MailOutlined, PhoneOutlined } from "@ant-design/icons";
 import bgflower1 from "@/assets/bgflower1.png";
 import bgflower2 from "@/assets/bgflower2.png";
-import bgflower3 from "@/assets/bgflower3.png";
+import bgflower3 from "@/assets/bgflower4.webp";
 import React from "react";
 
 const { Content } = Layout;
@@ -16,14 +16,16 @@ const cardStyle: React.CSSProperties = {
 };
 
 const imageContainerStyle: React.CSSProperties = {
-  height: 200,
+  height: "250px", // Đặt chiều cao cụ thể cho hình ảnh
   overflow: "hidden",
+  borderRadius: "8px",
 };
 
 const imageStyle: React.CSSProperties = {
   width: "100%",
   height: "100%",
-  objectFit: "cover",
+  objectFit: "cover", // Đảm bảo hình ảnh không méo, tự động cắt theo khung
+  objectPosition: "center",
 };
 
 const AboutUs: React.FC = () => {
@@ -102,11 +104,11 @@ const AboutUs: React.FC = () => {
                 hoverable
                 className="flex flex-col justify-between h-full rounded-lg shadow-md"
                 cover={
-                  <div className="h-48 overflow-hidden rounded-t-lg">
+                  <div style={imageContainerStyle}>
                     <Image
-                      alt="Our Services"
+                      alt="Our History"
                       src={bgflower3}
-                      className="w-full h-full object-cover"
+                      style={imageStyle}
                     />
                   </div>
                 }
@@ -128,11 +130,12 @@ const AboutUs: React.FC = () => {
                 hoverable
                 className="flex flex-col justify-between h-full rounded-lg shadow-md"
                 cover={
-                  <div className="h-48 overflow-hidden rounded-t-lg">
+                  <div style={imageContainerStyle}>
                     <Image
-                      alt="Contact Us"
+                      alt="Our History"
                       src={bgflower2}
-                      className="w-full h-full object-cover"
+                     
+                      style={imageStyle}
                     />
                   </div>
                 }

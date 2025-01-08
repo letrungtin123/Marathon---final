@@ -44,7 +44,7 @@ const ColumnsTable = ({
                 <p className='!text-lg font-medium text-black-second'>{record?.nameProduct}</p>
                 {record.sale > 0 && (
                   <div className='!text-xs bg-red-400 text-white rounded-sm p-0.5 px-2'>
-                    Sale: {record.sale.toLocaleString()}đ
+                    Giảm giá: {record.sale.toLocaleString()}đ
                   </div>
                 )}
               </div>
@@ -58,7 +58,7 @@ const ColumnsTable = ({
       }
     },
     {
-      title: 'Category',
+      title: 'Danh mục',
       dataIndex: 'category',
       key: 'category',
       render: (category: TCategroyRefProduct) => {
@@ -66,7 +66,7 @@ const ColumnsTable = ({
       }
     },
     {
-      title: 'Brand',
+      title: 'Thương hiệu',
       dataIndex: 'brand',
       key: 'brand',
       render: (brand: TCategroyRefProduct) => {
@@ -89,7 +89,7 @@ const ColumnsTable = ({
       }
     },
     {
-      title: 'Available Color',
+      title: 'Màu sắc',
       dataIndex: 'sizes',
       key: 'sizes',
       render: (sizes: TSize[]) => {
@@ -117,7 +117,7 @@ const ColumnsTable = ({
       }
     },
     {
-      title: 'Active',
+      title: 'Hành động',
       dataIndex: 'action',
       key: 'action',
       render: (_: string, record: TProduct) => {
