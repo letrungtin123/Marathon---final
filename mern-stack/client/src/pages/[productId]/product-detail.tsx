@@ -26,7 +26,7 @@ const ProductDetail = () => {
   const fakeReviews = [
     {
       id: 1,
-      name: "Lê Thị Bảo Trân",
+      name: "Tín Lê",
       avatar: "https://picsum.photos/200/300",
       comment: "Sản phẩm tuyệt vời! Rất hài lòng với chất lượng.",
       rating: 5,
