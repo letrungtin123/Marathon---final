@@ -34,7 +34,7 @@ const DialogOrder = ({ open, onClose }: IDialogModal) => {
 						Về trang chủ
 					</Button>
 					<Button onClick={() => navigate(`/order/:userId`)}>
-						Quản lý đơn hàng
+						Quản lý đơn hàng  
 					</Button>
 				</DialogFooter>
 			</DialogContent>
