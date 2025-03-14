@@ -293,7 +293,7 @@ export const cartController = {
 
       if (isMaxQuantity) {
         return res.status(HTTP_STATUS.BAD_REQUEST).json({
-          message: 'The quantity of product is greater than the quantity in stock',
+          message: 'Số lượng sản phẩm tồn kho không đủ để đặt hàng',
           success: false,
         });
       }
