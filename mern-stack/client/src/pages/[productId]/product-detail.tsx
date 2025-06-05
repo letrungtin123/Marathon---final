@@ -30,6 +30,7 @@ const ProductDetail = () => {
       avatar: "https://picsum.photos/200/300",
       comment: "Sản phẩm tuyệt vời! Rất hài lòng với chất lượng.",
       rating: 5,
+      date: "15/01/2025",
     },
     {
       id: 2,
@@ -37,6 +38,7 @@ const ProductDetail = () => {
       avatar: "https://picsum.photos/200/300",
       comment: "Giao hàng nhanh chóng, sản phẩm đúng như mô tả.",
       rating: 4,
+      date: "20/02/2025",
     },
     {
       id: 3,
@@ -44,6 +46,7 @@ const ProductDetail = () => {
       avatar: "https://picsum.photos/200/300",
       comment: "Chất lượng tốt nhưng giá hơi cao.",
       rating: 4,
+      date: "28/02/2025",
     },
   ];
   // get product detail
@@ -199,7 +202,10 @@ const ProductDetail = () => {
             />
 
             <div className="flex space-x-4">
-              <Button className="flex-1 bg-green-900" onClick={() => handleAddToCart()}>
+              <Button
+                className="flex-1 bg-green-900"
+                onClick={() => handleAddToCart()}
+              >
                 <ShoppingCart className="w-4 h-4 mr-2" /> Thêm vào giỏ hàng
               </Button>
               {/* <Button variant="secondary" className="flex-1">
@@ -235,6 +241,7 @@ const ProductDetail = () => {
                   />
                   <p className="font-semibold">{review.name}</p>
                   <p className="text-gray-700">{review.comment}</p>
+                  <p className="text-gray-700">{review.date}</p>
                 </div>
               </div>
             ))}

@@ -17,7 +17,7 @@ const app = express();
 app.use(express.json());
 app.use(
   cors({
-    origin: ['http://localhost:3000', 'http://localhost:4200'],
+    origin: ['http://localhost:3000', 'http://localhost:4200', 'http://localhost:5000'],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   }),
 );
@@ -64,6 +64,6 @@ io.on('connection', (socket) => {
   });
 
   socket.on('disconnect', (roomId) => {
-    console.log(socket.rooms);
+    console.log(socket.rooms );
   });
 });

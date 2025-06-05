@@ -67,9 +67,9 @@ const DialogViewOrder = ({ order }: { order: TOrder }) => {
               products.map((product) => {
                 return (
                   <TableRow key={product._id}>
-                    <TableCell>{product.productId.nameProduct}</TableCell>
-                    <TableCell>{product.color}</TableCell>
-                    <TableCell>{product.quantity}</TableCell>
+                    <TableCell>{product?.productId?.nameProduct}</TableCell>
+                    <TableCell>{product?.color}</TableCell>
+                    <TableCell>{product?.quantity}</TableCell>
                     <TableCell>
                       {formatCurrency(Number(product.price))}
                     </TableCell>

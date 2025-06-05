@@ -294,7 +294,7 @@ export const cartController = {
       if (isMaxQuantity) {
         return res.status(HTTP_STATUS.BAD_REQUEST).json({
           message: 'Số lượng sản phẩm tồn kho không đủ để đặt hàng',
-          success: false,
+          success: false,  
         });
       }
 
@@ -302,6 +302,7 @@ export const cartController = {
 
       return res.status(HTTP_STATUS.OK).json({
         message: 'Increase quantity product in cart successfully',
+
         success: true,
       });
     } else {
