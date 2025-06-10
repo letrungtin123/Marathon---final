@@ -98,9 +98,9 @@ const HomePage = () => {
               {!products || (products.length === 0 && <div>No Product</div>)}
             </div>
           </section>
+          {userId && <Recommend userId={userId} />}
         </div>
       </div>
-      {userId && <Recommend userId={userId} />}
     </main>
   );
 };

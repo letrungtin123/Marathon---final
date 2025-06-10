@@ -6,6 +6,7 @@ from flask import Flask, jsonify
 from flask_cors import CORS
 from pymongo import MongoClient
 from bson.objectid import ObjectId
+from bson.errors import InvalidId
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics.pairwise import cosine_similarity
 from datetime import datetime
@@ -19,21 +20,29 @@ mongo_uri = os.getenv("MONGO_URI")
 if not mongo_uri:
     raise Exception("❌ MONGO_URI not found in .env")
 
+# === Kết nối MongoDB ===
+client = MongoClient(mongo_uri)
+db = client["test"]  # ✅ Sử dụng đúng database test như trong hình ảnh của bạn
+orders = db["orders"]
+products = db["products"]
+
 # === Khởi tạo app Flask ===
 app = Flask(__name__)
 CORS(app)
 
-# === Kết nối MongoDB ===
-client = MongoClient(mongo_uri)
-db = client["marathon"]
-orders = db["orders"]
-products = db["products"]
-
 # === Hàm phụ lấy thông tin sản phẩm ===
 def get_product_info(pid: str):
-    product = products.find_one({"_id": ObjectId(pid)})
-    if not product:
+    try:
+        obj_id = ObjectId(pid)
+    except InvalidId:
+        print(f"❌ Invalid ObjectId: {pid}")
         return None
+
+    product = products.find_one({"_id": obj_id})
+    if not product:
+        print(f"⚠️ Product not found for ID: {pid}")
+        return None
+
     return {
         "_id": str(product["_id"]),
         "name": product.get("nameProduct", ""),
@@ -43,11 +52,14 @@ def get_product_info(pid: str):
 
 # === 1. Dự đoán và thống kê sản phẩm bán chạy ===
 def run_forecast():
+    print("🔄 Running forecast calculation...")
     data = []
     product_freq = Counter()
 
     for order in orders.find():
         created_at = order.get("createdAt")
+
+        # Xử lý định dạng ngày
         if isinstance(created_at, dict) and "$date" in created_at:
             created_at = created_at["$date"]
         if isinstance(created_at, str):
@@ -72,6 +84,8 @@ def run_forecast():
             })
 
     df = pd.DataFrame(data)
+
+    # Top sản phẩm bán chạy
     top_selling = [{"productId": pid, "bought_count": count} for pid, count in product_freq.most_common(8)]
     forecast = []
 
@@ -87,6 +101,7 @@ def run_forecast():
             y = df_pid["quantity"]
             model = LinearRegression()
             model.fit(X, y)
+            
             next_month = X["time"].max() + 1
             predicted = model.predict([[next_month]])[0]
             forecast.append({
@@ -98,12 +113,13 @@ def run_forecast():
 
     return top_selling, forecast
 
-# ✅ Khởi động ban đầu để cache kết quả
+# ✅ Chạy 1 lần khi khởi động để cache kết quả
 top_selling_result, forecast_result = run_forecast()
 
-# === 2. API Dự đoán sản phẩm bán chạy ===
+# === 2. API dự đoán sản phẩm bán chạy ===
 @app.route("/forecast", methods=["GET"])
 def forecast_api():
+    print("📈 Forecast API called")
     result = []
     for item in forecast_result[:8]:
         p = get_product_info(item["productId"])
@@ -111,9 +127,10 @@ def forecast_api():
             result.append({**p, "predicted_quantity": item["predicted_quantity"]})
     return jsonify(result)
 
-# === 3. API Top sản phẩm được mua nhiều nhất ===
+# === 3. API top sản phẩm bán chạy nhất ===
 @app.route("/popular", methods=["GET"])
 def popular_products():
+    print("🚀 Popular API called")
     result = []
     for item in top_selling_result:
         p = get_product_info(item["productId"])
@@ -121,9 +138,10 @@ def popular_products():
             result.append({**p, "bought_count": item["bought_count"]})
     return jsonify(result)
 
-# === 4. Gợi ý sản phẩm theo người dùng bằng Collaborative Filtering ===
+# === 4. API gợi ý sản phẩm theo người dùng ===
 @app.route("/recommend/<user_id>", methods=["GET"])
 def recommend_user(user_id):
+    print(f"🧠 Recommend API called for user {user_id}")
     data = []
     for order in orders.find():
         uid = str(order.get("userId"))
@@ -135,14 +153,14 @@ def recommend_user(user_id):
     matrix = pd.crosstab(df["user"], df["product"])
 
     if user_id not in matrix.index:
+        print(f"⚠️ No purchase history found for user {user_id}")
         return jsonify([])
 
     sim = cosine_similarity(matrix)
     sim_df = pd.DataFrame(sim, index=matrix.index, columns=matrix.index)
-
     similar_users = sim_df[user_id].sort_values(ascending=False)[1:4]
-    recommendations = {}
 
+    recommendations = {}
     for sim_user in similar_users.index:
         user_products = matrix.loc[sim_user]
         for product_id, bought in user_products.items():
@@ -150,7 +168,6 @@ def recommend_user(user_id):
                 recommendations[product_id] = recommendations.get(product_id, 0) + bought
 
     sorted_recommendations = sorted(recommendations.items(), key=lambda x: x[1], reverse=True)[:5]
-
     result = []
     for pid, _ in sorted_recommendations:
         p = get_product_info(pid)
