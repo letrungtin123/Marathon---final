@@ -7,6 +7,7 @@ import path from "@/configs/path.config";
 import { useQuery } from "@tanstack/react-query";
 import { useQueryParams } from "@/hooks/useQueryParams";
 import { useState } from "react";
+// import Chatbot from "@/pages/chatbot/ChatBot";
 
 const Aside = () => {
   const params = useQueryParams();
@@ -114,6 +115,7 @@ const Aside = () => {
           </div>
         </div>
       </div>
+      {/* <Chatbot/> */}
     </aside>
   );
 };

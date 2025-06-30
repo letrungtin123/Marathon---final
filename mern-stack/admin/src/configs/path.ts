@@ -1,6 +1,7 @@
 const path = {
   home: '/',
   icons: '/icons',
+  product: '/product',
   products: 'products',
   orders: '/orders',
   productDetail: 'product/:productId',

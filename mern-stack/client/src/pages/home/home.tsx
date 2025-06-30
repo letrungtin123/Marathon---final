@@ -6,6 +6,7 @@ import { useQueryParams } from "@/hooks/useQueryParams";
 import { Carousel } from "antd";
 import Recommend from "../Recommend/Recommend";
 import { getUserIdFromToken } from "@/utils/decode-token.util";
+import Chatbot from "../chatbot/ChatBot";
 const HomePage = () => {
   const params = useQueryParams();
   const userId = getUserIdFromToken();
@@ -99,6 +100,7 @@ const HomePage = () => {
             </div>
           </section>
           {userId && <Recommend userId={userId} />}
+          <Chatbot/>
         </div>
       </div>
     </main>

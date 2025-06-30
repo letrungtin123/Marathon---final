@@ -1,7 +1,6 @@
 # server.py
 import os
 import pandas as pd
-import numpy as np
 from flask import Flask, jsonify
 from flask_cors import CORS
 from pymongo import MongoClient
@@ -13,36 +12,41 @@ from datetime import datetime
 from collections import Counter
 from dotenv import load_dotenv
 
-# === Load cấu hình từ .env ===
+# === Load biến môi trường ===
 load_dotenv()
-mongo_uri = os.getenv("MONGO_URI")
 
+# === Tạo Flask app ===
+app = Flask(__name__)
+
+# ✅ Cấu hình CORS đúng chuẩn
+CORS(app, supports_credentials=True, resources={
+   r"/*": {"origins": ["http://localhost:4200", "http://localhost:3000"]}
+})
+
+# ✅ Import blueprint sau khi có app
+from chatbot import chatbot_api
+app.register_blueprint(chatbot_api)
+
+# === Kết nối MongoDB ===
+mongo_uri = os.getenv("MONGO_URI")
 if not mongo_uri:
     raise Exception("❌ MONGO_URI not found in .env")
 
-# === Kết nối MongoDB ===
 client = MongoClient(mongo_uri)
-db = client["test"]  # ✅ Sử dụng đúng database test như trong hình ảnh của bạn
+db = client["test"]
 orders = db["orders"]
 products = db["products"]
 
-# === Khởi tạo app Flask ===
-app = Flask(__name__)
-CORS(app)
-
-# === Hàm phụ lấy thông tin sản phẩm ===
+# === Hàm lấy thông tin sản phẩm ===
 def get_product_info(pid: str):
     try:
         obj_id = ObjectId(pid)
     except InvalidId:
         print(f"❌ Invalid ObjectId: {pid}")
         return None
-
     product = products.find_one({"_id": obj_id})
     if not product:
-        print(f"⚠️ Product not found for ID: {pid}")
         return None
-
     return {
         "_id": str(product["_id"]),
         "name": product.get("nameProduct", ""),
@@ -50,16 +54,12 @@ def get_product_info(pid: str):
         "image": product.get("images", [{}])[0].get("url", "")
     }
 
-# === 1. Dự đoán và thống kê sản phẩm bán chạy ===
+# === Dự báo ===
 def run_forecast():
-    print("🔄 Running forecast calculation...")
     data = []
     product_freq = Counter()
-
     for order in orders.find():
         created_at = order.get("createdAt")
-
-        # Xử lý định dạng ngày
         if isinstance(created_at, dict) and "$date" in created_at:
             created_at = created_at["$date"]
         if isinstance(created_at, str):
@@ -69,7 +69,6 @@ def run_forecast():
                 continue
         if not isinstance(created_at, datetime):
             continue
-
         for p in order.get("products", []):
             pid = p.get("productId")
             qty = p.get("quantity")
@@ -84,15 +83,12 @@ def run_forecast():
             })
 
     df = pd.DataFrame(data)
-
-    # Top sản phẩm bán chạy
     top_selling = [{"productId": pid, "bought_count": count} for pid, count in product_freq.most_common(8)]
     forecast = []
 
     if not df.empty:
         grouped = df.groupby(["productId", "year", "month"]).agg({"quantity": "sum"}).reset_index()
         grouped["time"] = grouped["year"] * 12 + grouped["month"]
-
         for pid in grouped["productId"].unique():
             df_pid = grouped[grouped["productId"] == pid]
             if len(df_pid) < 2:
@@ -101,25 +97,18 @@ def run_forecast():
             y = df_pid["quantity"]
             model = LinearRegression()
             model.fit(X, y)
-            
-            next_month = X["time"].max() + 1
-            predicted = model.predict([[next_month]])[0]
+            predicted = model.predict([[X["time"].max() + 1]])[0]
             forecast.append({
                 "productId": pid,
                 "predicted_quantity": max(int(predicted), 0)
             })
 
-        forecast = sorted(forecast, key=lambda x: x["predicted_quantity"], reverse=True)
+    return top_selling, sorted(forecast, key=lambda x: x["predicted_quantity"], reverse=True)
 
-    return top_selling, forecast
-
-# ✅ Chạy 1 lần khi khởi động để cache kết quả
 top_selling_result, forecast_result = run_forecast()
 
-# === 2. API dự đoán sản phẩm bán chạy ===
 @app.route("/forecast", methods=["GET"])
 def forecast_api():
-    print("📈 Forecast API called")
     result = []
     for item in forecast_result[:8]:
         p = get_product_info(item["productId"])
@@ -127,10 +116,8 @@ def forecast_api():
             result.append({**p, "predicted_quantity": item["predicted_quantity"]})
     return jsonify(result)
 
-# === 3. API top sản phẩm bán chạy nhất ===
 @app.route("/popular", methods=["GET"])
 def popular_products():
-    print("🚀 Popular API called")
     result = []
     for item in top_selling_result:
         p = get_product_info(item["productId"])
@@ -138,10 +125,8 @@ def popular_products():
             result.append({**p, "bought_count": item["bought_count"]})
     return jsonify(result)
 
-# === 4. API gợi ý sản phẩm theo người dùng ===
 @app.route("/recommend/<user_id>", methods=["GET"])
 def recommend_user(user_id):
-    print(f"🧠 Recommend API called for user {user_id}")
     data = []
     for order in orders.find():
         uid = str(order.get("userId"))
@@ -151,9 +136,7 @@ def recommend_user(user_id):
 
     df = pd.DataFrame(data, columns=["user", "product"])
     matrix = pd.crosstab(df["user"], df["product"])
-
     if user_id not in matrix.index:
-        print(f"⚠️ No purchase history found for user {user_id}")
         return jsonify([])
 
     sim = cosine_similarity(matrix)
@@ -173,9 +156,7 @@ def recommend_user(user_id):
         p = get_product_info(pid)
         if p:
             result.append(p)
-
     return jsonify(result)
 
-# === Main ===
 if __name__ == "__main__":
     app.run(port=5000, debug=True)

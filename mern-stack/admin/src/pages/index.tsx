@@ -16,6 +16,7 @@ import {
   BarElement
 } from 'chart.js'
 import { cn } from '@/utils/cn'
+import Forecast from './forecast/forecast'
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, ArcElement, BarElement)
 
@@ -179,6 +180,7 @@ const HomePage = () => {
           Tải thêm dữ liệu
         </Button>
       </Card>
+      <Forecast />
     </div>
   )
 }

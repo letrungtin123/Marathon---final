@@ -15,6 +15,7 @@ import { useState } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import Logo from '@/assets/LogoProject.png'
 import bg from "@/assets/bg.png";
+import SplashCursor from "@/components/ui/Animations/SplashCursor/SplashCursor";
 
 type LoginFormType = Pick<SchemaType, "email" | "password">;
 const loginSchema = schema.pick(["email", "password"]);
@@ -64,7 +65,8 @@ export default function LoginPage() {
         backgroundImage: `url(${bg})`,
       }}
     >
-      <div className="sm:mx-auto sm:w-full sm:max-w-md bg-white bg-opacity-80 rounded-lg shadow-lg">
+      <div className="sm:mx-auto sm:w-full sm:max-w-md animated-bg rounded-lg shadow-lg">
+
         <h2 className="mt-6 text-3xl font-extrabold text-center text-gray-900">
           Đăng nhập
         </h2>
@@ -186,6 +188,7 @@ export default function LoginPage() {
           </div>
         </div>
       </div>
+      <SplashCursor/>
     </div>
   );
 }

@@ -13,9 +13,9 @@ import { useForm } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
-import Logo from '@/assets/LogoProject.png'
+import Logo from "@/assets/LogoProject.png";
 import bg from "@/assets/bg.png";
-
+import SplashCursor from "@/components/ui/Animations/SplashCursor/SplashCursor";
 type RegisterFormType = Pick<
   SchemaType,
   "email" | "password" | "confirmPassword"
@@ -64,7 +64,7 @@ export default function RegisterPage() {
           Đăng Ký
         </h2>
         <section className="flex items-center justify-center w-full h-header mt-9">
-        <div className="h-20 w-40  font-semibold  flex items-center justify-center text-3xl ">
+          <div className="h-20 w-40  font-semibold  flex items-center justify-center text-3xl ">
             <div className="text-xl ">
               <img src={Logo} alt="" />
             </div>
@@ -215,6 +215,7 @@ export default function RegisterPage() {
           </div>
         </div>
       </div>
+      <SplashCursor />
     </div>
   );
 }

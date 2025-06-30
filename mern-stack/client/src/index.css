@@ -1,6 +1,8 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@import "tailwindcss";
+@import "tw-animate-css";
 
 @layer base {
 	:root {
@@ -12,3 +14,27 @@
 .lucide {
   stroke-width: 1px;
 }
+
+@keyframes colorShift {
+	0% {
+	  background-color: rgba(255, 255, 255, 0.8);
+	}
+	25% {
+	  background-color: rgba(230, 255, 230, 0.8);
+	}
+	50% {
+	  background-color: rgba(240, 240, 255, 0.8);
+	}
+	75% {
+	  background-color: rgba(255, 240, 240, 0.8);
+	}
+	100% {
+	  background-color: rgba(255, 255, 255, 0.8);
+	}
+  }
+  
+  .animated-bg {
+	animation: colorShift 10s ease-in-out infinite;
+	transition: background-color 1s ease-in-out;
+  }
+  
