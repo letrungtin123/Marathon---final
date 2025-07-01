@@ -1,5 +1,3 @@
-# forecast_model.py
-
 import os
 import pandas as pd
 from pymongo import MongoClient
@@ -7,6 +5,14 @@ from sklearn.linear_model import LinearRegression
 from datetime import datetime
 from dotenv import load_dotenv
 from collections import Counter
+import json
+import locale
+
+# Đặt locale sang English để tránh auto dịch (nếu có)
+try:
+    locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
+except locale.Error:
+    pass  # Nếu hệ thống không hỗ trợ locale này thì bỏ qua
 
 # Load biến môi trường
 load_dotenv()
@@ -55,13 +61,13 @@ for order in orders.find():
 
 df = pd.DataFrame(data)
 
-# ✅ 1. Top sản phẩm được mua nhiều nhất
+# 1. Top sản phẩm được mua nhiều nhất
 top_selling_result = [
     {"productId": pid, "bought_count": count}
     for pid, count in product_freq.most_common(8)
 ]
 
-# ✅ 2. Dự đoán sản phẩm bán chạy tương lai
+# 2. Dự đoán sản phẩm bán chạy tương lai
 forecast_result = []
 
 if not df.empty:
@@ -88,3 +94,10 @@ if not df.empty:
         })
 
     forecast_result = sorted(forecast_result, key=lambda x: x["predicted_quantity"], reverse=True)
+
+# Xuất ra file JSON
+with open("top_selling_result.json", "w", encoding="utf-8") as f:
+    json.dump(top_selling_result, f, ensure_ascii=False, indent=4)
+
+with open("forecast_result.json", "w", encoding="utf-8") as f:
+    json.dump(forecast_result, f, ensure_ascii=False, indent=4)

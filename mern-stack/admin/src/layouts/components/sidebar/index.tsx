@@ -18,10 +18,13 @@ const Sidebar = () => {
   }, [])
 
   return (
-    <div className='h-screen overflow-y-scroll border-r border-r-gray-light scrollbar-hide'>
+    <div
+      className='h-screen border-r border-r-gray-light scrollbar-hide'
+      style={{ overflowY: 'auto', position: 'sticky', top: 0 }}
+    >
       <section className='flex items-center justify-center w-full h-header'>
-        <div className='h-16 w-32  font-semibold  flex items-center justify-center text-3xl '>
-          <div className='text-xl '>
+        <div className='h-16 w-32 font-semibold flex items-center justify-center text-3xl'>
+          <div className='text-xl'>
             <img src={Logo} alt='' />
           </div>
         </div>

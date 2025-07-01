@@ -1,4 +1,3 @@
-# server.py
 import os
 import pandas as pd
 from flask import Flask, jsonify
@@ -12,52 +11,52 @@ from datetime import datetime
 from collections import Counter
 from dotenv import load_dotenv
 
-# === Load biến môi trường ===
+# Load biến môi trường
 load_dotenv()
 
-# === Tạo Flask app ===
 app = Flask(__name__)
-
-# ✅ Cấu hình CORS đúng chuẩn
 CORS(app, supports_credentials=True, resources={
-   r"/*": {"origins": ["http://localhost:4200", "http://localhost:3000"]}
+    r"/*": {"origins": ["http://localhost:4200", "http://localhost:3000"]}
 })
 
-# ✅ Import blueprint sau khi có app
+# Blueprint chatbot
 from chatbot import chatbot_api
 app.register_blueprint(chatbot_api)
 
-# === Kết nối MongoDB ===
+# MongoDB
 mongo_uri = os.getenv("MONGO_URI")
 if not mongo_uri:
-    raise Exception("❌ MONGO_URI not found in .env")
-
+    raise Exception("❌ MONGO_URI not found")
 client = MongoClient(mongo_uri)
 db = client["test"]
 orders = db["orders"]
 products = db["products"]
 
-# === Hàm lấy thông tin sản phẩm ===
+# Hàm lấy thông tin sản phẩm
 def get_product_info(pid: str):
     try:
         obj_id = ObjectId(pid)
     except InvalidId:
-        print(f"❌ Invalid ObjectId: {pid}")
         return None
+
     product = products.find_one({"_id": obj_id})
     if not product:
         return None
+
+    price = float(product.get("price", 0))
+    sale = float(product.get("sale", 0))
     return {
         "_id": str(product["_id"]),
         "name": product.get("nameProduct", ""),
-        "price": product.get("price", 0),
+        "price": price,
+        "sale": sale,
         "image": product.get("images", [{}])[0].get("url", "")
     }
 
-# === Dự báo ===
+# Hàm dự đoán
 def run_forecast():
     data = []
-    product_freq = Counter()
+
     for order in orders.find():
         created_at = order.get("createdAt")
         if isinstance(created_at, dict) and "$date" in created_at:
@@ -69,12 +68,12 @@ def run_forecast():
                 continue
         if not isinstance(created_at, datetime):
             continue
+
         for p in order.get("products", []):
             pid = p.get("productId")
             qty = p.get("quantity")
             if not pid or qty is None:
                 continue
-            product_freq[str(pid)] += 1
             data.append({
                 "productId": str(pid),
                 "month": created_at.month,
@@ -83,38 +82,81 @@ def run_forecast():
             })
 
     df = pd.DataFrame(data)
-    top_selling = [{"productId": pid, "bought_count": count} for pid, count in product_freq.most_common(8)]
+    if df.empty:
+        print("Không có dữ liệu đơn hàng để dự báo!")
+        return [], []
+
+    # Tính tổng số lượng bán từng sản phẩm từng tháng
+    grouped = df.groupby(["productId", "year", "month"]).agg({"quantity": "sum"}).reset_index()
+    grouped["time"] = grouped["year"] * 12 + grouped["month"]
+
     forecast = []
 
-    if not df.empty:
-        grouped = df.groupby(["productId", "year", "month"]).agg({"quantity": "sum"}).reset_index()
-        grouped["time"] = grouped["year"] * 12 + grouped["month"]
-        for pid in grouped["productId"].unique():
-            df_pid = grouped[grouped["productId"] == pid]
-            if len(df_pid) < 2:
-                continue
-            X = df_pid[["time"]]
-            y = df_pid["quantity"]
-            model = LinearRegression()
-            model.fit(X, y)
-            predicted = model.predict([[X["time"].max() + 1]])[0]
-            forecast.append({
-                "productId": pid,
-                "predicted_quantity": max(int(predicted), 0)
-            })
+    for pid in grouped["productId"].unique():
+        df_pid = grouped[grouped["productId"] == pid]
+        if len(df_pid) < 2:
+            # Không đủ dữ liệu để dự báo
+            continue
+        X = df_pid[["time"]]
+        y = df_pid["quantity"]
+        model = LinearRegression()
+        model.fit(X, y)
+        next_time = X["time"].max() + 1
+        predicted = model.predict([[next_time]])[0]
+        predicted_qty = max(int(round(predicted)), 0)
+        forecast.append({
+            "productId": pid,
+            "predicted_quantity": predicted_qty
+        })
 
-    return top_selling, sorted(forecast, key=lambda x: x["predicted_quantity"], reverse=True)
+    # Sắp xếp dự báo giảm dần theo số lượng
+    forecast_sorted = sorted(forecast, key=lambda x: x["predicted_quantity"], reverse=True)
 
+    # Tìm top bán chạy theo dữ liệu thực (tổng số lượng bán)
+    product_freq = df.groupby("productId")["quantity"].sum().sort_values(ascending=False).head(8)
+    top_selling = [{"productId": pid, "bought_count": int(qty)} for pid, qty in product_freq.items()]
+
+    print("Top bán chạy:", top_selling)
+    print("Dự báo:", forecast_sorted[:8])
+
+    return top_selling, forecast_sorted
+
+# Cache forecast kết quả khi server chạy
 top_selling_result, forecast_result = run_forecast()
 
 @app.route("/forecast", methods=["GET"])
 def forecast_api():
     result = []
+    total_revenue = 0
+
+    # Lấy top 8 sản phẩm dự báo
     for item in forecast_result[:8]:
         p = get_product_info(item["productId"])
         if p:
-            result.append({**p, "predicted_quantity": item["predicted_quantity"]})
-    return jsonify(result)
+            price = p["price"]
+            sale = p.get("sale", 0)
+            discounted_price = max(price - sale, 0)
+            quantity = item["predicted_quantity"]
+            revenue = discounted_price * quantity
+            total_revenue += revenue
+
+            result.append({
+                "_id": p["_id"],
+                "name": p["name"],
+                "price": discounted_price,
+                "original_price": price,
+                "sale": sale,
+                "image": p["image"],
+                "predicted_quantity": quantity,
+                "predicted_revenue": revenue
+            })
+
+    print(f"Tổng doanh thu dự báo: {total_revenue}")
+
+    return jsonify({
+        "products": result,
+        "total_revenue": round(total_revenue)
+    })
 
 @app.route("/popular", methods=["GET"])
 def popular_products():
