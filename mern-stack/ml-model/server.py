@@ -202,3 +202,21 @@ def recommend_user(user_id):
 
 if __name__ == "__main__":
     app.run(port=5000, debug=True)
+
+# Phân tích phần train AI:
+# Mô hình học máy sử dụng: Mô hình Linear Regression (Hồi quy tuyến tính).
+
+# Dữ liệu huấn luyện: Dữ liệu gồm thông tin về sản phẩm, số lượng bán hàng theo từng tháng. Các cột time (thời gian dạng tháng) và quantity (số lượng bán) được sử dụng làm các đặc trưng (features) và mục tiêu (target).
+
+# Bước train: model.fit(X, y) là nơi mô hình học máy được huấn luyện với dữ liệu thời gian và số lượng bán.
+
+# Mô hình hồi quy tuyến tính này nhằm dự đoán số lượng sản phẩm sẽ bán được trong tháng tiếp theo dựa trên các dữ liệu lịch sử về sản phẩm đó.
+
+# Các bước trong quy trình dự báo:
+# Chuẩn bị dữ liệu: Thu thập dữ liệu từ đơn hàng, bao gồm productId, quantity, và thời gian (createdAt).
+
+# Nhóm dữ liệu: Tổng hợp số lượng bán của từng sản phẩm theo từng tháng.
+
+# Huấn luyện mô hình: Sử dụng hồi quy tuyến tính (Linear Regression) để học mối quan hệ giữa thời gian (tháng) và số lượng bán.
+
+# Dự đoán: Dự đoán số lượng bán cho tháng tiếp theo dựa trên mô hình đã huấn luyện.

@@ -85,3 +85,10 @@ def chat():
         import traceback
         traceback.print_exc()
         return jsonify({"response": f"❌ Lỗi chatbot: {str(e)}"}), 500
+
+# 1. Chatbot (chatbot_api):
+# Phần này được import dưới dạng blueprint và không có chi tiết về cách chatbot hoạt động trong đoạn mã đã cung cấp. 
+# Thông thường, chatbot có thể sử dụng các mô hình AI như nLP (Natural Language Processing), Transformer Models, 
+# hoặc retrieval-based models để trả lời câu hỏi. Tuy nhiên, chi tiết về việc train AI cho chatbot không có trong đoạn mã trên, 
+# vì chỉ có phần import chatbot_api mà không có mã huấn luyện hoặc mô hình AI rõ ràng. Nếu chatbot của bạn sử dụng mô hình AI, 
+# việc huấn luyện mô hình có thể xảy ra ở một phần khác của hệ thống mà không được cung cấp trong đoạn mã trên.

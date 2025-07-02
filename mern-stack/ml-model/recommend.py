@@ -63,3 +63,26 @@ def popular_products():
 
 if __name__ == '__main__':
     app.run(port=5000)
+
+# 2. Recommendation (recommend_user):
+
+# Phần này sử dụng cosine similarity để tìm các sản phẩm tương tự mà người dùng có thể thích dựa trên lịch sử mua sắm của họ. 
+
+# Đây là một dạng hệ thống đề xuất (recommender system) sử dụng phương pháp lọc cộng tác (Collaborative Filtering).
+
+# Mặc dù đây không phải là việc huấn luyện mô hình học máy truyền thống (như hồi quy tuyến tính hay các mô hình học sâu), 
+
+# nhưng việc tính toán độ tương đồng giữa người dùng và sản phẩm dựa trên lịch sử mua hàng là một kỹ thuật AI và Machine Learning.
+
+# Cụ thể, phần cosine_similarity tính toán mức độ tương tự giữa các người dùng và sản phẩm. Mặc dù đây không phải là việc huấn 
+
+# luyện trực tiếp một mô hình học máy, nhưng phần này sử dụng mô hình học máy (machine learning) theo cách tính toán tương tự như 
+
+# filttering dựa trên hành vi người dùng:
+
+# python
+# Copy
+# Edit
+# sim = cosine_similarity(matrix)
+# sim_df = pd.DataFrame(sim, index=matrix.index, columns=matrix.index)
+# similar_users = sim_df[user_id].sort_values(ascending=False)[1:4]
