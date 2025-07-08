@@ -8,8 +8,8 @@ from bson.errors import InvalidId
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics.pairwise import cosine_similarity
 from datetime import datetime
-from collections import Counter
 from dotenv import load_dotenv
+import joblib
 
 # Load biến môi trường
 load_dotenv()
@@ -31,6 +31,7 @@ client = MongoClient(mongo_uri)
 db = client["test"]
 orders = db["orders"]
 products = db["products"]
+users = db["users"]
 
 # Hàm lấy thông tin sản phẩm
 def get_product_info(pid: str):
@@ -95,7 +96,6 @@ def run_forecast():
     for pid in grouped["productId"].unique():
         df_pid = grouped[grouped["productId"] == pid]
         if len(df_pid) < 2:
-            # Không đủ dữ liệu để dự báo
             continue
         X = df_pid[["time"]]
         y = df_pid["quantity"]
@@ -109,10 +109,7 @@ def run_forecast():
             "predicted_quantity": predicted_qty
         })
 
-    # Sắp xếp dự báo giảm dần theo số lượng
     forecast_sorted = sorted(forecast, key=lambda x: x["predicted_quantity"], reverse=True)
-
-    # Tìm top bán chạy theo dữ liệu thực (tổng số lượng bán)
     product_freq = df.groupby("productId")["quantity"].sum().sort_values(ascending=False).head(8)
     top_selling = [{"productId": pid, "bought_count": int(qty)} for pid, qty in product_freq.items()]
 
@@ -129,7 +126,6 @@ def forecast_api():
     result = []
     total_revenue = 0
 
-    # Lấy top 8 sản phẩm dự báo
     for item in forecast_result[:8]:
         p = get_product_info(item["productId"])
         if p:
@@ -152,7 +148,6 @@ def forecast_api():
             })
 
     print(f"Tổng doanh thu dự báo: {total_revenue}")
-
     return jsonify({
         "products": result,
         "total_revenue": round(total_revenue)
@@ -200,8 +195,113 @@ def recommend_user(user_id):
             result.append(p)
     return jsonify(result)
 
+# Load model khi server khởi động
+try:
+    lead_model = joblib.load("lead_model.pkl")
+except:
+    lead_model = None
+    print("⚠️ Không tìm thấy model lead_model.pkl")
+
+@app.route("/predicted-leads", methods=["GET"])
+def get_predicted_leads():
+    if not lead_model:
+        return jsonify([])
+
+    user_cursor = users.find({"role": "customer"})
+    user_data = []
+    for user in user_cursor:
+        uid = str(user["_id"])
+        created = user.get("createdAt")
+        if isinstance(created, dict) and "$date" in created:
+            created = created["$date"]
+        if isinstance(created, str):
+            created = datetime.fromisoformat(created.replace("Z", "+00:00"))
+        age_days = (datetime.now() - created).days if created else 0
+
+        order_list = list(orders.find({"userId": user["_id"]}))
+        total_spent = sum(o.get("total", 0) for o in order_list)
+        order_count = len(order_list)
+
+        features = [[total_spent, order_count, age_days]]
+        predicted = lead_model.predict(features)[0]
+        if predicted == 1:
+            user_data.append({
+                "user_id": uid,
+                "email": user.get("email", ""),
+                "address": user.get("address", ""),
+                "phone": user.get("phone", ""),
+                "total_spent": total_spent,
+                "order_count": order_count
+            })
+
+    return jsonify(user_data)
+# Fetch thị trường Việt Nam (Dữ liệu từ các nguồn bên ngoài)
+def fetch_market_data():
+    # Ví dụ: Lấy dữ liệu từ một API hoặc web scraping (dữ liệu thị trường)
+    # Giả sử API trả về thông tin về thị trường
+    response = requests.get("https://api.example.com/marketdata/vietnam")
+    if response.status_code == 200:
+        return response.json()  # Giả sử dữ liệu trả về là JSON
+    return {}
+
+# Dự báo chiến lược kinh doanh (sử dụng AI)
+def run_business_strategy_ai():
+    # Giả sử ta đã thu thập dữ liệu từ các API hoặc mạng xã hội
+    market_data = fetch_market_data()
+    
+    # Sử dụng mô hình AI dự đoán chiến lược
+    model = joblib.load("business_strategy_model.pkl")
+    features = [market_data.get("market_trends"), market_data.get("consumer_sentiment")]
+    predicted_strategy = model.predict([features])
+
+    return predicted_strategy
+
+# Cập nhật business strategy API
+@app.route("/business-strategy", methods=["GET"])
+def business_strategy():
+    try:
+        # Thu thập dữ liệu thị trường và phân tích bằng mô hình AI
+        market_data = fetch_market_data()
+        strategy_from_ai = run_business_strategy_ai()
+
+        # Tiến hành tính toán chiến lược
+        top_selling_result, forecast_result = run_forecast()
+
+        # Tính toán doanh thu dự báo
+        total_revenue = 0
+        for item in forecast_result[:8]:
+            p = get_product_info(item["productId"])
+            if p:
+                price = p["price"]
+                sale = p.get("sale", 0)
+                discounted_price = max(price - sale, 0)
+                quantity = item["predicted_quantity"]
+                revenue = discounted_price * quantity
+                total_revenue += revenue
+
+        # Tính toán chiến lược về doanh thu
+        revenue_strategy = strategy_from_ai["revenue_strategy"]  # Lấy từ mô hình AI
+        market_trend = strategy_from_ai["market_trend"]  # Lấy từ mô hình AI
+
+        # Trả về chiến lược
+        strategy = {
+            "target_products": top_selling_result,  # Sử dụng top-selling từ MongoDB
+            "revenue_strategy": revenue_strategy,
+            "market_trend": market_trend
+        }
+
+        return jsonify(strategy)
+
+    except Exception as e:
+        return jsonify({"error": f"Không tìm thấy chiến lược kinh doanh. Lỗi: {str(e)}"}), 500
+
+
+
+
+# Cuối cùng, chạy app
 if __name__ == "__main__":
     app.run(port=5000, debug=True)
+
 
 # Phân tích phần train AI:
 # Mô hình học máy sử dụng: Mô hình Linear Regression (Hồi quy tuyến tính).

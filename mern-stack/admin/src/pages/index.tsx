@@ -17,6 +17,8 @@ import {
 } from 'chart.js'
 import { cn } from '@/utils/cn'
 import Forecast from './forecast/forecast'
+import LeadPrediction from './prediction/leadPrediction'
+import BusinessStrategy from './BusinessStrategy/BusinessStrategy'
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, ArcElement, BarElement)
 
@@ -180,7 +182,9 @@ const HomePage = () => {
           Tải thêm dữ liệu
         </Button>
       </Card>
+      <LeadPrediction />
       <Forecast />
+      <BusinessStrategy />
     </div>
   )
 }
