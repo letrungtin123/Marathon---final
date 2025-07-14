@@ -53,7 +53,7 @@ const LeadPrediction: React.FC = () => {
   return (
     <div className='p-10 bg-gray-100 h-auto rounded-xl'>
       <Title level={2} className='text-center text-gray-800 mb-8 font-semibold'>
-        Potential Customer List
+        Danh sách khách hàng tiềm năng{' '}
       </Title>
 
       {loading ? (

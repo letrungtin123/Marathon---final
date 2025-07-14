@@ -1,5 +1,6 @@
 import os
 import pandas as pd
+import requests  # ✅ FIXED: Thiếu dòng này
 from flask import Flask, jsonify
 from flask_cors import CORS
 from pymongo import MongoClient
@@ -39,11 +40,9 @@ def get_product_info(pid: str):
         obj_id = ObjectId(pid)
     except InvalidId:
         return None
-
     product = products.find_one({"_id": obj_id})
     if not product:
         return None
-
     price = float(product.get("price", 0))
     sale = float(product.get("sale", 0))
     return {
@@ -54,10 +53,9 @@ def get_product_info(pid: str):
         "image": product.get("images", [{}])[0].get("url", "")
     }
 
-# Hàm dự đoán
+# Hàm dự đoán bán hàng
 def run_forecast():
     data = []
-
     for order in orders.find():
         created_at = order.get("createdAt")
         if isinstance(created_at, dict) and "$date" in created_at:
@@ -69,7 +67,6 @@ def run_forecast():
                 continue
         if not isinstance(created_at, datetime):
             continue
-
         for p in order.get("products", []):
             pid = p.get("productId")
             qty = p.get("quantity")
@@ -87,7 +84,6 @@ def run_forecast():
         print("Không có dữ liệu đơn hàng để dự báo!")
         return [], []
 
-    # Tính tổng số lượng bán từng sản phẩm từng tháng
     grouped = df.groupby(["productId", "year", "month"]).agg({"quantity": "sum"}).reset_index()
     grouped["time"] = grouped["year"] * 12 + grouped["month"]
 
@@ -118,14 +114,13 @@ def run_forecast():
 
     return top_selling, forecast_sorted
 
-# Cache forecast kết quả khi server chạy
+# Cache dự báo
 top_selling_result, forecast_result = run_forecast()
 
 @app.route("/forecast", methods=["GET"])
 def forecast_api():
     result = []
     total_revenue = 0
-
     for item in forecast_result[:8]:
         p = get_product_info(item["productId"])
         if p:
@@ -135,7 +130,6 @@ def forecast_api():
             quantity = item["predicted_quantity"]
             revenue = discounted_price * quantity
             total_revenue += revenue
-
             result.append({
                 "_id": p["_id"],
                 "name": p["name"],
@@ -195,7 +189,7 @@ def recommend_user(user_id):
             result.append(p)
     return jsonify(result)
 
-# Load model khi server khởi động
+# Load mô hình AI dự báo khách hàng tiềm năng
 try:
     lead_model = joblib.load("lead_model.pkl")
 except:
@@ -235,39 +229,29 @@ def get_predicted_leads():
             })
 
     return jsonify(user_data)
-# Fetch thị trường Việt Nam (Dữ liệu từ các nguồn bên ngoài)
+
+# Fetch thị trường Việt Nam (API)
 def fetch_market_data():
-    # Ví dụ: Lấy dữ liệu từ một API hoặc web scraping (dữ liệu thị trường)
-    # Giả sử API trả về thông tin về thị trường
     response = requests.get("https://api.example.com/marketdata/vietnam")
     if response.status_code == 200:
-        return response.json()  # Giả sử dữ liệu trả về là JSON
+        return response.json()
     return {}
 
-# Dự báo chiến lược kinh doanh (sử dụng AI)
+# Phân tích chiến lược kinh doanh
 def run_business_strategy_ai():
-    # Giả sử ta đã thu thập dữ liệu từ các API hoặc mạng xã hội
     market_data = fetch_market_data()
-    
-    # Sử dụng mô hình AI dự đoán chiến lược
     model = joblib.load("business_strategy_model.pkl")
     features = [market_data.get("market_trends"), market_data.get("consumer_sentiment")]
     predicted_strategy = model.predict([features])
-
     return predicted_strategy
 
-# Cập nhật business strategy API
 @app.route("/business-strategy", methods=["GET"])
 def business_strategy():
     try:
-        # Thu thập dữ liệu thị trường và phân tích bằng mô hình AI
         market_data = fetch_market_data()
         strategy_from_ai = run_business_strategy_ai()
-
-        # Tiến hành tính toán chiến lược
         top_selling_result, forecast_result = run_forecast()
 
-        # Tính toán doanh thu dự báo
         total_revenue = 0
         for item in forecast_result[:8]:
             p = get_product_info(item["productId"])
@@ -279,13 +263,11 @@ def business_strategy():
                 revenue = discounted_price * quantity
                 total_revenue += revenue
 
-        # Tính toán chiến lược về doanh thu
-        revenue_strategy = strategy_from_ai["revenue_strategy"]  # Lấy từ mô hình AI
-        market_trend = strategy_from_ai["market_trend"]  # Lấy từ mô hình AI
+        revenue_strategy = strategy_from_ai["revenue_strategy"]
+        market_trend = strategy_from_ai["market_trend"]
 
-        # Trả về chiến lược
         strategy = {
-            "target_products": top_selling_result,  # Sử dụng top-selling từ MongoDB
+            "target_products": top_selling_result,
             "revenue_strategy": revenue_strategy,
             "market_trend": market_trend
         }
@@ -295,28 +277,6 @@ def business_strategy():
     except Exception as e:
         return jsonify({"error": f"Không tìm thấy chiến lược kinh doanh. Lỗi: {str(e)}"}), 500
 
-
-
-
-# Cuối cùng, chạy app
+# Chạy server
 if __name__ == "__main__":
     app.run(port=5000, debug=True)
-
-
-# Phân tích phần train AI:
-# Mô hình học máy sử dụng: Mô hình Linear Regression (Hồi quy tuyến tính).
-
-# Dữ liệu huấn luyện: Dữ liệu gồm thông tin về sản phẩm, số lượng bán hàng theo từng tháng. Các cột time (thời gian dạng tháng) và quantity (số lượng bán) được sử dụng làm các đặc trưng (features) và mục tiêu (target).
-
-# Bước train: model.fit(X, y) là nơi mô hình học máy được huấn luyện với dữ liệu thời gian và số lượng bán.
-
-# Mô hình hồi quy tuyến tính này nhằm dự đoán số lượng sản phẩm sẽ bán được trong tháng tiếp theo dựa trên các dữ liệu lịch sử về sản phẩm đó.
-
-# Các bước trong quy trình dự báo:
-# Chuẩn bị dữ liệu: Thu thập dữ liệu từ đơn hàng, bao gồm productId, quantity, và thời gian (createdAt).
-
-# Nhóm dữ liệu: Tổng hợp số lượng bán của từng sản phẩm theo từng tháng.
-
-# Huấn luyện mô hình: Sử dụng hồi quy tuyến tính (Linear Regression) để học mối quan hệ giữa thời gian (tháng) và số lượng bán.
-
-# Dự đoán: Dự đoán số lượng bán cho tháng tiếp theo dựa trên mô hình đã huấn luyện.
