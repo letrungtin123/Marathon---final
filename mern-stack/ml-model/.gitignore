@@ -1,0 +1,61 @@
+# ====================
+# Python & Virtual Env
+# ====================
+__pycache__/
+*.py[cod]
+*.so
+*.pyd
+*.pyo
+*.pkl
+*.joblib
+*.h5
+*.log
+*.db
+*.sqlite3
+
+# Ignore virtual environments
+venv/
+ENV/
+env/
+.venv/
+
+# ====================
+# VSCode
+# ====================
+.vscode/
+.settings/
+
+# ====================
+# Jupyter / Data / Model Artifacts
+# ====================
+.ipynb_checkpoints
+*.csv
+*.tsv
+*.xls
+*.xlsx
+*.parquet
+*.feather
+*.npz
+*.npy
+
+# ====================
+# Node / JS (nếu MERN stack)
+# ====================
+node_modules/
+dist/
+build/
+.env
+.env.local
+.env.production
+.env.development
+
+# ====================
+# Git
+# ====================
+*.swp
+.DS_Store
+Thumbs.db
+*.bak
+*.tmp
+*.orig
+*.rej

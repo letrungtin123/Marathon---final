@@ -1,6 +1,6 @@
 import os
 import pandas as pd
-import requests  # Đảm bảo đã import
+import requests
 from flask import Flask, jsonify
 from flask_cors import CORS
 from pymongo import MongoClient
@@ -11,6 +11,9 @@ from sklearn.metrics.pairwise import cosine_similarity
 from datetime import datetime
 from dotenv import load_dotenv
 import joblib
+import numpy as np
+from tensorflow.keras.models import load_model
+from tensorflow.keras.losses import MeanSquaredError  # ✅ NEW
 
 load_dotenv()
 
@@ -28,6 +31,17 @@ db = client["test"]
 orders = db["orders"]
 products = db["products"]
 users = db["users"]
+
+# ✅ Load Deep Learning model và encoders
+try:
+    recommendation_model = load_model("recommendation_model.h5", custom_objects={"mse": MeanSquaredError()})
+    user_encoder = joblib.load("user_encoder.pkl")
+    product_encoder = joblib.load("product_encoder.pkl")
+    all_product_ids = list(product_encoder.classes_)
+    print("✅ Đã load mô hình gợi ý DL")
+except Exception as e:
+    print(f"⚠️ Không load được mô hình gợi ý DL: {e}")
+    recommendation_model = None
 
 # Lấy thông tin sản phẩm
 def get_product_info(pid: str):
@@ -103,7 +117,6 @@ def run_forecast():
     top_selling = [{"productId": pid, "bought_count": int(qty)} for pid, qty in product_freq.items()]
     return top_selling, forecast_sorted
 
-# Cache khởi động
 top_selling_result, forecast_result = run_forecast()
 
 @app.route("/forecast", methods=["GET"])
@@ -143,40 +156,33 @@ def popular_products():
             result.append({**p, "bought_count": item["bought_count"]})
     return jsonify(result)
 
+# ✅ Gợi ý sản phẩm dùng Deep Learning
 @app.route("/recommend/<user_id>", methods=["GET"])
 def recommend_user(user_id):
-    data = []
-    for order in orders.find():
-        uid = str(order.get("userId"))
-        for product in order.get("products", []):
-            pid = str(product.get("productId"))
-            data.append((uid, pid))
-
-    df = pd.DataFrame(data, columns=["user", "product"])
-    matrix = pd.crosstab(df["user"], df["product"])
-    if user_id not in matrix.index:
+    if not recommendation_model:
         return jsonify([])
 
-    sim = cosine_similarity(matrix)
-    sim_df = pd.DataFrame(sim, index=matrix.index, columns=matrix.index)
-    similar_users = sim_df[user_id].sort_values(ascending=False)[1:4]
+    try:
+        user_encoded = user_encoder.transform([user_id])[0]
+    except:
+        return jsonify([])
 
-    recommendations = {}
-    for sim_user in similar_users.index:
-        user_products = matrix.loc[sim_user]
-        for product_id, bought in user_products.items():
-            if bought > 0 and matrix.loc[user_id][product_id] == 0:
-                recommendations[product_id] = recommendations.get(product_id, 0) + bought
+    product_encoded = product_encoder.transform(all_product_ids)
+    user_ids = np.full(len(product_encoded), user_encoded)
 
-    sorted_recommendations = sorted(recommendations.items(), key=lambda x: x[1], reverse=True)[:5]
+    predictions = recommendation_model.predict([user_ids, product_encoded], verbose=0).flatten()
+    top_indices = predictions.argsort()[::-1][:5]
+    top_product_ids = [all_product_ids[i] for i in top_indices]
+
     result = []
-    for pid, _ in sorted_recommendations:
+    for pid in top_product_ids:
         p = get_product_info(pid)
         if p:
             result.append(p)
+
     return jsonify(result)
 
-# Load mô hình khách hàng tiềm năng
+# Lead scoring
 try:
     lead_model = joblib.load("lead_model.pkl")
 except:
@@ -216,14 +222,13 @@ def get_predicted_leads():
             })
     return jsonify(user_data)
 
-# ✅ FIXED: Dữ liệu thị trường giả lập thay vì gọi API không tồn tại
+# Business strategy giả lập
 def fetch_market_data():
     return {
         "market_trends": "Thị trường tiêu dùng tại Việt Nam đang phục hồi nhanh chóng.",
         "consumer_sentiment": "Tích cực"
     }
 
-# Dự báo chiến lược kinh doanh
 def run_business_strategy_ai():
     market_data = fetch_market_data()
     try:
@@ -235,7 +240,6 @@ def run_business_strategy_ai():
             "market_trend": predicted_strategy[0].get("market_trend", "Ổn định")
         }
     except:
-        # Dữ liệu giả nếu không có model
         return {
             "revenue_strategy": "Tăng cường marketing và mở rộng kênh phân phối",
             "market_trend": market_data["market_trends"]
@@ -248,7 +252,6 @@ def business_strategy():
         strategy_from_ai = run_business_strategy_ai()
         top_selling_result, forecast_result = run_forecast()
 
-        # Bổ sung thông tin chi tiết cho từng sản phẩm
         enriched_products = []
         for item in top_selling_result:
             p_info = get_product_info(item["productId"])
@@ -272,6 +275,5 @@ def business_strategy():
     except Exception as e:
         return jsonify({"error": f"Không tìm thấy chiến lược kinh doanh. Lỗi: {str(e)}"}), 500
 
-# Chạy server
 if __name__ == "__main__":
     app.run(port=5000, debug=True)
