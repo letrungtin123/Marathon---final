@@ -1,6 +1,6 @@
 # chatbot.py
 from flask import Blueprint, request, jsonify
-from flask_cors import cross_origin
+from flask_cors import CORS, cross_origin
 import os
 import google.generativeai as genai
 from dotenv import load_dotenv
@@ -24,6 +24,7 @@ products = db["products"]
 
 # === Tạo blueprint
 chatbot_api = Blueprint("chatbot_api", __name__)
+CORS(chatbot_api, supports_credentials=True, resources={r"/*": {"origins": ["http://localhost:4200"]}})
 
 # === System prompt
 system_prompt = (
@@ -41,7 +42,6 @@ system_prompt = (
     "Dưới đây là danh sách sản phẩm hiện có:\n"
 )
 
-# === Lấy thông tin sản phẩm từ MongoDB
 def build_product_context():
     context_lines = []
     for p in products.find({"is_deleted": False}):
@@ -61,9 +61,12 @@ def build_product_context():
 
 product_context = build_product_context()
 
-@chatbot_api.route("/chat", methods=["POST"])
+@chatbot_api.route("/chat", methods=["POST", "OPTIONS"])
 @cross_origin(origins="http://localhost:4200", supports_credentials=True)
 def chat():
+    if request.method == "OPTIONS":
+        return jsonify({"message": "Preflight OK"}), 200
+
     try:
         data = request.get_json()
         prompt = data.get("prompt", "").strip()
@@ -74,8 +77,8 @@ def chat():
         full_prompt = f"{system_prompt}\n{product_context}\n\nCâu hỏi: {prompt}"
 
         response = model.generate_content(full_prompt)
-
         reply = getattr(response, "text", None)
+
         if not reply:
             return jsonify({"response": "❌ Không có phản hồi từ Gemini."}), 500
 
@@ -85,6 +88,7 @@ def chat():
         import traceback
         traceback.print_exc()
         return jsonify({"response": f"❌ Lỗi chatbot: {str(e)}"}), 500
+
 
 # 1. Chatbot (chatbot_api):
 # Phần này được import dưới dạng blueprint và không có chi tiết về cách chatbot hoạt động trong đoạn mã đã cung cấp. 

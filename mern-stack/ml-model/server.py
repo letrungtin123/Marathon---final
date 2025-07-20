@@ -14,6 +14,7 @@ import joblib
 import numpy as np
 from tensorflow.keras.models import load_model
 from tensorflow.keras.losses import MeanSquaredError  # ✅ NEW
+from chatbot import chatbot_api
 
 load_dotenv()
 
@@ -22,6 +23,7 @@ CORS(app, supports_credentials=True, resources={
     r"/*": {"origins": ["http://localhost:4200", "http://localhost:3000"]}
 })
 
+app.register_blueprint(chatbot_api, url_prefix="/")
 # MongoDB setup
 mongo_uri = os.getenv("MONGO_URI")
 if not mongo_uri:
