@@ -194,27 +194,31 @@ export const productController = {
     return res.status(HTTP_STATUS.OK).json({ message: 'Update status successfully', success: true, data: product });
   },
   // update product
+  // update product
   updateProduct: async (req, res) => {
     const { productId } = req.params;
     const body = req.body;
 
     // check product exist
     const productExist = await productController.checkProductExist(req, res);
+    if (!productExist || productExist.success === false) return;
 
-    // xoas product_id trong category và brand cũ
-    // await Promise.all([
-    //   productService.removeProductFromCategory(productId, productExist.category._id),
-    //   productService.removeProductFromBrand(productId, productExist.brand._id),
-    // ]);
-    await productController.removeProductFromCateAndBrand(productId, productExist.category._id, productExist.brand._id);
+    // Xoá khỏi category và brand cũ nếu tồn tại
+    if (productExist.category?._id && productExist.brand?._id) {
+      await productController.removeProductFromCateAndBrand(
+        productId,
+        productExist.category._id,
+        productExist.brand._id,
+      );
+    }
 
-    // update product
+    // Update product
     const product = await productService.updateProduct(productId, body);
     if (!product) {
       return res.status(HTTP_STATUS.BAD_REQUEST).json({ message: 'Update product failed', success: false });
     }
 
-    // add productId vào product của category và brand tương ứng
+    // Thêm vào category và brand mới
     await Promise.all([
       productService.addProductToCategory(product._id, product.category),
       productService.addProductToBrand(product._id, product.brand),
@@ -222,6 +226,7 @@ export const productController = {
 
     return res.status(HTTP_STATUS.OK).json({ message: 'Update product successfully', success: true, data: product });
   },
+
   // Controller method for permanently deleting a product
   deleteProduct: async (req, res) => {
     try {

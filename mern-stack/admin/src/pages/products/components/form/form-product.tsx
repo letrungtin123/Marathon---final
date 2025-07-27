@@ -359,9 +359,8 @@ const FomrProduct = ({ currentData, onClose, refetch }: IFormProductProps) => {
             {/* image */}
             <Col span={24}>
               <Form.Item
-                name={'images'}
                 label='Hình ảnh sản phẩm'
-                rules={[{ required: true, message: 'Hình ảnh sản phẩm là bắt buộc' }]}
+                rules={[{ required: true, message: 'Hình ảnh sản phẩm là bắt buộc' }]} // vẫn giữ rule nếu muốn
               >
                 <Dragger {...props}>
                   <p className='ant-upload-drag-icon'>

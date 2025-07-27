@@ -49,28 +49,25 @@ const HomePage = () => {
     datasets: [
       {
         label: 'Doanh thu',
-        data: [12000000, 15000000, 17000000, 14000000, 19000000, 22000000],
-        borderColor: '#14532D',
-        backgroundColor: 'rgba(20, 83, 45, 0.2)',
+        data: [12000000, 15000000, 17000000, 24000000, 19000000, 22000000],
+        backgroundColor: '#14532D',
         pointBorderColor: '#14532D',
         pointBackgroundColor: '#ffffff',
         tension: 0.4
       },
       {
         label: 'Lợi nhuận',
-        data: [10000000, 13000000, 16000000, 11000000, 18000000, 21000000],
-        borderColor: '#b04e4e',
-        backgroundColor: 'rgba(176, 78, 78, 0.2)',
-        pointBorderColor: '#b04e4e',
+        data: [4000000, 4000000, 5000000, 9000000, 5000000, 3000000],
+        backgroundColor: '#b04e4e',
+        pointBorderColor: '#14532D',
         pointBackgroundColor: '#ffffff',
         tension: 0.4
       },
       {
         label: 'Chi tiêu',
         data: [8000000, 9000000, 12000000, 15000000, 14000000, 18000000],
-        borderColor: '#3b5998',
-        backgroundColor: 'rgba(59, 89, 152, 0.2)',
-        pointBorderColor: '#3b5998',
+        backgroundColor: '#3b5998',
+        pointBorderColor: '#14532D',
         pointBackgroundColor: '#ffffff',
         tension: 0.4
       }
@@ -82,7 +79,7 @@ const HomePage = () => {
     datasets: [
       {
         label: 'Doanh thu',
-        data: [12000000, 15000000, 17000000, 14000000, 19000000, 22000000],
+        data: [12000000, 15000000, 17000000, 24000000, 19000000, 22000000],
         backgroundColor: '#14532D',
         pointBorderColor: '#14532D',
         pointBackgroundColor: '#ffffff',
@@ -90,7 +87,7 @@ const HomePage = () => {
       },
       {
         label: 'Lợi nhuận',
-        data: [10000000, 13000000, 16000000, 11000000, 18000000, 21000000],
+        data: [4000000, 4000000, 5000000, 9000000, 5000000, 3000000],
         backgroundColor: '#b04e4e',
         pointBorderColor: '#14532D',
         pointBackgroundColor: '#ffffff',
@@ -122,7 +119,7 @@ const HomePage = () => {
       },
       title: {
         display: true,
-        text: 'Thống kê tài chính',
+        text: 'Biểu đồ đường',
         font: {
           size: 22,
           weight: 'bold'
@@ -171,7 +168,7 @@ const HomePage = () => {
       <Card style={cardStyle}>
         <h2 className='text-xl font-bold text-gray-700 mb-8'>Thống kê doanh thu</h2>
         <Line data={data} options={options} />
-        <h2 className='text-xl font-bold text-gray-700 mt-12 mb-4'>Biểu đồ Cột</h2>
+        <h2 className='text-xl font-bold text-gray-700 mb-8'>Biểu đồ Cột</h2>
         <Bar data={barData} />
         <Button
           className={cn(

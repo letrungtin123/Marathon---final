@@ -8,15 +8,12 @@ export const uploadImage = async (req, res) => {
     return res.status(HTTP_STATUS.BAD_REQUEST).send({ message: 'File is not correct' });
   }
 
-  // upload files to cloudinary
-  const uploadPromises = files.map((file) => cloudinary.uploader.upload(file.path));
-  // wait for all files to be uploaded
-  const results = await Promise.all(uploadPromises);
-  // return the uploaded files
-  const uploadedFiles = results.map((result) => ({
-    url: result.secure_url,
-    public_id: result.public_id,
+  // Multer CloudinaryStorage đã upload rồi, chỉ cần map kết quả
+  const uploadedFiles = files.map((file) => ({
+    url: file.path, // path sẽ là Cloudinary secure_url
+    public_id: file.filename, // hoặc file.public_id nếu có
   }));
+
   return res.status(HTTP_STATUS.OK).send({ urls: uploadedFiles });
 };
 
