@@ -94,3 +94,39 @@ model.fit(
 # Lưu mô hình
 model.save("recommendation_model.h5")
 print("✅ Đã huấn luyện xong mô hình và lưu vào recommendation_model.h5")
+
+# train_recommendation_model.py
+# Công nghệ, thư viện sử dụng
+# pandas, numpy: xử lý dữ liệu bảng, mảng.
+
+# pymongo: kết nối MongoDB lấy dữ liệu đơn hàng.
+
+# tensorflow.keras: xây dựng mô hình deep learning (embedding + fully connected layers).
+
+# sklearn.preprocessing.LabelEncoder: mã hóa user và product thành số nguyên.
+
+# joblib: lưu bộ encoder vào file.
+
+# dotenv: load biến môi trường.
+
+# Phương thức chính
+# Kết nối MongoDB lấy data từ collection orders.
+
+# Chuẩn bị DataFrame df gồm 3 cột: user, product, quantity (lượng mua).
+
+# Label encode user và product (chuyển string id thành integer).
+
+# Xây dựng mô hình DL:
+
+# Embedding cho user và product (size embedding=50).
+
+# Flatten embedding → concat → Dense 128 → Dense 64 → Output 1 (số lượng tương tác dự đoán).
+
+# Compile với optimizer Adam và loss MSE.
+
+# Train 10 epochs với batch size 32, validation 10%.
+
+# Lưu mô hình và encoder ra file.
+
+# Cách hoạt động
+# Mục đích: Học một mô hình để dự đoán mức độ tương tác giữa user và product dựa trên embedding (đặc trưng hóa users và products thành vector) qua mạng neural.

@@ -10,11 +10,23 @@ interface Product {
   bought_count: number
 }
 
+// Định nghĩa interface cho market trend chi tiết hơn
+interface MarketTrend {
+  quy_mo_tiem_nang: string
+  kenh_phan_phoi: string[]
+  xu_huong_tieu_dung: string[]
+  mua_vu_cao_diem: string[]
+  canh_tranh: string[]
+  co_hoi: string[]
+  thach_thuc: string[]
+  // Các trường raw lớn bạn có thể không render hoặc render tùy ý
+}
+
 // Định nghĩa interface cho chiến lược kinh doanh
 interface BusinessStrategyData {
   target_products: Product[]
   revenue_strategy: string
-  market_trend: string
+  market_trend: MarketTrend
 }
 
 const BusinessStrategy = () => {
@@ -40,6 +52,8 @@ const BusinessStrategy = () => {
     return <div className='text-center py-6 text-xl text-gray-500'>Đang tải chiến lược...</div>
   }
 
+  const { target_products, revenue_strategy, market_trend } = strategy
+
   return (
     <div className='max-w-6xl mx-auto p-8 bg-white shadow-lg rounded-xl'>
       <h1 className='text-4xl font-semibold text-center mb-6 text-gray-800'>Chiến Lược Kinh Doanh Tháng Tới</h1>
@@ -47,9 +61,9 @@ const BusinessStrategy = () => {
       {/* Sản phẩm cần đẩy mạnh */}
       <div className='mb-8'>
         <h2 className='text-2xl font-semibold mb-4 text-gray-700'>Sản phẩm cần đẩy mạnh:</h2>
-        {strategy.target_products.length > 0 ? (
+        {target_products.length > 0 ? (
           <ul className='space-y-6'>
-            {strategy.target_products.map((product) => {
+            {target_products.map((product) => {
               const finalPrice = Math.max(product.price - (product.sale || 0), 0)
               return (
                 <li
@@ -88,13 +102,57 @@ const BusinessStrategy = () => {
       {/* Chiến lược về doanh thu */}
       <div className='mb-8'>
         <h2 className='text-2xl font-semibold mb-4 text-gray-700'>Chiến lược về doanh thu:</h2>
-        <p className='text-lg text-gray-800'>{strategy.revenue_strategy}</p>
+        <p className='text-lg text-gray-800'>{revenue_strategy}</p>
       </div>
 
       {/* Phân tích thị trường */}
       <div>
         <h2 className='text-2xl font-semibold mb-4 text-gray-700'>Phân tích thị trường:</h2>
-        <p className='text-lg text-gray-800'>{strategy.market_trend}</p>
+
+        <p className='mb-4 text-lg font-semibold text-gray-700'>Quy mô tiềm năng:</p>
+        <p className='mb-6 text-gray-800'>{market_trend.quy_mo_tiem_nang}</p>
+
+        <p className='mb-4 text-lg font-semibold text-gray-700'>Kênh phân phối:</p>
+        <ul className='list-disc list-inside mb-6 text-gray-800'>
+          {market_trend.kenh_phan_phoi.map((channel, idx) => (
+            <li key={idx}>{channel}</li>
+          ))}
+        </ul>
+
+        <p className='mb-4 text-lg font-semibold text-gray-700'>Xu hướng tiêu dùng:</p>
+        <ul className='list-disc list-inside mb-6 text-gray-800'>
+          {market_trend.xu_huong_tieu_dung.map((trend, idx) => (
+            <li key={idx}>{trend}</li>
+          ))}
+        </ul>
+
+        <p className='mb-4 text-lg font-semibold text-gray-700'>Mùa vụ cao điểm:</p>
+        <ul className='list-disc list-inside mb-6 text-gray-800'>
+          {market_trend.mua_vu_cao_diem.map((season, idx) => (
+            <li key={idx}>{season}</li>
+          ))}
+        </ul>
+
+        <p className='mb-4 text-lg font-semibold text-gray-700'>Đối thủ cạnh tranh:</p>
+        <ul className='list-disc list-inside mb-6 text-gray-800'>
+          {market_trend.canh_tranh.map((comp, idx) => (
+            <li key={idx}>{comp}</li>
+          ))}
+        </ul>
+
+        <p className='mb-4 text-lg font-semibold text-gray-700'>Cơ hội:</p>
+        <ul className='list-disc list-inside mb-6 text-gray-800'>
+          {market_trend.co_hoi.map((op, idx) => (
+            <li key={idx}>{op}</li>
+          ))}
+        </ul>
+
+        <p className='mb-4 text-lg font-semibold text-gray-700'>Thách thức:</p>
+        <ul className='list-disc list-inside mb-6 text-gray-800'>
+          {market_trend.thach_thuc.map((challenge, idx) => (
+            <li key={idx}>{challenge}</li>
+          ))}
+        </ul>
       </div>
     </div>
   )

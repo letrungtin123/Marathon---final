@@ -15,6 +15,7 @@ import numpy as np
 from tensorflow.keras.models import load_model
 from tensorflow.keras.losses import MeanSquaredError  # ✅ NEW
 from chatbot import chatbot_api
+from business_strategy import fetch_market_data
 
 load_dotenv()
 
@@ -225,27 +226,26 @@ def get_predicted_leads():
     return jsonify(user_data)
 
 # Business strategy giả lập
-def fetch_market_data():
-    return {
-        "market_trends": "Thị trường tiêu dùng tại Việt Nam đang phục hồi nhanh chóng.",
-        "consumer_sentiment": "Tích cực"
-    }
-
 def run_business_strategy_ai():
     market_data = fetch_market_data()
     try:
         model = joblib.load("business_strategy_model.pkl")
-        features = [market_data.get("market_trends"), market_data.get("consumer_sentiment")]
+
+        # serialize market_trends dict thành chuỗi để model xử lý
+        market_trends_str = json.dumps(market_data.get("market_trends", {}), ensure_ascii=False)
+        features = [market_trends_str, market_data.get("consumer_sentiment")]
+        
         predicted_strategy = model.predict([features])
         return {
             "revenue_strategy": predicted_strategy[0].get("revenue_strategy", "Tăng doanh thu"),
-            "market_trend": predicted_strategy[0].get("market_trend", "Ổn định")
+            "market_trend": predicted_strategy[0].get("market_trend", market_data.get("market_trends"))
         }
     except:
         return {
             "revenue_strategy": "Tăng cường marketing và mở rộng kênh phân phối",
-            "market_trend": market_data["market_trends"]
+            "market_trend": market_data["market_trends"]  # dict luôn
         }
+
 
 @app.route("/business-strategy", methods=["GET"])
 def business_strategy():
@@ -270,12 +270,109 @@ def business_strategy():
         strategy = {
             "target_products": enriched_products,
             "revenue_strategy": strategy_from_ai["revenue_strategy"],
-            "market_trend": strategy_from_ai["market_trend"]
+            "market_trend": strategy_from_ai["market_trend"]  # dict chi tiết
         }
 
         return jsonify(strategy)
     except Exception as e:
         return jsonify({"error": f"Không tìm thấy chiến lược kinh doanh. Lỗi: {str(e)}"}), 500
 
+
 if __name__ == "__main__":
     app.run(port=5000, debug=True)
+    
+
+# server.py
+# Công nghệ, thư viện
+# Flask, Flask-CORS
+
+# pymongo
+
+# sklearn.linear_model.LinearRegression (dự báo bán chạy)
+
+# tensorflow.keras (load DL model gợi ý)
+
+# joblib (load encoder, load model lead scoring, business strategy)
+
+# dotenv
+
+# pandas, numpy, datetime
+
+# Chức năng
+# Khởi tạo Flask server, tích hợp blueprint chatbot.
+
+# Kết nối MongoDB.
+
+# Load mô hình gợi ý Deep Learning và encoders.
+
+# Định nghĩa API:
+
+# /forecast: dự báo sản phẩm bán chạy dựa trên dữ liệu đơn hàng lịch sử bằng Linear Regression (theo tháng).
+
+# /popular: trả về sản phẩm bán chạy hiện tại.
+
+# /recommend/<user_id>: trả về gợi ý sản phẩm dựa trên mô hình DL đã train.
+
+# /predicted-leads: dự đoán lead tiềm năng dựa trên model lead scoring.
+
+# /business-strategy: giả lập chiến lược kinh doanh (giả lập AI dựa trên dữ liệu thị trường + dự báo).
+
+# Hàm hỗ trợ lấy thông tin sản phẩm từ MongoDB.
+
+# Server chạy cổng 5000.
+
+# 3. Giải thích tổng thể cách hoạt động
+# Huấn luyện mô hình gợi ý (train_recommendation_model.py):
+
+# Lấy dữ liệu đơn hàng người dùng - sản phẩm.
+
+# Mã hóa ID thành số.
+
+# Tạo mô hình embedding cho user và product, mạng fully connected.
+
+# Huấn luyện dự đoán số lượng tương tác (mua hàng).
+
+# Lưu mô hình và encoder.
+
+# API gợi ý sản phẩm (recommend.py, server.py):
+
+# Load mô hình + encoder.
+
+# Khi nhận user_id, mã hóa user.
+
+# Dự đoán điểm tương tác với toàn bộ sản phẩm.
+
+# Trả về top 5 sản phẩm dự đoán.
+
+# Ngoài ra, trả về sản phẩm phổ biến (bán chạy).
+
+# Đánh giá mô hình (evaluate_recommendation.py):
+
+# Dùng cosine similarity giữa users.
+
+# Tạo gợi ý dựa trên người dùng tương tự.
+
+# Tính precision@k bằng cách so sánh gợi ý với test set.
+
+# Server tổng hợp (server.py):
+
+# Gộp các API lại.
+
+# Chạy các API khác như chatbot, dự báo bán chạy, lead scoring.
+
+# Quản lý kết nối DB, xử lý lỗi, phản hồi dữ liệu.
+
+# 4. Các thư viện & công nghệ chính
+# Thư viện/Module ->	Công dụng
+# Flask->Tạo API REST
+# Flask-CORS->Xử lý CORS cho API
+# pymongo->Kết nối và truy vấn MongoDB
+# tensorflow.keras->Xây dựng, huấn luyện, load mô hình DL
+# sklearn.preprocessing->Mã hóa nhãn (LabelEncoder)
+# sklearn.metrics.pairwise->Tính similarity cosine
+# sklearn.linear_model->Linear regression dự báo
+# joblib->Lưu / load model và encoder
+# pandas, numpy->Xử lý dữ liệu dạng bảng và mảng
+# dotenv->Load biến môi trường (.env)
+# bson.objectid->Xử lý ObjectId của MongoDB
+

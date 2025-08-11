@@ -7,6 +7,7 @@ import { Carousel } from "antd";
 import Recommend from "../Recommend/Recommend";
 import { getUserIdFromToken } from "@/utils/decode-token.util";
 import Chatbot from "../chatbot/ChatBot";
+
 const HomePage = () => {
   const params = useQueryParams();
   const userId = getUserIdFromToken();
@@ -18,23 +19,21 @@ const HomePage = () => {
       productApi.getProducts({ ...params, deleted: "false", status: "active" }),
   });
   const products = data?.docs;
-  // Kiểm tra params có rỗng hay không
   const isParamsEmpty = Object.keys(params).length === 0;
 
-  const contentStyle: React.CSSProperties = {
-    margin: 0,
-    height: "400px",
-    color: "#fff",
-    textAlign: "center",
+  const carouselContainerStyle: React.CSSProperties = {
     marginTop: "35px",
     borderRadius: "10px",
-    objectFit: "fill",
+    overflow: "hidden", // để ảnh bo góc đẹp
+    maxHeight: "400px",
+    width: "100%",
   };
 
   const imageStyle: React.CSSProperties = {
     width: "100%",
-    height: "100%",
+    height: "400px",
     objectFit: "cover",
+    display: "block",
   };
 
   return (
@@ -48,33 +47,34 @@ const HomePage = () => {
           autoplay
           autoplaySpeed={1600}
           className="mb-8"
+          style={carouselContainerStyle}
         >
-          <div className="mt-0 h-1.6/4">
+          <div>
             <img
-              src="https://assets.eflorist.com/images/homepage/immersion/immersion_banner_fall.gif"
+              src="https://nhahoa.com.vn/wp-content/uploads/2021/04/background-nha-hoa-gui-trao-cam-xuc_optimized.png"
               alt="Slide 1"
-              style={{ ...imageStyle, ...contentStyle }}
+              style={imageStyle}
             />
           </div>
           <div>
             <img
-              src="https://assets.eflorist.com/images/homepage/immersion/immersion-get-well-flowers.jpg"
+              src="https://www.flowerstoreinabox.com.au/images/uploads/2017/03/mday-2017-4.jpg"
               alt="Slide 2"
-              style={{ ...imageStyle, ...contentStyle }}
+              style={imageStyle}
             />
           </div>
           <div>
             <img
               src="https://www.ibuyflowers.com/hubfs/Wed%20love%20your%20feedback%20%287%29.png"
               alt="Slide 3"
-              style={{ ...imageStyle, ...contentStyle }}
+              style={imageStyle}
             />
           </div>
           <div>
             <img
-              src="https://assets.intleflorist.com/site/in3300079/Homepage/McIvor's.png"
+              src="https://floranext.com/wp-content/uploads/2016/12/Christmas-2016-5.jpg"
               alt="Slide 4"
-              style={{ ...imageStyle, ...contentStyle }}
+              style={imageStyle}
             />
           </div>
         </Carousel>
@@ -100,7 +100,7 @@ const HomePage = () => {
             </div>
           </section>
           {userId && <Recommend userId={userId} />}
-          <Chatbot/>
+          <Chatbot />
         </div>
       </div>
     </main>

@@ -70,3 +70,30 @@ def popular_products():
 
 if __name__ == '__main__':
     app.run(port=5000)
+
+# recommend.py
+# Công nghệ, thư viện
+# Flask: tạo API REST.
+
+# pymongo: truy xuất MongoDB.
+
+# tensorflow.keras: load mô hình DL đã train.
+
+# joblib: load encoder.
+
+# numpy: xử lý mảng.
+
+# Chức năng
+# API GET /recommend/<user_id>:
+
+# Mã hóa user_id.
+
+# Dự đoán điểm tương tác cho tất cả products.
+
+# Lấy 5 sản phẩm dự đoán cao nhất trả về.
+
+# API GET /popular:
+
+# Tính tổng lượng bán theo từng sản phẩm từ đơn hàng.
+
+# Trả về 5 sản phẩm bán chạy nhất.
