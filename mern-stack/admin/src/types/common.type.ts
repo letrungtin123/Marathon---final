@@ -55,11 +55,18 @@ export type TModal<T> = {
 }
 
 export type TQueryParams = {
+  // ❗ Dùng đúng tên tham số chuẩn của mongoose-paginate-v2
+  page?: number
+  limit?: number
+
+  // Giữ tương thích ngược nếu nơi khác còn dùng _page/_limit
   _page?: number
   _limit?: number
+
   q?: string
   status?: string
   deleted?: string
+  sort?: string
 }
 
 // int abc = 5 => abc = 'ahihi'

@@ -81,3 +81,15 @@ print(classification_report(y_test, clf.predict(X_test)))
 # Lưu mô hình
 joblib.dump(clf, "lead_model.pkl")
 print("✅ Model saved as lead_model.pkl")
+
+# Mô hình (model): Random Forest Classifier (RandomForestClassifier) từ thư viện scikit-learn (sklearn.ensemble).
+
+# Mục đích: Đây là mô hình học máy (machine learning) dùng để phân loại (classification).
+
+# Đoạn code này đang thực hiện huấn luyện (train) một mô hình học máy (một dạng AI) để dự đoán "khách hàng tiềm năng" dựa trên các đặc trưng như tổng chi tiêu, số lượng đơn hàng, và tuổi tài khoản.
+
+# Đây là mô hình AI dạng machine learning phân loại sử dụng thuật toán Random Forest.
+
+# Đang train mô hình trên dữ liệu đã chuẩn bị.
+
+# Kết quả huấn luyện được lưu lại trong file lead_model.pkl.

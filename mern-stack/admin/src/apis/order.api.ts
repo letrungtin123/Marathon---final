@@ -1,72 +1,47 @@
-// import { TQueryParams, TResponse } from '@/types/common.type'
-// import api from './base-url.api'
-
+// apis/order.api.ts
 import { TQueryParams, TResponse } from '@/types/common.type'
 import { TCancelOrder, TOrder, TOrderStatus } from '@/types/order.type'
 import api from './base-url.api'
 
-// import { TOrder, TOrderForm, TOrderFormEdit } from '@/types/order.type'
-
-// export const getOrders = async (token: string, params?: TQueryParams): Promise<TResponse<TOrder>> => {
-//   const response = await api.get<TResponse<TOrder>>(`/orders`, {
-//     params,
-//     headers: {
-//       Authorization: `Bearer ${token}`
-//     }
-//   })
-//   return response.data
-// }
-
-// export const addOrder = async (data: TOrderForm, token: string) => {
-//   const response = await api.post<TResponse<TOrder>>('/order', data, {
-//     headers: {
-//       Authorization: `Bearer ${token}`
-//     }
-//   })
-//   return response.data
-// }
-
-// export const editOrder = async (data: TOrderFormEdit, token: string) => {
-//   const response = await api.patch(`/order/${data._id}`, data, {
-//     headers: {
-//       Authorization: `Bearer ${token}`
-//     }
-//   })
-//   return response.data
-// }
-
-// export const getOrder = async (token: string, id: string) => {
-//   const response = await api.get(`/order/${id}`, {
-//     headers: {
-//       Authorization: `Bearer ${token}`
-//     }
-//   })
-//   return response.data
-// }
-
 export const orderApi = {
-  //get orders
-  getAllOrders: async (params: TQueryParams, token: string) => {
+  // Lấy danh sách đơn có phân trang
+  getAllOrders: async (params: TQueryParams = {}, token: string) => {
+    const { page, limit, _page, _limit, ...rest } = params || {}
+
+    // Số trang & page size chuẩn
+    const pageNum = page ?? _page ?? 1
+    const limitNum = limit ?? _limit ?? 10
+
+    // GỬI CẢ 2 BỘ THAM SỐ để backend nào cũng hiểu
+    const normalizedParams = {
+      ...rest,
+      page: pageNum,
+      limit: limitNum,
+      _page: pageNum,
+      _limit: limitNum,
+      sort: rest?.sort ?? '-createdAt'
+    }
+
     const response = await api.get<TResponse<TOrder>>(`/orders`, {
-      params,
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
+      params: normalizedParams,
+      headers: { Authorization: `Bearer ${token}` }
     })
-    return response.data
+
+    // Ép kiểu số để an toàn
+    const data = response.data
+    data.totalDocs = Number(data.totalDocs ?? 0)
+    data.limit = Number(data.limit ?? limitNum)
+    data.page = Number(data.page ?? pageNum)
+    return data
   },
 
-  //update status order
   updateOrderStatus: async (idOrder: string, body: { status: TOrderStatus }, token: string) => {
     const response = await api.patch<{ message: string; success: boolean }>(`/order/${idOrder}`, body, {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
+      headers: { Authorization: `Bearer ${token}` }
     })
     return response.data
   },
 
-  //cancel order
   cancelOrder: async (orderId: string, body: TCancelOrder) => {
     const response = await api.patch<{ message: string; success: boolean }>(`/order/cancel/${orderId}`, body)
     return response.data

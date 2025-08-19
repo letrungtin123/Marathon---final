@@ -50,25 +50,31 @@ const HomePage = () => {
       {
         label: 'Doanh thu',
         data: [12000000, 15000000, 17000000, 24000000, 19000000, 22000000],
-        backgroundColor: '#14532D',
-        pointBorderColor: '#14532D',
-        pointBackgroundColor: '#ffffff',
+        borderColor: '#14532D', // Màu đường
+        backgroundColor: 'rgba(20, 83, 45, 0.2)', // Màu fill dưới đường (nếu có)
+        pointBorderColor: '#14532D', // Viền điểm
+        pointBackgroundColor: '#ffffff', // Màu điểm
+        fill: true, // Bật fill dưới đường
         tension: 0.4
       },
       {
         label: 'Lợi nhuận',
         data: [4000000, 4000000, 5000000, 9000000, 5000000, 3000000],
-        backgroundColor: '#b04e4e',
-        pointBorderColor: '#14532D',
+        borderColor: '#b04e4e',
+        backgroundColor: 'rgba(176, 78, 78, 0.2)',
+        pointBorderColor: '#b04e4e',
         pointBackgroundColor: '#ffffff',
+        fill: true,
         tension: 0.4
       },
       {
         label: 'Chi tiêu',
         data: [8000000, 9000000, 12000000, 15000000, 14000000, 18000000],
-        backgroundColor: '#3b5998',
-        pointBorderColor: '#14532D',
+        borderColor: '#3b5998',
+        backgroundColor: 'rgba(59, 89, 152, 0.2)',
+        pointBorderColor: '#3b5998',
         pointBackgroundColor: '#ffffff',
+        fill: true,
         tension: 0.4
       }
     ]
@@ -80,26 +86,17 @@ const HomePage = () => {
       {
         label: 'Doanh thu',
         data: [12000000, 15000000, 17000000, 24000000, 19000000, 22000000],
-        backgroundColor: '#14532D',
-        pointBorderColor: '#14532D',
-        pointBackgroundColor: '#ffffff',
-        tension: 0.4
+        backgroundColor: '#14532D'
       },
       {
         label: 'Lợi nhuận',
         data: [4000000, 4000000, 5000000, 9000000, 5000000, 3000000],
-        backgroundColor: '#b04e4e',
-        pointBorderColor: '#14532D',
-        pointBackgroundColor: '#ffffff',
-        tension: 0.4
+        backgroundColor: '#b04e4e'
       },
       {
         label: 'Chi tiêu',
         data: [8000000, 9000000, 12000000, 15000000, 14000000, 18000000],
-        backgroundColor: '#3b5998',
-        pointBorderColor: '#14532D',
-        pointBackgroundColor: '#ffffff',
-        tension: 0.4
+        backgroundColor: '#3b5998'
       }
     ]
   }

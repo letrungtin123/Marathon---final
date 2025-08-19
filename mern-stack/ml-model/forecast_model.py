@@ -101,3 +101,21 @@ with open("top_selling_result.json", "w", encoding="utf-8") as f:
 
 with open("forecast_result.json", "w", encoding="utf-8") as f:
     json.dump(forecast_result, f, ensure_ascii=False, indent=4)
+
+# sử dụng mô hình Linear Regression (Hồi quy tuyến tính) từ thư viện sklearn.linear_model để dự đoán lượng bán sản phẩm trong tháng tiếp theo dựa trên dữ liệu lịch sử.
+
+# Cụ thể:
+
+# Mô hình: LinearRegression (Hồi quy tuyến tính đơn giản)
+
+# Mục đích: Tìm ra xu hướng số lượng sản phẩm bán ra theo thời gian (tính theo tháng), sau đó dự đoán số lượng bán của tháng tiếp theo.
+
+# đoạn code đang train một mô hình hồi quy tuyến tính (một dạng mô hình học máy rất cơ bản) trên dữ liệu lịch sử (thời gian - số lượng).
+
+# Nhưng đây không phải là AI phức tạp hay deep learning, mà chỉ là mô hình thống kê đơn giản dựa trên học máy (machine learning).
+
+# Tóm lại:
+
+# Đây là machine learning (học máy) chứ không phải deep learning hay AI phức tạp.
+
+# Mô hình sử dụng là Linear Regression để dự đoán số lượng bán sản phẩm theo thời gian.
