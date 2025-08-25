@@ -130,3 +130,30 @@ print("✅ Đã huấn luyện xong mô hình và lưu vào recommendation_model
 
 # Cách hoạt động
 # Mục đích: Học một mô hình để dự đoán mức độ tương tác giữa user và product dựa trên embedding (đặc trưng hóa users và products thành vector) qua mạng neural.
+
+# -------------------------------Explain-------------------------------------
+
+# đoạn code này tự xây và huấn luyện một mô hình từ đầu (from scratch), không dùng mô hình hay embedding “đã học sẵn”. Hai lớp Embedding được khởi tạo ngẫu nhiên và được cập nhật trong quá trình training.
+
+# Input (đầu vào) cho mô hình khi huấn luyện:
+
+# user_id (đã LabelEncode từ user): tensor shape (batch_size, 1)
+
+# product_id (đã LabelEncode từ product): tensor shape (batch_size, 1)
+
+# Nhãn/target: interaction = quantity (số lượng mua) — dùng để tính loss MSE.
+
+# Output (đầu ra) của mô hình:
+
+# Một giá trị thực (scalar) shape (batch_size, 1) dự đoán mức độ tương tác giữa user và product (ở đây là số lượng/độ mạnh tương tác).
+# có thể diễn giải là “điểm phù hợp” hoặc “kỳ vọng số lượng mua”.
+
+# Tóm tắt luồng:
+# (user_id, product_id) -> Embedding(user) + Embedding(product) -> concat -> Dense(128) -> Dense(64) -> Dense(1) -> dự đoán interaction
+# Sau khi train xong, code lưu:
+
+# mô hình: recommendation_model.h5
+
+# encoder: user_encoder.pkl, product_encoder.pkl để map ID gốc ↔ chỉ số embedding.
+
+# Gợi ý ngắn: nếu quantity lệch nhiều, cân nhắc log-transform hoặc chuẩn hóa; nếu chỉ có implicit feedback, có thể chuyển nhãn sang {0,1} và dùng loss phù hợp (BCE, BPR, v.v.)

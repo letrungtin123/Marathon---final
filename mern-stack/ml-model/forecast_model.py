@@ -119,3 +119,31 @@ with open("forecast_result.json", "w", encoding="utf-8") as f:
 # Đây là machine learning (học máy) chứ không phải deep learning hay AI phức tạp.
 
 # Mô hình sử dụng là Linear Regression để dự đoán số lượng bán sản phẩm theo thời gian.
+
+# Tóm tắt nhanh:
+
+# Đoạn script này đang tự huấn luyện (per-product) một mô hình ML tuyến tính đơn giản (LinearRegression) trên chuỗi thời gian tháng→số lượng để dự đoán tháng kế tiếp. Không phải deep learning.
+
+# Input dữ liệu: orders.createdAt, orders.products[].productId, orders.products[].quantity.
+
+# Output:
+
+# top_selling_result.json: top sản phẩm (nhưng hiện bạn đang đếm số dòng xuất hiện, không phải tổng số lượng).
+
+# forecast_result.json: dự báo predicted_quantity cho tháng kế tiếp từng sản phẩm.
+
+# Input (khi train, cho mỗi product):
+
+# X: cột time có dạng year*12 + month → ma trận kích thước (n_tháng, 1).
+
+# y: quantity (tổng số lượng bán theo tháng của sản phẩm đó) → vector (n_tháng,).
+
+# Input (khi dự đoán):
+
+# Giá trị time của tháng kế tiếp: next_time = max(time) + 1 (một số duy nhất).
+
+# Output:
+
+# Một giá trị dự báo số lượng cho tháng kế tiếp của từng sản phẩm (scalar), được ghi vào forecast_result.json dưới dạng:
+
+# { "productId": "...", "predicted_quantity": <số nguyên không âm> }

@@ -93,3 +93,23 @@ print("✅ Model saved as lead_model.pkl")
 # Đang train mô hình trên dữ liệu đã chuẩn bị.
 
 # Kết quả huấn luyện được lưu lại trong file lead_model.pkl.
+
+# Input & Output của mô hình
+
+# Đầu vào (features X): 3 đặc trưng số đã chuẩn bị cho mỗi user
+
+# total_spent — tổng tiền đã chi tiêu
+
+# order_count — số đơn đã mua
+
+# account_age_days — số ngày kể từ khi tạo tài khoản
+
+# Nhãn (y): potential ∈ {0,1}, gán 1 nếu order_count >= 1, ngược lại 0.
+
+# Đầu ra:
+
+# Khi train: mô hình học để phân biệt 0/1.
+
+# Khi dự đoán: dùng clf.predict(X) (label 0/1) hoặc tốt hơn clf.predict_proba(X)[:,1] (điểm xác suất lead từ 0→1).
+
+# File lưu: lead_model.pkl (model đã train).

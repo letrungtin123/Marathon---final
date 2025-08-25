@@ -529,3 +529,80 @@ if __name__ == "__main__":
         json.dump(out, f, ensure_ascii=False, indent=2)
 
     print("Saved strategy_forecast.json")
+
+# Input (đầu vào)
+
+# Dữ liệu bán hàng lịch sử cho từng sản phẩm (bắt buộc cho phần dự báo):
+
+# sales_df với các cột:
+
+# date (ngày, có thể dạng string/Datetime)
+
+# productId (mã sản phẩm)
+
+# qty (số lượng bán theo ngày)
+
+# Tham số dự báo Prophet (mặc định trong code ví dụ):
+
+# periods=30 (dự báo 30 ngày tới), freq='D' (theo ngày)
+
+# Dữ liệu thị trường online (tự fetch trong script):
+
+# Google Trends cho một danh sách từ khóa (ví dụ: “hoa tươi”, “hoa cưới”…)
+
+# Shopee: thống kê best-effort theo từ khóa (số item, giá trung bình, top sản phẩm…)
+# (cần Internet; có thể bị 403 nếu thiếu cookie hợp lệ)
+
+# Bản đồ từ khóa theo sản phẩm (để lấy tín hiệu Trends theo product):
+
+# product_kw_map, ví dụ: {"P001": "hoa tươi", ...}
+
+# Trọng số tính điểm (tuỳ chỉnh):
+
+# w_forecast, w_trend, w_season (mặc định 0.5 / 0.3 / 0.2)
+
+# Output (đầu ra)
+
+# Script tạo file strategy_forecast.json chứa 3 phần chính:
+
+# forecast_result (kết quả dự báo theo sản phẩm, từ Prophet):
+
+# [
+#   {
+#     "productId": "P001",
+#     "status": "ok",
+#     "forecast_next_period_sum": 123.45,   // tổng yhat 30 ngày tới
+#     "last_period_sum": 98.0,              // tổng thực bán 30 ngày gần nhất
+#     "forecast_growth_pct": 26.99          // % tăng/giảm dự báo so với quá khứ
+#   },
+#   ...
+# ]
+
+
+# weighted_scores (điểm tổng hợp cho từng sản phẩm):
+
+# [
+#   {
+#     "productId": "P001",
+#     "forecast_growth_pct": 26.99,   // từ forecast_result
+#     "trend_avg_interest": 45.0,     // từ Google Trends (avg interest)
+#     "seasonality": 0.65,            // điểm mùa vụ [0..1]
+#     "score": 0.7134                 // điểm tổng hợp sau min-max & trọng số
+#   },
+#   ...
+# ]
+
+
+# strategy (đề xuất chiến lược):
+
+# {
+#   "target_products": ["P001","P003"],          // giao giữa top-selling & có forecast hợp lệ
+#   "revenue_strategy": "Tăng cường marketing online...", 
+#   "market_trend": { ... },                     // tổng hợp Trends + Shopee + meta
+#   "recommendations": [ ... top sản phẩm theo score ... ],
+#   "generated_at": "2025-08-22T..."
+#   "notes": [ "Ưu tiên nguồn lực...", "Tối ưu SEO...", ... ]
+# }
+
+
+# Ngoài ra, trong quá trình chạy, script cũng fetch và đóng gói market data (Google Trends + Shopee) vào phần market_trend của strategy.
